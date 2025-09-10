@@ -48,6 +48,12 @@ const env = {
    * By default, it is set to 30 minutes.
    */
   minimumVotingPeriod: parseDuration(process.env.NEXT_PUBLIC_MINIMUM_VOTING_PERIOD, 1800),
+
+  /**
+   * Custom proposal blockheight. This is the number of blocks above the current height that a proposal must be.
+   * By default, it is set to 1000 blocks.
+   */
+  customProposalBlockheight: parseInt(process.env.NEXT_PUBLIC_CUSTOM_PROPOSAL_BLOCKHEIGHT ?? '1000', 10),
 };
 
 export default env;
