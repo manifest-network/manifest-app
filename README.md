@@ -40,6 +40,7 @@ NEXT_PUBLIC_OSMOSIS_RPC_URL=
 NEXT_PUBLIC_OSMOSIS_API_URL=
 NEXT_PUBLIC_OSMOSIS_EXPLORER_URL=
 NEXT_PUBLIC_LEAP_DEEPLINK=
+
 ```
 
 where
@@ -58,6 +59,8 @@ where
 - `NEXT_PUBLIC_OSMOSIS_RPC_URL` is the osmosis RPC URL
 - `NEXT_PUBLIC_OSMOSIS_API_URL` is the osmosis API URL
 - `NEXT_PUBLIC_OSMOSIS_EXPLORER_URL` is the osmosis block explorer URL
+- `NEXT_PUBLIC_LEAP_DEEPLINK` is the leap deeplink
+- `NEXT_PUBLIC_CUSTOM_PROPOSAL_BLOCKHEIGHT` is the custom proposal blockheight
 
 ### Development
 
