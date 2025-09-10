@@ -637,7 +637,7 @@ export const useTokenFactoryDenomsMetadata = () => {
       const paginationOptions: any = {
         limit: BigInt(1000), // Request more per page to reduce API calls
       };
-      
+
       if (nextKey) {
         paginationOptions.key = nextKey;
       }
