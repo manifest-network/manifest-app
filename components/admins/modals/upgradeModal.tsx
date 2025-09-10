@@ -49,7 +49,7 @@ const parseReleaseBody = (body: string): UpgradeInfo | null => {
   }
 };
 
-const CUSTOM_PROPOSAL_BLOCKHEIGHT = env.customProposalBlockheight ?? 1000;
+const UPGRADE_MIN_BLOCKHEIGHT = env.upgradeMinBlockheight ?? 1000;
 
 const UpgradeSchema = Yup.object().shape({
   height: Yup.number()
@@ -58,7 +58,7 @@ const UpgradeSchema = Yup.object().shape({
     .integer('Must be a valid number')
     .test(
       'min-height',
-      `Height must be at least ${CUSTOM_PROPOSAL_BLOCKHEIGHT} blocks above current height`,
+      `Height must be at least ${UPGRADE_MIN_BLOCKHEIGHT} blocks above current height`,
       function (inputHeight) {
         const proposedHeight = Number(inputHeight);
         const chainHeight = Number(this.options.context?.chainData?.currentHeight || 0);
@@ -67,7 +67,7 @@ const UpgradeSchema = Yup.object().shape({
           return false;
         }
 
-        const minimumAllowedHeight = chainHeight + CUSTOM_PROPOSAL_BLOCKHEIGHT;
+        const minimumAllowedHeight = chainHeight + UPGRADE_MIN_BLOCKHEIGHT;
 
         return proposedHeight >= minimumAllowedHeight;
       }
