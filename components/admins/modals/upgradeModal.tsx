@@ -67,7 +67,7 @@ const UpgradeSchema = Yup.object().shape({
           return false;
         }
 
-        const minimumAllowedHeight = chainHeight + UPGRADE_MIN_BLOCKHEIGHT;
+        const minimumAllowedHeight = chainHeight + UPGRADE_MIN_BLOCK_OFFSET;
 
         return proposedHeight >= minimumAllowedHeight;
       }
