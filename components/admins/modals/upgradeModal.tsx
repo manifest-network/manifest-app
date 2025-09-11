@@ -49,7 +49,7 @@ const parseReleaseBody = (body: string): UpgradeInfo | null => {
   }
 };
 
-const UPGRADE_MIN_BLOCKHEIGHT = env.upgradeMinBlockheight ?? 1000;
+const UPGRADE_MIN_BLOCK_OFFSET = env.upgradeMinBlockOffset ?? 1000;
 
 const UpgradeSchema = Yup.object().shape({
   height: Yup.number()
