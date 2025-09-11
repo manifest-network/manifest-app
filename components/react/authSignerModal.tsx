@@ -347,7 +347,9 @@ export const SignModal = ({ id }: { id?: string }) => {
     }
   }, [id, prompt, promptId]);
 
-  if (!isSigning || !visible) {
+  // For Ledger wallets, show modal when signing regardless of prompt state
+  // For other wallets, require both signing state and prompt visibility
+  if (!isSigning || (!isLedgerWallet && !visible)) {
     return null;
   }
 
