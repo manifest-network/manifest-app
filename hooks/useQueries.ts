@@ -671,7 +671,6 @@ export const useTokenFactoryDenomsMetadata = () => {
   };
 };
 
-
 export const useOsmosisTokenFactoryDenomsMetadata = () => {
   const { lcdQueryClient } = useOsmosisLcdQueryClient();
 
