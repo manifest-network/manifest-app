@@ -671,36 +671,6 @@ export const useTokenFactoryDenomsMetadata = () => {
   };
 };
 
-export const useDenomMetadata = (denom: string) => {
-  const { lcdQueryClient } = useLcdQueryClient();
-
-  const fetchDenomMetadata = async () => {
-    if (!lcdQueryClient) {
-      throw new Error('LCD Client not ready');
-    }
-    if (!denom) {
-      return null;
-    }
-
-    return await lcdQueryClient.cosmos.bank.v1beta1.denomMetadata({ denom });
-  };
-
-  const debounced = useDebounce(denom, DEBOUNCE_TIME);
-  const metadataQuery = useQuery({
-    queryKey: ['denomMetadata', debounced],
-    queryFn: fetchDenomMetadata,
-    enabled: !!lcdQueryClient && !!denom,
-    staleTime: DEBOUNCE_TIME,
-    placeholderData: keepPreviousData,
-  });
-
-  return {
-    metadata: metadataQuery.data?.metadata,
-    isMetadataLoading: metadataQuery.isLoading,
-    isMetadataError: metadataQuery.isError,
-    refetchMetadata: metadataQuery.refetch,
-  };
-};
 
 export const useOsmosisTokenFactoryDenomsMetadata = () => {
   const { lcdQueryClient } = useOsmosisLcdQueryClient();
