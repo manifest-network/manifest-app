@@ -58,7 +58,7 @@ const UpgradeSchema = Yup.object().shape({
     .integer('Must be a valid number')
     .test(
       'min-height',
-      `Height must be at least ${UPGRADE_MIN_BLOCKHEIGHT} blocks above current height`,
+      `Height must be at least ${UPGRADE_MIN_BLOCK_OFFSET} blocks above current height`,
       function (inputHeight) {
         const proposedHeight = Number(inputHeight);
         const chainHeight = Number(this.options.context?.chainData?.currentHeight || 0);
