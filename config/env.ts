@@ -53,7 +53,7 @@ const env = {
    * Custom proposal blockheight. This is the number of blocks above the current height that a proposal must be.
    * By default, it is set to 1000 blocks.
    */
-  upgradeMinBlockheight: parseInt(process.env.NEXT_PUBLIC_UPGRADE_MIN_BLOCKHEIGHT ?? '1000', 10),
+  upgradeMinBlockOffset: parseInt(process.env.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET ?? '1000', 10),
 };
 
 export default env;
