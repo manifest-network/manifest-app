@@ -50,7 +50,7 @@ const env = {
   minimumVotingPeriod: parseDuration(process.env.NEXT_PUBLIC_MINIMUM_VOTING_PERIOD, 1800),
 
   /**
-   * Custom proposal blockheight. This is the number of blocks above the current height that a proposal must be.
+   * Minimum block offset required when submitting a chain upgrade proposal. The chosen upgrade height must be at least this many blocks greater than the current block height at the time of proposal submission.
    * By default, it is set to 1000 blocks.
    */
   upgradeMinBlockOffset: parseInt(process.env.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET ?? '1000', 10),
