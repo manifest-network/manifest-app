@@ -3,7 +3,7 @@ import {
   GroupMemberSDKType,
   GroupPolicyInfoSDKType,
 } from '@manifest-network/manifestjs/dist/codegen/cosmos/group/v1/types';
-import { keepPreviousData, useQueries, useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult, keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { useDebounce } from '@uidotdev/usehooks';
 import axios from 'axios';
 import { QueryProposalsByGroupPolicyResponse } from 'cosmjs-types/cosmos/group/v1/query';
