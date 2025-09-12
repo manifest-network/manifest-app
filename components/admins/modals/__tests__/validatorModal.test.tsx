@@ -3,7 +3,12 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import React from 'react';
 
 import { ValidatorDetailsModal } from '@/components/admins/modals/validatorModal';
-import { clearAllMocks, mockRouter } from '@/tests';
+import {
+  clearAllMocks,
+  mockPendingValidators,
+  mockRouter,
+  mockUnboundingValidators,
+} from '@/tests';
 import { mockActiveValidators } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
@@ -21,6 +26,7 @@ function renderWithProps(props = {}) {
       admin={admin}
       totalvp={totalvp}
       validatorVPArray={validatorVPArray}
+      hasUnbounding={false}
       {...props}
     />
   );
@@ -82,7 +88,7 @@ describe('ValidatorDetailsModal Component', () => {
     await waitFor(() => {
       const errorMessage = screen.getByText(
         (_content, element) =>
-          (element as HTMLElement)?.dataset?.tip === 'Power must be a non-negative number'
+          (element as HTMLElement)?.dataset?.tip === 'Power must be greater than 0'
       );
       expect(errorMessage).toBeInTheDocument();
     });
@@ -97,5 +103,43 @@ describe('ValidatorDetailsModal Component', () => {
       const warningMessage = screen.getByText(/Warning: This power update may be unsafe/i);
       expect(warningMessage).toBeInTheDocument();
     });
+  });
+
+  test('show banner when hasUnbounding is true (active)', () => {
+    renderWithProps({ hasUnbounding: true });
+
+    expect(
+      screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
+    ).toBeInTheDocument();
+
+    const updateButton = screen.getByText('Update');
+    expect(updateButton).toBeDisabled();
+  });
+
+  test('show banner when hasUnbounding is true (pending)', () => {
+    renderWithProps({ validator: mockPendingValidators[0], hasUnbounding: true });
+
+    expect(
+      screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
+    ).toBeInTheDocument();
+
+    const updateButton = screen.getByText('Update');
+    expect(updateButton).toBeDisabled();
+  });
+
+  test('shows UNBONDING TIME and hides POWER when unbonding_time is set', () => {
+    renderWithProps({ validator: mockUnboundingValidators[0], hasUnbounding: true });
+
+    expect(screen.getByText('UNBONDING TIME (UTC)')).toBeInTheDocument();
+    expect(screen.queryByText('POWER')).not.toBeInTheDocument();
+    expect(screen.queryByText('Update')).not.toBeInTheDocument();
+  });
+
+  test('ignores Unix epoch 0 unbonding_time and shows POWER', () => {
+    renderWithProps({});
+
+    expect(screen.queryByText('UNBONDING TIME (UTC)')).not.toBeInTheDocument();
+    expect(screen.getByText('POWER')).toBeInTheDocument();
+    expect(screen.getByText('Update')).toBeInTheDocument();
   });
 });

@@ -25,6 +25,7 @@ interface ValidatorListProps {
   admin: string;
   activeValidators: ExtendedValidatorSDKType[];
   pendingValidators: ExtendedValidatorSDKType[];
+  unbondingValidators: ExtendedValidatorSDKType[];
   isLoading: boolean;
 }
 
@@ -32,12 +33,19 @@ export default function ValidatorList({
   admin,
   activeValidators,
   pendingValidators,
+  unbondingValidators,
   isLoading,
 }: ValidatorListProps) {
   const [activeTab, setActiveTab] = useState(0);
 
-  const [active, setActive] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const isActiveTab = activeTab === 0;
+  const isPendingTab = activeTab === 1;
+  const isUnboundingTab = activeTab === 2;
+
+  const hasUnbondingValidators = useMemo(() => {
+    return Array.isArray(unbondingValidators) && unbondingValidators.length > 0;
+  }, [unbondingValidators]);
+
   const [selectedValidator, setSelectedValidator] = useState<ExtendedValidatorSDKType | null>(null);
   const [openWarningModal, setOpenWarningModal] = useState(false);
   const [openValidatorModal, setOpenValidatorModal] = useState(false);
@@ -74,40 +82,54 @@ export default function ValidatorList({
     setOpenValidatorModal(true);
   };
 
-  const validators = activeTab === 0 ? activeValidators : pendingValidators;
+  const validators = isActiveTab
+    ? activeValidators
+    : isPendingTab
+      ? pendingValidators
+      : unbondingValidators;
 
   return (
     <SearchProvider>
       <PageHeader className="mb-4" title="Validators" search="Search for a validator..." />
 
       <Tab.Group as="div" defaultIndex={0} onChange={setActiveTab}>
-        <Tab.List className="relative flex p-3 h-[3.5rem] w-full space-x-1 mb-4 md:mb-6 rounded-2xl bg-[#0000000A] dark:bg-[#FFFFFF0F]">
+        <Tab.List className="relative grid grid-cols-3 p-3 h-[3.5rem] w-full mb-4 md:mb-6 rounded-2xl bg-[#0000000A] dark:bg-[#FFFFFF0F]">
           <div
-            className={`absolute transition-all duration-200 ease-in-out h-[calc(100%-8px)] w-[calc(50%-4px)] top-1 rounded-xl bg-white dark:bg-[#FFFFFF1F] ${
-              activeTab === 0 ? 'left-1' : 'left-[calc(50%+1px)]'
-            }`}
+            className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc((100%-8px)/3)] rounded-xl bg-white dark:bg-[#FFFFFF1F] transition-transform duration-200 ease-in-out"
+            style={{ transform: `translateX(${activeTab * 100}%)` }}
           />
 
           <Tab
             aria-label="Active"
-            className="absolute flex-1 top-1 left-1 text-sm font-medium rounded-xl z-10
-                h-[calc(100%-8px)] w-[calc(50%-4px)]
-                transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                ui-not-selected:text-[#808080]
-                disabled:text-[#404040] disabled:cursor-not-allowed"
+            className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
+                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
+                       ui-not-selected:text-[#808080]
+                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             Active
           </Tab>
 
           <Tab
             aria-label="Pending"
-            className="absolute flex-1 top-1 right-1 text-sm font-medium rounded-xl z-10
-                h-[calc(100%-8px)] w-[calc(50%-4px)]
-                transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                ui-not-selected:text-[#808080]
-                disabled:text-[#404040] disabled:cursor-not-allowed"
+            className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
+                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
+                       ui-not-selected:text-[#808080]
+                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             Pending
+          </Tab>
+
+          <Tab
+            aria-label="Unbonding"
+            className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
+                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
+                       ui-not-selected:text-[#808080]
+                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+          >
+            Unbounding
           </Tab>
         </Tab.List>
       </Tab.Group>
@@ -126,7 +148,7 @@ export default function ValidatorList({
               <Loading />
             ) : validators.length === 0 ? (
               <div className="text-center py-8 text-[#808080]">
-                {active ? 'No active validators found' : 'No pending validators'}
+                {isActiveTab ? 'No active validators found' : 'No pending validators'}
               </div>
             ) : (
               <Pagination dataset={validators} pageSize={pageSize}>
@@ -194,6 +216,7 @@ export default function ValidatorList({
                                 className="btn btn-error btn-sm text-white"
                                 data-testid="remove-validator"
                                 aria-label={`Remove validator ${validator.description.moniker}`}
+                                disabled={isUnboundingTab}
                               >
                                 <TrashIcon className="w-5 h-5" />
                               </button>
@@ -218,10 +241,11 @@ export default function ValidatorList({
         validatorVPArray={validatorVPArray}
         openValidatorModal={openValidatorModal}
         setOpenValidatorModal={setOpenValidatorModal}
+        hasUnbounding={hasUnbondingValidators}
       />
       <WarningModal
         admin={admin}
-        isActive={active}
+        isActive={isActiveTab}
         address={validatorToRemove?.operator_address || ''}
         moniker={validatorToRemove?.description.moniker || ''}
         modalId="warning-modal"

@@ -3,7 +3,7 @@ import {
   GroupMemberSDKType,
   GroupPolicyInfoSDKType,
 } from '@manifest-network/manifestjs/dist/codegen/cosmos/group/v1/types';
-import { UseQueryResult, keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useDebounce } from '@uidotdev/usehooks';
 import axios from 'axios';
 import { QueryProposalsByGroupPolicyResponse } from 'cosmjs-types/cosmos/group/v1/query';
@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 
 import { TxMessage } from '@/components/bank/types';
 import { useOsmosisRpcQueryClient } from '@/hooks/useOsmosisRpcQueryClient';
-import { getLogoUrls, normalizeIBCDenom } from '@/utils';
+import { getLogoUrls } from '@/utils';
 
 import { useLcdQueryClient, useOsmosisLcdQueryClient } from './useLcdQueryClient';
 import { useManifestLcdQueryClient } from './useManifestLcdQueryClient';
@@ -502,7 +502,8 @@ export const usePendingValidators = () => {
     refetchPendingValidators: paramsQuery.refetch,
   };
 };
-export const useValidators = () => {
+
+export const useValidators = (status: string) => {
   const { lcdQueryClient } = useLcdQueryClient();
   const { lcdQueryClient: poaLcdQueryCLient } = usePoaLcdQueryClient();
   const fetchConsensusPower = async (validators: any[]) => {
@@ -531,24 +532,24 @@ export const useValidators = () => {
       throw new Error('LCD Client not ready');
     }
     const validatorsResponse = await lcdQueryClient.cosmos.staking.v1beta1.validators({
-      status: 'BOND_STATUS_BONDED',
+      status: status,
     });
-    const validatorsWithConsensusPower = await fetchConsensusPower(validatorsResponse.validators);
-    return validatorsWithConsensusPower;
+
+    return await fetchConsensusPower(validatorsResponse.validators);
   };
 
   const paramsQuery = useQuery({
-    queryKey: ['validators'],
+    queryKey: ['validators', status],
     queryFn: fetchParams,
     enabled: !!lcdQueryClient,
-    staleTime: Infinity,
+    staleTime: 5 * 60 * 1000,
   });
 
   return {
     validators: paramsQuery.data,
-    isActiveValidatorsLoading: paramsQuery.isLoading,
-    isActiveValidatorsError: paramsQuery.isError,
-    refetchActiveValidatorss: paramsQuery.refetch,
+    isValidatorsLoading: paramsQuery.isLoading,
+    isValidatorsError: paramsQuery.isError,
+    refetchValidatorss: paramsQuery.refetch,
   };
 };
 

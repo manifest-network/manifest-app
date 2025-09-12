@@ -16,7 +16,10 @@ export default function Admins() {
   const { address, isWalletConnected } = useChain(env.chain);
   const { poaAdmin } = usePoaGetAdmin();
   const { pendingValidators, isPendingValidatorsLoading } = usePendingValidators();
-  const { validators, isActiveValidatorsLoading } = useValidators();
+  const { validators: activeValidators, isValidatorsLoading: isActiveValidatorsLoading } =
+    useValidators('BOND_STATUS_BONDED');
+  const { validators: unbondingValidators, isValidatorsLoading: isUnbondingValidatorsLoading } =
+    useValidators('BOND_STATUS_UNBONDING');
 
   const { groupByAdmin, isGroupByAdminLoading } = useGroupsByAdmin(
     poaAdmin ?? 'manifest1afk9zr2hn2jsac63h4hm60vl9z3e5u69gndzf7c99cqge3vzwjzsfmy9qj'
@@ -63,9 +66,14 @@ export default function Admins() {
               isWalletConnected && (
                 <>
                   <ValidatorList
-                    isLoading={isActiveValidatorsLoading || isPendingValidatorsLoading}
-                    activeValidators={validators ?? ([] as ValidatorSDKType[])}
+                    isLoading={
+                      isActiveValidatorsLoading ||
+                      isPendingValidatorsLoading ||
+                      isUnbondingValidatorsLoading
+                    }
+                    activeValidators={activeValidators ?? ([] as ValidatorSDKType[])}
                     pendingValidators={pendingValidators ?? ([] as ValidatorSDKType[])}
+                    unbondingValidators={unbondingValidators ?? ([] as ValidatorSDKType[])}
                     admin={
                       poaAdmin ??
                       'manifest1afk9zr2hn2jsac63h4hm60vl9z3e5u69gndzf7c99cqge3vzwjzsfmy9qj'

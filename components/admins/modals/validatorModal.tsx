@@ -22,7 +22,7 @@ const PowerUpdateSchema = Yup.object().shape({
   power: Yup.number()
     .typeError('Power must be a number')
     .required('Power is required')
-    .min(0, 'Power must be a non-negative number')
+    .min(1, 'Power must be greater than 0')
     .integer('Power must be an integer'),
 });
 
@@ -33,6 +33,7 @@ export function ValidatorDetailsModal({
   validatorVPArray,
   openValidatorModal,
   setOpenValidatorModal,
+  hasUnbounding,
 }: Readonly<{
   validator: ExtendedValidatorSDKType | null;
   admin: string;
@@ -40,6 +41,7 @@ export function ValidatorDetailsModal({
   validatorVPArray: { vp: bigint; moniker: string }[];
   openValidatorModal: boolean;
   setOpenValidatorModal: (open: boolean) => void;
+  hasUnbounding: boolean;
 }>) {
   const [description, setDescription] = useState<string | undefined>(undefined);
 
@@ -55,6 +57,24 @@ export function ValidatorDetailsModal({
   const isUnsafe = React.useMemo(() => {
     return calculateIsUnsafe(power, validator?.consensus_power?.toString() || '', totalvp);
   }, [power, validator?.consensus_power, totalvp]);
+
+  const unbondingTimeDate = React.useMemo(() => {
+    const d = validator?.unbonding_time ? new Date(validator.unbonding_time) : undefined;
+    return d && d.getTime() === 0 ? undefined : d;
+  }, [validator?.unbonding_time]);
+
+  const unbondingTimeText = React.useMemo(() => {
+    if (!unbondingTimeDate) return '';
+    return unbondingTimeDate.toLocaleString(undefined, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC',
+    });
+  }, [unbondingTimeDate]);
 
   if (!validator) return null;
 
@@ -142,61 +162,78 @@ export function ValidatorDetailsModal({
                       : 'No Security Contact'}
                   </p>
                 </div>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">POWER</span>
-                  <div className="flex flex-col gap-2 mt-2">
-                    <div className="flex flex-row gap-2 justify-between items-center">
-                      <div className="relative w-2/3">
-                        <Field name="power">
-                          {({ field, meta }: FieldProps) => (
-                            <div className="relative">
-                              <TextInput
-                                showError={false}
-                                {...field}
-                                type="number"
-                                placeholder={validator?.consensus_power?.toString() ?? 'Inactive'}
-                                className={`input input-bordered w-full ${
-                                  meta.touched && meta.error ? 'input-error' : ''
-                                }`}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  field.onChange(e);
-                                  setPowerInput(e.target.value);
-                                }}
-                              />
-                              {meta.touched && meta.error && (
-                                <div
-                                  className="tooltip tooltip-bottom tooltip-open tooltip-error bottom-0 absolute left-1/2 transform -translate-x-1/2 translate-y-full mt-1 z-50 text-white text-xs"
-                                  data-tip={meta.error}
-                                >
-                                  <div className="w-0 h-0"></div>
-                                </div>
-                              )}
-                            </div>
+                {!unbondingTimeDate && (
+                  <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">POWER</span>
+                    <div className="flex flex-col gap-2 mt-2">
+                      <div className="flex flex-row gap-2 justify-between items-center">
+                        <div className="relative w-2/3">
+                          <Field name="power">
+                            {({ field, meta }: FieldProps) => (
+                              <div className="relative">
+                                <TextInput
+                                  showError={false}
+                                  {...field}
+                                  type="number"
+                                  placeholder={validator?.consensus_power?.toString() ?? 'Inactive'}
+                                  className={`input input-bordered w-full ${
+                                    meta.touched && meta.error ? 'input-error' : ''
+                                  }`}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    field.onChange(e);
+                                    setPowerInput(e.target.value);
+                                  }}
+                                />
+                                {meta.touched && meta.error && (
+                                  <div
+                                    className="tooltip tooltip-bottom tooltip-open tooltip-error bottom-0 absolute left-1/2 transform -translate-x-1/2 translate-y-full mt-1 z-50 text-white text-xs"
+                                    data-tip={meta.error}
+                                  >
+                                    <div className="w-0 h-0"></div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </Field>
+                        </div>
+                        <button
+                          type="submit"
+                          className="btn btn-gradient w-1/3"
+                          disabled={!isValid || isSigning || hasUnbounding}
+                          onClick={() => {
+                            handleUpdate({ power: power });
+                          }}
+                        >
+                          {isSigning ? (
+                            <span className="loading loading-dots loading-sm"></span>
+                          ) : (
+                            'Update'
                           )}
-                        </Field>
+                        </button>
                       </div>
-                      <button
-                        type="submit"
-                        className="btn btn-gradient w-1/3"
-                        disabled={!isValid || isSigning}
-                        onClick={() => {
-                          handleUpdate({ power: power });
-                        }}
-                      >
-                        {isSigning ? (
-                          <span className="loading loading-dots loading-sm"></span>
-                        ) : (
-                          'Update'
-                        )}
-                      </button>
+                      {hasUnbounding && (
+                        <div className="alert alert-warning mt-2" role="alert" aria-live="polite">
+                          <span>
+                            You cannot update validator power while validator(s) are unbonding.
+                          </span>
+                        </div>
+                      )}
+                      {isUnsafe && Number(power) > 0 && (
+                        <div className="text-warning text-xs">
+                          Warning: This power update may be unsafe
+                        </div>
+                      )}
                     </div>
-                    {isUnsafe && Number(power) > 0 && (
-                      <div className="text-warning text-xs">
-                        Warning: This power update may be unsafe
-                      </div>
-                    )}
                   </div>
-                </div>
+                )}
+                {unbondingTimeDate && (
+                  <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      UNBONDING TIME (UTC)
+                    </span>
+                    <p className="text-md text-black dark:text-white mt-2">{unbondingTimeText}</p>
+                  </div>
+                )}
                 <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
                   <span className="text-sm text-gray-500 dark:text-gray-400">OPERATOR ADDRESS</span>
                   <div className="text-md mt-2">

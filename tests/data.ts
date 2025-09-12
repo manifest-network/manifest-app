@@ -91,7 +91,7 @@ export const mockActiveValidators: ExtendedValidatorSDKType[] = [
     delegator_shares: '1000',
     min_self_delegation: '1',
     unbonding_height: 0n,
-    unbonding_time: new Date(),
+    unbonding_time: new Date(0),
     commission: {
       commission_rates: {
         rate: '0.1',
@@ -120,7 +120,7 @@ export const mockActiveValidators: ExtendedValidatorSDKType[] = [
     delegator_shares: '2000',
     min_self_delegation: '1',
     unbonding_height: 0n,
-    unbonding_time: new Date(),
+    unbonding_time: new Date(0),
     commission: {
       commission_rates: {
         rate: '0.1',
@@ -152,7 +152,7 @@ export const mockPendingValidators: ExtendedValidatorSDKType[] = [
     delegator_shares: '3000',
     min_self_delegation: '1',
     unbonding_height: 0n,
-    unbonding_time: new Date(),
+    unbonding_time: new Date(0),
     commission: {
       commission_rates: {
         rate: '0.1',
@@ -163,6 +163,38 @@ export const mockPendingValidators: ExtendedValidatorSDKType[] = [
     },
     unbonding_on_hold_ref_count: 0n,
     unbonding_ids: [],
+  },
+];
+
+export const mockUnboundingValidators: ExtendedValidatorSDKType[] = [
+  {
+    operator_address: 'validator4',
+    description: {
+      moniker: 'Validator Four',
+      identity: 'identity4',
+      details: 'details4',
+      website: 'website4.com',
+      security_contact: 'security4',
+    },
+    consensus_power: BigInt(0),
+    logo_url: '',
+    jailed: false,
+    status: BondStatus.BOND_STATUS_UNBONDING,
+    tokens: '0upoa',
+    delegator_shares: '0',
+    min_self_delegation: '1',
+    unbonding_height: 1235n,
+    unbonding_time: new Date(12345),
+    commission: {
+      commission_rates: {
+        rate: '0.1',
+        max_rate: '0.2',
+        max_change_rate: '0.01',
+      },
+      update_time: new Date(),
+    },
+    unbonding_on_hold_ref_count: 0n,
+    unbonding_ids: [1n],
   },
 ];
 
