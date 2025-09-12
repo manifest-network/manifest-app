@@ -33,7 +33,7 @@ export function ValidatorDetailsModal({
   validatorVPArray,
   openValidatorModal,
   setOpenValidatorModal,
-  hasUnbounding,
+  hasUnbonding,
 }: Readonly<{
   validator: ExtendedValidatorSDKType | null;
   admin: string;
@@ -41,7 +41,7 @@ export function ValidatorDetailsModal({
   validatorVPArray: { vp: bigint; moniker: string }[];
   openValidatorModal: boolean;
   setOpenValidatorModal: (open: boolean) => void;
-  hasUnbounding: boolean;
+  hasUnbonding: boolean;
 }>) {
   const [description, setDescription] = useState<string | undefined>(undefined);
 
@@ -199,7 +199,7 @@ export function ValidatorDetailsModal({
                         <button
                           type="submit"
                           className="btn btn-gradient w-1/3"
-                          disabled={!isValid || isSigning || hasUnbounding}
+                          disabled={!isValid || isSigning || hasUnbonding}
                           onClick={() => {
                             handleUpdate({ power: power });
                           }}
@@ -211,7 +211,7 @@ export function ValidatorDetailsModal({
                           )}
                         </button>
                       </div>
-                      {hasUnbounding && (
+                      {hasUnbonding && (
                         <div className="alert alert-warning mt-2" role="alert" aria-live="polite">
                           <span>
                             You cannot update validator power while validator(s) are unbonding.

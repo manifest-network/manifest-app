@@ -166,7 +166,7 @@ export const mockPendingValidators: ExtendedValidatorSDKType[] = [
   },
 ];
 
-export const mockUnboundingValidators: ExtendedValidatorSDKType[] = [
+export const mockUnbondingValidators: ExtendedValidatorSDKType[] = [
   {
     operator_address: 'validator4',
     description: {

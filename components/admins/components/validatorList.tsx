@@ -40,7 +40,7 @@ export default function ValidatorList({
 
   const isActiveTab = activeTab === 0;
   const isPendingTab = activeTab === 1;
-  const isUnboundingTab = activeTab === 2;
+  const isUnbondingTab = activeTab === 2;
 
   const hasUnbondingValidators = useMemo(() => {
     return Array.isArray(unbondingValidators) && unbondingValidators.length > 0;
@@ -129,7 +129,7 @@ export default function ValidatorList({
                        disabled:text-[#404040] disabled:cursor-not-allowed
                        focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
-            Unbounding
+            Unbonding
           </Tab>
         </Tab.List>
       </Tab.Group>
@@ -216,7 +216,7 @@ export default function ValidatorList({
                                 className="btn btn-error btn-sm text-white"
                                 data-testid="remove-validator"
                                 aria-label={`Remove validator ${validator.description.moniker}`}
-                                disabled={isUnboundingTab}
+                                disabled={isUnbondingTab}
                               >
                                 <TrashIcon className="w-5 h-5" />
                               </button>
@@ -241,7 +241,7 @@ export default function ValidatorList({
         validatorVPArray={validatorVPArray}
         openValidatorModal={openValidatorModal}
         setOpenValidatorModal={setOpenValidatorModal}
-        hasUnbounding={hasUnbondingValidators}
+        hasUnbonding={hasUnbondingValidators}
       />
       <WarningModal
         admin={admin}

@@ -3,12 +3,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import React from 'react';
 
 import { ValidatorDetailsModal } from '@/components/admins/modals/validatorModal';
-import {
-  clearAllMocks,
-  mockPendingValidators,
-  mockRouter,
-  mockUnboundingValidators,
-} from '@/tests';
+import { clearAllMocks, mockPendingValidators, mockRouter, mockUnbondingValidators } from '@/tests';
 import { mockActiveValidators } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
@@ -26,7 +21,7 @@ function renderWithProps(props = {}) {
       admin={admin}
       totalvp={totalvp}
       validatorVPArray={validatorVPArray}
-      hasUnbounding={false}
+      hasUnbonding={false}
       {...props}
     />
   );
@@ -105,8 +100,8 @@ describe('ValidatorDetailsModal Component', () => {
     });
   });
 
-  test('show banner when hasUnbounding is true (active)', () => {
-    renderWithProps({ hasUnbounding: true });
+  test('show banner when hasUnbonding is true (active)', () => {
+    renderWithProps({ hasUnbonding: true });
 
     expect(
       screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
@@ -116,8 +111,8 @@ describe('ValidatorDetailsModal Component', () => {
     expect(updateButton).toBeDisabled();
   });
 
-  test('show banner when hasUnbounding is true (pending)', () => {
-    renderWithProps({ validator: mockPendingValidators[0], hasUnbounding: true });
+  test('show banner when hasUnbonding is true (pending)', () => {
+    renderWithProps({ validator: mockPendingValidators[0], hasUnbonding: true });
 
     expect(
       screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
@@ -128,7 +123,7 @@ describe('ValidatorDetailsModal Component', () => {
   });
 
   test('shows UNBONDING TIME and hides POWER when unbonding_time is set', () => {
-    renderWithProps({ validator: mockUnboundingValidators[0], hasUnbounding: true });
+    renderWithProps({ validator: mockUnbondingValidators[0], hasUnbonding: true });
 
     expect(screen.getByText('UNBONDING TIME (UTC)')).toBeInTheDocument();
     expect(screen.queryByText('POWER')).not.toBeInTheDocument();
