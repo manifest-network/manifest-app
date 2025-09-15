@@ -8,7 +8,9 @@ export const DenomVerifiedBadge = ({
   base,
   ...props
 }: { base?: string } & { [i: string]: unknown }) => {
-  const verified = base === 'umfx';
+  const verified =
+    base === 'umfx' ||
+    base === 'factory/manifest1afk9zr2hn2jsac63h4hm60vl9z3e5u69gndzf7c99cqge3vzwjzsfmy9qj/upwr';
 
   return verified ? <VerifiedIcon {...props} /> : <></>;
 };
