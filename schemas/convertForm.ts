@@ -38,7 +38,7 @@ export const schema = Yup.object().shape({
       }
 
       const balance = amountToBN(selectedToken.amount, selectedToken);
-      const hasInsufficientBuffer = amount.gt(balance.minus(MIN_FEE_BUFFER));
+      const hasInsufficientBuffer = BigNumber(amount).gt(balance.minus(MIN_FEE_BUFFER));
 
       return !hasInsufficientBuffer;
     }),
