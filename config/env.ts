@@ -57,6 +57,8 @@ const env = {
 
   mfxToPwrConversionContractAddress:
     process.env.NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS ?? '',
+
+  pwrTokenDenom: 'factory/manifest1afk9zr2hn2jsac63h4hm60vl9z3e5u69gndzf7c99cqge3vzwjzsfmy9qj/upwr',
 };
 
 export default env;
