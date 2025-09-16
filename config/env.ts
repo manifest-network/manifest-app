@@ -54,6 +54,9 @@ const env = {
    * By default, it is set to 1000 blocks.
    */
   upgradeMinBlockOffset: parseInt(process.env.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET ?? '1000', 10),
+
+  mfxToPwrConversionContractAddress:
+    process.env.NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS ?? '',
 };
 
 export default env;

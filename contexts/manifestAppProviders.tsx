@@ -6,6 +6,8 @@ import { ChainProvider } from '@cosmos-kit/react';
 import {
   cosmosAminoConverters,
   cosmosProtoRegistry,
+  cosmwasmAminoConverters,
+  cosmwasmProtoRegistry,
   ibcAminoConverters,
   ibcProtoRegistry,
   liftedinitAminoConverters,
@@ -57,6 +59,7 @@ const ManifestChainProvider = ({ children }: { children: ReactNode }) => {
         ...strangeloveVenturesProtoRegistry,
         ...liftedinitProtoRegistry,
         ...ibcProtoRegistry,
+        ...cosmwasmProtoRegistry,
       ]);
       const mergedAminoTypes = new AminoTypes({
         ...cosmosAminoConverters,
@@ -64,6 +67,7 @@ const ManifestChainProvider = ({ children }: { children: ReactNode }) => {
         ...osmosisAminoConverters,
         ...ibcAminoConverters,
         ...strangeloveVenturesAminoConverters,
+        ...cosmwasmAminoConverters,
       });
       return {
         aminoTypes: mergedAminoTypes,

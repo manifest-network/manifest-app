@@ -4,7 +4,7 @@
     "": {
       "name": "@manifest-network/manifest-app",
       "dependencies": {
-        "@chain-registry/assets": "1.70.240",
+        "@chain-registry/assets": "1.70.340",
         "@cosmjs/cosmwasm-stargate": "0.32.4",
         "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
         "@cosmos-kit/cosmos-extension-metamask": "0.13.0",
@@ -33,7 +33,7 @@
         "autoprefixer": "10.4.21",
         "babel-plugin-glsl": "1.0.0",
         "bech32": "2.0.0",
-        "chain-registry": "1.69.269",
+        "chain-registry": "1.69.340",
         "cosmjs-types": "0.9.0",
         "cosmos-kit": "2.23.9",
         "country-flag-icons": "1.5.18",
@@ -219,7 +219,7 @@
 
     "@bufbuild/protobuf": ["@bufbuild/protobuf@1.10.0", "", {}, "sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag=="],
 
-    "@chain-registry/assets": ["@chain-registry/assets@1.70.240", "", { "dependencies": { "@chain-registry/types": "^0.50.149" } }, "sha512-zJLiZGS+EU32MSkF9NZTM96BvVtYtfr0ju5CricfUrPzpwyU+h6qwXRxLnC92KzpASOBYcGhrAQ2ZBnyQ3CIuQ=="],
+    "@chain-registry/assets": ["@chain-registry/assets@1.70.340", "", { "dependencies": { "@chain-registry/types": "^0.50.211" } }, "sha512-tSe1LMsfPr72gpLge/HLHnn/w6z/6dkzuPLUP36RAa2MFuW8nSiXR8H7Obp3FksZmIm0Gifk75t2Tdu5oNvEHw=="],
 
     "@chain-registry/client": ["@chain-registry/client@1.53.92", "", { "dependencies": { "@chain-registry/types": "^0.50.92", "@chain-registry/utils": "^1.51.92", "bfs-path": "^1.0.2", "cross-fetch": "^3.1.5" } }, "sha512-lif6OtvsOdXxPwwednmCrxKyyavjrM15GYMVZb3/ya4crh+JLez3Zui7bGKbqgLMF41TikPIymW3qaKppWIjMw=="],
 
@@ -1961,7 +1961,7 @@
 
     "cbw-sdk": ["@coinbase/wallet-sdk@3.9.3", "", { "dependencies": { "bn.js": "^5.2.1", "buffer": "^6.0.3", "clsx": "^1.2.1", "eth-block-tracker": "^7.1.0", "eth-json-rpc-filters": "^6.0.0", "eventemitter3": "^5.0.1", "keccak": "^3.0.3", "preact": "^10.16.0", "sha.js": "^2.4.11" } }, "sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw=="],
 
-    "chain-registry": ["chain-registry@1.69.269", "", { "dependencies": { "@chain-registry/types": "^0.50.168" } }, "sha512-ZOKoEqk7VGOvNnisxNDd4mapcZXSDye17686tZv1PHo10ldJvAaytjxOE7YiBXpCaAZ/V73mexSoMEmURPW2oA=="],
+    "chain-registry": ["chain-registry@1.69.340", "", { "dependencies": { "@chain-registry/types": "^0.50.211" } }, "sha512-mjwEfXghmKKoOvZrSizeR5KCowu/IMMM7LM0GMxolxkgYx+/GyPJKfF97sEowXTNWOffKApn+mY0C/hm0q/qKg=="],
 
     "chalk": ["chalk@3.0.0", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg=="],
 

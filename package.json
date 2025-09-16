@@ -31,7 +31,7 @@
     "**/@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3"
   },
   "dependencies": {
-    "@chain-registry/assets": "1.70.240",
+    "@chain-registry/assets": "1.70.340",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
     "@cosmos-kit/cosmos-extension-metamask": "0.13.0",
@@ -60,7 +60,7 @@
     "autoprefixer": "10.4.21",
     "babel-plugin-glsl": "1.0.0",
     "bech32": "2.0.0",
-    "chain-registry": "1.69.269",
+    "chain-registry": "1.69.340",
     "cosmjs-types": "0.9.0",
     "cosmos-kit": "2.23.9",
     "country-flag-icons": "1.5.18",
