@@ -61,7 +61,13 @@ export default function Home() {
     <>
       <Head>
         <title>Alberto - Blockchain App</title>
-        <meta name="description" content="Cosmos web app" />
+        <meta name="description" content="Alberto" />
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Alberto" />
+        <link rel="manifest" href="/site.webmanifest" />
         <link rel="icon" href="/favicon.ico" />
         <style>{`
           html, body {
@@ -120,7 +126,7 @@ export default function Home() {
                       </div>
                     </div>
                     {/* Got any questions section */}
-                    <div className="mt-16 w-full">
+                    <div className="mt-10 w-full">
                       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-8 text-left border border-primary/20">
                         <h3 className="text-2xl font-bold mb-4">Got any questions?</h3>
                         <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
