@@ -121,7 +121,6 @@ export default function ConvertForm({
   }
 
   const handleConvert = async (values: convertForm.ConvertForm) => {
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
