@@ -11,7 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import { Form, Formik } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PiSwap } from 'react-icons/pi';
 
 import { AmountInput, MaxButton, TokenBalance } from '@/components';
@@ -81,29 +81,30 @@ export default function ConvertForm({
 
   const initialSelectedToken = balances;
 
-  if (isConfigError) {
-    setToastMessage({
-      type: 'alert-error',
-      title: 'Error loading conversion config',
-      description: configError?.message,
-      bgColor: '#e74c3c',
-    });
+  useEffect(() => {
+    if (isConfigError && configError) {
+      setToastMessage({
+        type: 'alert-error',
+        title: 'Error loading conversion config',
+        description: configError.message,
+        bgColor: '#e74c3c',
+      });
+    }
+  }, [isConfigError, configError, setToastMessage]);
 
-    return null;
-  }
-
-  if (isMetadataError) {
-    setToastMessage({
-      type: 'alert-error',
-      title: 'Error loading token metadata',
-      description: metadataError?.message,
-      bgColor: '#e74c3c',
-    });
-
-    return null;
-  }
+  useEffect(() => {
+    if (isMetadataError && metadataError) {
+      setToastMessage({
+        type: 'alert-error',
+        title: 'Error loading token metadata',
+        description: metadataError.message,
+        bgColor: '#e74c3c',
+      });
+    }
+  }, [isMetadataError, metadataError, setToastMessage]);
 
   // Loading state checks
+  if (isConfigError || isMetadataError) return null;
   if (isBalancesLoading || !initialSelectedToken || isMetadataLoading || isConfigLoading) {
     return null;
   }
@@ -120,6 +121,7 @@ export default function ConvertForm({
   }
 
   const handleConvert = async (values: convertForm.ConvertForm) => {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
@@ -198,6 +200,7 @@ export default function ConvertForm({
                   </label>
                   <div className="relative">
                     <AmountInput
+                      placeholder="1.00"
                       name="amount"
                       className="pr-[11rem]"
                       value={values.amount}
@@ -281,7 +284,7 @@ export default function ConvertForm({
                   aria-label="convert-btn"
                 >
                   {isSigning ? (
-                    <span className="loading loading-dots loading-xs"></span>
+                    <span className="loading loading-dots loading-xs" role="status"></span>
                   ) : (
                     'Convert'
                   )}
