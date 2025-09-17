@@ -93,10 +93,15 @@ describe('ConvertForm Component', () => {
 
   test('renders loading state when balances are loading', () => {
     renderWithProps({ isBalancesLoading: true });
-    expect(screen.queryByText('Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Receiving Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Memo (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Convert MFX to PWR')).not.toBeInTheDocument();
+    // Form labels still render
+    expect(screen.getByText('Amount')).toBeInTheDocument();
+    expect(screen.getByText('Receiving Amount')).toBeInTheDocument();
+    expect(screen.getByText('Memo (optional)')).toBeInTheDocument();
+
+    // Balance row is replaced by a skeleton and Max button is hidden
+    expect(screen.queryByLabelText('balance-skeleton')).toBeInTheDocument();
+    expect(screen.queryByText('Balance:')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /max/i })).not.toBeInTheDocument();
   });
 
   test('renders loading state when config is loading', () => {
@@ -127,10 +132,11 @@ describe('ConvertForm Component', () => {
     );
 
     renderWithProps();
-    expect(screen.queryByText('Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Receiving Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Memo (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Convert MFX to PWR')).not.toBeInTheDocument();
+    expect(screen.queryByText('Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Receiving Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Memo (optional)')).toBeInTheDocument();
+    expect(screen.queryByText('Conversion Rate')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('config-skeleton')).toBeInTheDocument();
   });
 
   test('renders loading state when metadata is loading', () => {
@@ -161,10 +167,10 @@ describe('ConvertForm Component', () => {
     );
 
     renderWithProps();
-    expect(screen.queryByText('Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Receiving Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Memo (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Convert MFX to PWR')).not.toBeInTheDocument();
+    expect(screen.queryByText('Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Receiving Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Memo (optional)')).toBeInTheDocument();
+    expect(screen.queryByLabelText('metadata-skeleton')).toBeInTheDocument();
   });
 
   test('handles config error', () => {
@@ -207,10 +213,9 @@ describe('ConvertForm Component', () => {
     );
 
     renderWithProps();
-    expect(screen.queryByText('Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Receiving Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Memo (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Convert MFX to PWR')).not.toBeInTheDocument();
+    expect(screen.queryByText('Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Receiving Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Memo (optional)')).toBeInTheDocument();
     expect(mockSetToastMessage).toHaveBeenCalledWith({
       type: 'alert-error',
       title: 'Error loading conversion config',
@@ -259,10 +264,9 @@ describe('ConvertForm Component', () => {
     );
 
     renderWithProps();
-    expect(screen.queryByText('Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Receiving Amount')).not.toBeInTheDocument();
-    expect(screen.queryByText('Memo (optional)')).not.toBeInTheDocument();
-    expect(screen.queryByText('Convert MFX to PWR')).not.toBeInTheDocument();
+    expect(screen.queryByText('Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Receiving Amount')).toBeInTheDocument();
+    expect(screen.queryByText('Memo (optional)')).toBeInTheDocument();
     expect(mockSetToastMessage).toHaveBeenCalledWith({
       type: 'alert-error',
       title: 'Error loading token metadata',

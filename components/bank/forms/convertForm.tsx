@@ -12,7 +12,6 @@ import BigNumber from 'bignumber.js';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import { Form, Formik } from 'formik';
 import React, { useEffect } from 'react';
-import { PiSwap } from 'react-icons/pi';
 
 import { AmountInput, MaxButton, TokenBalance } from '@/components';
 import { DenomDisplay } from '@/components/factory';
@@ -102,12 +101,6 @@ export default function ConvertForm({
       });
     }
   }, [isMetadataError, metadataError, setToastMessage]);
-
-  // Loading state checks
-  if (isConfigError || isMetadataError) return null;
-  if (isBalancesLoading || !initialSelectedToken || isMetadataLoading || isConfigLoading) {
-    return null;
-  }
 
   const rate = BigNumber(config?.rate ?? 1);
   const validationSchema = convertForm.schema;
@@ -219,14 +212,18 @@ export default function ConvertForm({
                     </div>
                   </div>
                   <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
-                    <div className="flex flex-row gap-1 ml-1">
-                      Balance: <TokenBalance token={balances ?? values.selectedToken} />
-                      <MaxButton
-                        token={values.selectedToken}
-                        setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
-                        disabled={isSigning}
-                      />
-                    </div>
+                    {isBalancesLoading ? (
+                      <div className="skeleton h-4 w-24" aria-label="balance-skeleton" />
+                    ) : (
+                      <div className="flex flex-row gap-1 ml-1">
+                        Balance: <TokenBalance token={balances ?? values.selectedToken} />
+                        <MaxButton
+                          token={values.selectedToken}
+                          setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
+                          disabled={isSigning}
+                        />
+                      </div>
+                    )}
                     {errors.amount && (
                       <div className="text-red-500 text-xs text-right">{errors.amount}</div>
                     )}
@@ -251,17 +248,29 @@ export default function ConvertForm({
                       onValueChange={() => {}}
                     />
 
-                    <div className="absolute inset-y-1 right-1 flex items-center">
-                      <DenomDisplay
-                        withBackground={false}
-                        denom={metadata?.display ? metadata.display : 'PWR'}
-                        metadata={toMetadataSDKType(metadata)}
-                      />
+                    {isMetadataLoading ? (
+                      <div className="absolute inset-y-1 right-1 flex items-center">
+                        <div className="skeleton h-6 w-20" aria-label="metadata-skeleton" />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-y-1 right-1 flex items-center">
+                        <DenomDisplay
+                          withBackground={false}
+                          denom={metadata?.display ? metadata.display : 'PWR'}
+                          metadata={toMetadataSDKType(metadata)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {isConfigLoading ? (
+                    <div className="skeleton h-4 w-32 mt-1" aria-label="config-skeleton" />
+                  ) : (
+                    <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
+                      <div className="flex flex-row gap-1 ml-1">
+                        Conversion Rate: {config?.rate}
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
-                    <div className="flex flex-row gap-1 ml-1">Conversion Rate: {config?.rate}</div>
-                  </div>
+                  )}
                 </div>
 
                 <TextInput
