@@ -13,8 +13,6 @@ on:
         type: string
         required: false
         default: ""
-    secrets:
-      inherit: true        # pass caller secrets/env-secrets through
 
 jobs:
   build:
@@ -120,10 +118,18 @@ jobs:
           provenance: mode=max
           sbom: true
 
-      - name: Generate artifact attestation
-        if: (inputs.release_tag != '' && steps.build_tag.outcome == 'success') || (inputs.release_tag == '' && steps.build_env.outcome == 'success')
+      - name: Generate artifact attestation (release tag)
+        if: inputs.release_tag != '' && steps.build_tag.outcome == 'success'
         uses: actions/attest-build-provenance@v2
         with:
           subject-name: ${{ env.IMAGE }}
-          subject-digest: ${{ inputs.release_tag != '' && steps.build_tag.outputs.digest || steps.build_env.outputs.digest }}
+          subject-digest: ${{ steps.build_tag.outputs.digest }}
+          push-to-registry: true
+
+      - name: Generate artifact attestation (env tag)
+        if: inputs.release_tag == '' && steps.build_env.outcome == 'success'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.IMAGE }}
+          subject-digest: ${{ steps.build_env.outputs.digest }}
           push-to-registry: true
