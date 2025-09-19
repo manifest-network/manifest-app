@@ -1,16 +1,19 @@
-# .mergify.yml
-
 queue_rules:
   - name: default
-    conditions:
+    # What must be true to enter the queue
+    queue_conditions:
+      - check-success=build
+      - -conflict
+    # What must be true to merge once at queue head
+    merge_conditions:
       - check-success=build
     merge_method: squash
 
 pull_request_rules:
-  # 1) When a PR into MAIN is merged, open a backport PR to release/qa
+  # 1) Auto-promote everything merged on main → QA
   - name: backport merged PRs on main to release/qa
     conditions:
-      - base=main
+      - base = main
       - merged
     actions:
       backport:
@@ -19,31 +22,56 @@ pull_request_rules:
         labels:
           - from:main
 
-  # 2) Auto-merge the Mergify-created backport PR into release/qa once CI is green
   - name: auto-merge backport into release/qa
     conditions:
-      - base=release/qa
-      - author=mergify[bot]
+      - base = release/qa
+      - author = mergify[bot]
       - -draft
       - -conflict
     actions:
       queue:
         name: default
 
-  - name: backport merged QA to testnet when labeled
+  # 2) Manual promote from the *main PR* directly to testnet
+  - name: backport merged main to testnet when labeled
     conditions:
-      - base=release/qa
+      - base = main
       - merged
-      - label=promote:testnet
+      - label = promote:testnet
     actions:
       backport:
         branches: [release/testnet]
+        labels:
+          - from:main
 
-  - name: backport merged testnet to mainnet when labeled
+  - name: auto-merge created backport into release/testnet
     conditions:
-      - base=release/testnet
+      - base = release/testnet
+      - author = mergify[bot]
+      - -draft
+      - -conflict
+    actions:
+      queue:
+        name: default
+
+  # 3) Manual promote from the *main PR* directly to mainnet
+  - name: backport merged main to mainnet when labeled
+    conditions:
+      - base = main
       - merged
-      - label=promote:mainnet
+      - label = promote:mainnet
     actions:
       backport:
         branches: [release/mainnet]
+        labels:
+          - from:main
+
+  - name: auto-merge created backport into release/mainnet
+    conditions:
+      - base = release/mainnet
+      - author = mergify[bot]
+      - -draft
+      - -conflict
+    actions:
+      queue:
+        name: default
