@@ -67,7 +67,6 @@ jobs:
           echo "NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET=${{ vars.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET }}" >> .env
           echo "NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS=${{ vars.NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS }}" >> .env
 
-      # Release tag path (mainnet)
       - name: Extract metadata (release tag)
         id: meta_tag
         if: inputs.release_tag != ''
@@ -93,7 +92,6 @@ jobs:
           provenance: mode=max
           sbom: true
 
-      # Branch env path (qa/testnet/mainnet)
       - name: Extract metadata (env tag)
         id: meta_env
         if: inputs.release_tag == ''
