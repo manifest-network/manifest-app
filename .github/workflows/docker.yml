@@ -3,6 +3,7 @@ name: Docker (GHCR)
 on:
   push:
     branches:
+      - release/qa
       - release/testnet
       - release/mainnet
     tags:
@@ -21,6 +22,9 @@ jobs:
     strategy:
       matrix:
         include:
+          - branch: refs/heads/release/qa
+            environment: qa
+            env_tag: qa
           - branch: refs/heads/release/testnet
             environment: testnet
             env_tag: testnet
