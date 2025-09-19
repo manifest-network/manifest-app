@@ -7,7 +7,7 @@ on:
       - release/testnet
       - release/mainnet
     tags:
-      - 'v*.*.*'   # versioned release tags for mainnet
+      - 'v*.*.*' # versioned release tags for mainnet
 
 concurrency:
   group: docker-${{ github.ref }}
