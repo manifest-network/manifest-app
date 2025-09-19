@@ -1,0 +1,49 @@
+# .mergify.yml
+
+queue_rules:
+  - name: default
+    conditions:
+      - check-success=build
+    merge_method: merge
+
+pull_request_rules:
+  # 1) When a PR into MAIN is merged, open a backport PR to release/qa
+  - name: backport merged PRs on main to release/qa
+    conditions:
+      - base=main
+      - merged
+    actions:
+      backport:
+        branches:
+          - release/qa
+        labels:
+          - from:main
+
+  # 2) Auto-merge the Mergify-created backport PR into release/qa once CI is green
+  - name: auto-merge backport into release/qa
+    conditions:
+      - base=release/qa
+      - author=mergify[bot]
+      - -draft
+      - -conflict
+    actions:
+      queue:
+        name: default
+
+  - name: backport merged QA to testnet when labeled
+    conditions:
+      - base=release/qa
+      - merged
+      - label=promote:testnet
+    actions:
+      backport:
+        branches: [release/testnet]
+
+  - name: backport merged testnet to mainnet when labeled
+    conditions:
+      - base=release/testnet
+      - merged
+      - label=promote:mainnet
+    actions:
+      backport:
+        branches: [release/mainnet]
