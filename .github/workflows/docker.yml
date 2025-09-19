@@ -13,9 +13,17 @@ concurrency:
   group: docker-${{ github.ref }}
   cancel-in-progress: true
 
+<<<<<<< HEAD
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+=======
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+>>>>>>> 2401575 (ci: fix docker permissions (#549))
 
 jobs:
   build-and-push:
