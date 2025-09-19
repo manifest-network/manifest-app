@@ -1,44 +1,37 @@
-name: Docker (GHCR)
+name: _docker-build
 
 on:
-  push:
-    branches:
-      - release/qa
-      - release/testnet
-      - release/mainnet
-    tags:
-      - 'v*.*.*' # release tags
+  workflow_call:
+    inputs:
+      environment: # qa | testnet | mainnet
+        type: string
+        required: true
+      image_tag: # "qa" | "testnet" | "mainnet" | ignored if release_tag set
+        type: string
+        required: true
+      release_tag: # e.g. v1.2.3 (optional). If set, we build a release image.
+        type: string
+        required: false
+        default: ''
 
-concurrency:
-  group: docker-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  qa:
-    if: github.ref == 'refs/heads/release/qa'
-    uses: ./.github/workflows/_docker-build.yml
-    with:
-      environment: qa
-      image_tag: qa
-    secrets: inherit
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
 
-  testnet:
-    if: github.ref == 'refs/heads/release/testnet'
-    uses: ./.github/workflows/_docker-build.yml
-    with:
-      environment: testnet
-      image_tag: testnet
-    secrets: inherit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  mainnet:
-    if: github.ref == 'refs/heads/release/mainnet'
-    uses: ./.github/workflows/_docker-build.yml
-    with:
-      environment: mainnet
-      image_tag: mainnet
-    secrets: inherit
-
-<<<<<<< HEAD
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -52,7 +45,7 @@ jobs:
       - name: Set IMAGE env
         run: echo "IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/manifest-app" >> "$GITHUB_ENV"
 
-      - name: Create .env file
+      - name: Create .env from environment vars/secrets
         run: |
           touch .env
           echo "NEXT_PUBLIC_CHAIN=${{ vars.NEXT_PUBLIC_CHAIN }}" >> .env
@@ -72,23 +65,22 @@ jobs:
           echo "NEXT_PUBLIC_OSMOSIS_EXPLORER_URL=${{ vars.NEXT_PUBLIC_OSMOSIS_EXPLORER_URL }}" >> .env
           echo "NEXT_PUBLIC_LEAP_DEEPLINK=${{ vars.NEXT_PUBLIC_LEAP_DEEPLINK }}" >> .env
           echo "NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET=${{ vars.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET }}" >> .env
-          cat .env
+          echo "NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS=${{ vars.NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS }}" >> .env
 
-      # ===== Release build (version tag) — mainnet only =====
       - name: Extract metadata (release tag)
         id: meta_tag
-        if: startsWith(github.ref, 'refs/tags/') && matrix.environment == 'mainnet'
+        if: inputs.release_tag != ''
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
           flavor: |
             latest=false
           tags: |
-            type=ref,event=tag   # e.g., v1.2.3
+            type=raw,value=${{ inputs.release_tag }}
 
       - name: Build & push (release tag)
         id: build_tag
-        if: startsWith(github.ref, 'refs/tags/') && matrix.environment == 'mainnet'
+        if: inputs.release_tag != ''
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -100,34 +92,20 @@ jobs:
           provenance: mode=max
           sbom: true
 
-      - name: Show digest (release)
-        if: steps.build_tag.outcome == 'success'
-        run: |
-          echo "Digest is: ${{ steps.build_tag.outputs.digest }}"
-
-      - name: Generate artifact attestation (release)
-        if: steps.build_tag.outcome == 'success'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE }}
-          subject-digest: ${{ steps.build_tag.outputs.digest }}
-          push-to-registry: true
-
-      # ===== Branch build (release/*) — env tag =====
       - name: Extract metadata (env tag)
         id: meta_env
-        if: startsWith(github.ref, 'refs/heads/')
+        if: inputs.release_tag == ''
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
           flavor: |
             latest=false
           tags: |
-            type=raw,value=${{ matrix.env_tag }}
+            type=raw,value=${{ inputs.image_tag }}
 
       - name: Build & push (env tag)
         id: build_env
-        if: startsWith(github.ref, 'refs/heads/')
+        if: inputs.release_tag == ''
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -139,25 +117,18 @@ jobs:
           provenance: mode=max
           sbom: true
 
-      - name: Show digest (env)
-        if: steps.build_env.outcome == 'success'
-        run: |
-          echo "Digest is: ${{ steps.build_env.outputs.digest }}"
+      - name: Generate artifact attestation (release tag)
+        if: inputs.release_tag != '' && steps.build_tag.outcome == 'success'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.IMAGE }}
+          subject-digest: ${{ steps.build_tag.outputs.digest }}
+          push-to-registry: true
 
-      - name: Generate artifact attestation (env)
-        if: steps.build_env.outcome == 'success'
+      - name: Generate artifact attestation (env tag)
+        if: inputs.release_tag == '' && steps.build_env.outcome == 'success'
         uses: actions/attest-build-provenance@v2
         with:
           subject-name: ${{ env.IMAGE }}
           subject-digest: ${{ steps.build_env.outputs.digest }}
           push-to-registry: true
-=======
-  release_tag:
-    if: startsWith(github.ref, 'refs/tags/')
-    uses: ./.github/workflows/_docker-build.yml
-    with:
-      environment: mainnet
-      image_tag: mainnet
-      release_tag: ${{ github.ref_name }} # e.g., v1.2.3
-    secrets: inherit
->>>>>>> b7bb272 (ci: reusable docker build (#545))
