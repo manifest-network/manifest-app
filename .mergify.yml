@@ -4,7 +4,7 @@ queue_rules:
   - name: default
     conditions:
       - check-success=build
-    merge_method: merge
+    merge_method: squash
 
 pull_request_rules:
   # 1) When a PR into MAIN is merged, open a backport PR to release/qa
