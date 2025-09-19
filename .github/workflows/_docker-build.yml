@@ -3,16 +3,16 @@ name: _docker-build
 on:
   workflow_call:
     inputs:
-      environment:         # qa | testnet | mainnet
+      environment: # qa | testnet | mainnet
         type: string
         required: true
-      image_tag:           # "qa" | "testnet" | "mainnet" | ignored if release_tag set
+      image_tag: # "qa" | "testnet" | "mainnet" | ignored if release_tag set
         type: string
         required: true
-      release_tag:         # e.g. v1.2.3 (optional). If set, we build a release image.
+      release_tag: # e.g. v1.2.3 (optional). If set, we build a release image.
         type: string
         required: false
-        default: ""
+        default: ''
 
 jobs:
   build:

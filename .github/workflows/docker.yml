@@ -7,7 +7,7 @@ on:
       - release/testnet
       - release/mainnet
     tags:
-      - 'v*.*.*'   # release tags
+      - 'v*.*.*' # release tags
 
 concurrency:
   group: docker-${{ github.ref }}
@@ -44,5 +44,5 @@ jobs:
     with:
       environment: mainnet
       image_tag: mainnet
-      release_tag: ${{ github.ref_name }}   # e.g., v1.2.3
+      release_tag: ${{ github.ref_name }} # e.g., v1.2.3
     secrets: inherit
