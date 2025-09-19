@@ -3,9 +3,11 @@ name: Docker (GHCR)
 on:
   push:
     branches:
-      - main
+      - release/qa
+      - release/testnet
+      - release/mainnet
     tags:
-      - '*'
+      - 'v*.*.*' # versioned release tags for mainnet
 
 concurrency:
   group: docker-${{ github.ref }}
@@ -17,16 +19,34 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [qa, testnet, mainnet]
+        include:
+          - branch: refs/heads/release/qa
+            environment: qa
+            env_tag: qa
+          - branch: refs/heads/release/testnet
+            environment: testnet
+            env_tag: testnet
+          - branch: refs/heads/release/mainnet
+            environment: mainnet
+            env_tag: mainnet
+
+    # Run row if:
+    #  - this is a branch push AND it matches the row's branch, OR
+    #  - this is a tag push AND the row is mainnet.
+    if: >
+      (startsWith(github.ref, 'refs/heads/') && github.ref == matrix.branch) ||
+      (startsWith(github.ref, 'refs/tags/') && matrix.environment == 'mainnet')
+
+    runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     permissions:
       packages: write
       contents: read
       attestations: write
       id-token: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,7 +59,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # works if org allows Actions to publish packages
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set IMAGE env
         run: echo "IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/manifest-app" >> "$GITHUB_ENV"
@@ -66,20 +86,21 @@ jobs:
           echo "NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET=${{ vars.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET }}" >> .env
           cat .env
 
+      # ===== Release build (version tag) — mainnet only =====
       - name: Extract metadata (release tag)
         id: meta_tag
-        if: matrix.environment == 'mainnet' && startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && matrix.environment == 'mainnet'
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
           flavor: |
             latest=false
           tags: |
-            type=ref,event=tag   # yields the raw tag (e.g., v1.2.3)
+            type=ref,event=tag   # e.g., v1.2.3
 
       - name: Build & push (release tag)
         id: build_tag
-        if: matrix.environment == 'mainnet' && startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && matrix.environment == 'mainnet'
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -104,21 +125,21 @@ jobs:
           subject-digest: ${{ steps.build_tag.outputs.digest }}
           push-to-registry: true
 
-      # ===== Push to main → build for each env, tag with env name =====
+      # ===== Branch build (release/*) — env tag =====
       - name: Extract metadata (env tag)
         id: meta_env
-        if: github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/heads/')
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
           flavor: |
             latest=false
           tags: |
-            type=raw,value=${{ matrix.environment }}
+            type=raw,value=${{ matrix.env_tag }}
 
       - name: Build & push (env tag)
         id: build_env
-        if: github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/heads/')
         uses: docker/build-push-action@v6
         with:
           context: .
