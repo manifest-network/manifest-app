@@ -161,19 +161,10 @@ export const TailwindModal: React.FC<
   }, []);
 
   /**
-   * Helper to handle a metamask extension that doesn't fully register as 'NotExist'
+   * Helper to handle extension that doesn't fully register as 'NotExist'
    * in the standard wallet flow. We force set the view to NotExist if we detect the error message.
    */
-  const handleMetamaskErrorCheck = (wallet: ChainWalletBase) => {
-    if (
-      wallet?.walletInfo.name === 'cosmos-extension-metamask' &&
-      wallet.message?.includes("Cannot read properties of undefined (reading 'request')")
-    ) {
-      setCurrentView(ModalView.NotExist);
-      setSelectedWallet(wallet);
-      return true;
-    }
-
+  const handleWalletNotExists = (wallet: ChainWalletBase) => {
     if (wallet?.isWalletNotExist) {
       setCurrentView(ModalView.NotExist);
       setSelectedWallet(wallet);
@@ -295,7 +286,7 @@ export const TailwindModal: React.FC<
       // or if the wallet doesn't exist. This ensures the error message has time
       // to populate in the wallet's state after calling `getWallet()`.
       setTimeout(() => {
-        if (handleMetamaskErrorCheck(wallet)) {
+        if (handleWalletNotExists(wallet)) {
           return;
         }
 
