@@ -1,6 +1,5 @@
-import { State } from '@cosmos-kit/core';
 import { Web3AuthClient } from '@cosmos-kit/web3auth';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, mock, spyOn, test } from 'bun:test';
 import type { ChainWalletBase } from 'cosmos-kit';
 import { WalletStatus } from 'cosmos-kit';
@@ -8,7 +7,6 @@ import React from 'react';
 
 import { TailwindModal } from '@/components/react/modal';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
-import { renderWithChainProvider } from '@/tests/render';
 
 describe('TailwindModal', () => {
   let mockWalletRepo: any;
@@ -115,7 +113,7 @@ describe('TailwindModal', () => {
           ),
           React.createElement(
             'button',
-            { onClick: () => onWalletClicked('cosmos-extension-metamask') },
+            { onClick: () => onWalletClicked('leap-cosmos-metamask-snap') },
             'Metamask'
           ),
           React.createElement('button', { onClick: () => onWalletClicked('Email') }, 'Email'),
