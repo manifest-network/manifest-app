@@ -1,4 +1,5 @@
 export * from './bank';
+export * from './distribution';
 export * from './feegrant';
 export * from './ibc';
 export * from './tokenfactory';
