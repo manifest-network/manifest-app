@@ -49,7 +49,7 @@ export const Error = ({
         <div className="p-3 border rounded-full border-red-600 mx-auto aspect-1 shrink-0">
           <Image
             src={
-              currentWalletName === 'Cosmos MetaMask Extension'
+              currentWalletName === 'Leap Cosmos MetaMask'
                 ? '/metamask.svg'
                 : getRealLogo(logo, isDarkMode)
             }

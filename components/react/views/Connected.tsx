@@ -57,9 +57,7 @@ export const Connected = ({
           <Image
             height={0}
             width={0}
-            src={
-              name === 'Cosmos MetaMask Extension' ? '/metamask.svg' : getRealLogo(logo, isDarkMode)
-            }
+            src={name === 'Leap Cosmos MetaMask' ? '/metamask.svg' : getRealLogo(logo, isDarkMode)}
             alt={name}
             className="w-8 h-8 rounded-full mr-2"
           />
