@@ -45,9 +45,7 @@ export const Connecting = ({
       </div>
       <div className="flex flex-col w-full h-full mt-4 sm:px-8 sm:py-6">
         <img
-          src={
-            name === 'Cosmos MetaMask Extension' ? '/metamask.svg' : getRealLogo(logo, isDarkMode)
-          }
+          src={name === 'Leap Cosmos MetaMask' ? '/metamask.svg' : getRealLogo(logo, isDarkMode)}
           alt={name}
           className="shrink-0 w-20 h-20 mx-auto aspect-1"
         />

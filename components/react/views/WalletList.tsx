@@ -33,7 +33,7 @@ export const WalletList = ({
   const isDarkMode = document.documentElement.classList.contains('dark');
 
   const socialOrder = ['Google', 'Twitter', 'Apple', 'Discord', 'GitHub', 'Reddit', 'Email', 'SMS'];
-  const browserOrder = ['Leap', 'Keplr', 'Cosmostation', 'Cosmos MetaMask Extension', 'Ledger'];
+  const browserOrder = ['Leap', 'Keplr', 'Cosmostation', 'Leap Cosmos MetaMask', 'Ledger'];
   let mobileOrder = ['Wallet Connect', 'Keplr Mobile'];
   let leapLogo;
   if (isLeapDappBrowser) {
@@ -94,7 +94,7 @@ export const WalletList = ({
               >
                 <img
                   src={
-                    prettyName === 'Cosmos MetaMask Extension'
+                    prettyName === 'Leap Cosmos MetaMask'
                       ? '/metamask.svg'
                       : getRealLogo(logo?.toString() ?? '', isDarkMode)
                   }
@@ -102,7 +102,7 @@ export const WalletList = ({
                   className="w-10 h-10 rounded-xl mr-3"
                 />
                 <span className="text-md flex-1 text-left">
-                  {prettyName === 'Cosmos MetaMask Extension' ? 'MetaMask' : prettyName}
+                  {prettyName === 'Leap Cosmos MetaMask' ? 'MetaMask' : prettyName}
                 </span>
                 {hasMobileVersion(prettyName) &&
                   prettyName !== 'Cosmostation' &&
