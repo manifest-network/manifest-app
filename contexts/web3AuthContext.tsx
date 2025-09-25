@@ -1,5 +1,4 @@
 import { MainWalletBase } from '@cosmos-kit/core';
-import { wallets as cosmosExtensionWallets } from '@cosmos-kit/cosmos-extension-metamask';
 import {
   SignData,
   Web3AuthClient,
@@ -173,7 +172,6 @@ export const Web3AuthProvider = ({ children }: { children: ReactNode }) => {
   const wallets = [
     ...web3AuthWallets,
     ...cosmosWallets.for('keplr', 'cosmostation', 'leap', 'ledger'),
-    ...cosmosExtensionWallets,
   ];
 
   return (
