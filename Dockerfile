@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM oven/bun:1.2-slim AS base
+FROM oven/bun:1.3-slim AS base
 
 # Install dependencies only when needed
 FROM base AS deps
