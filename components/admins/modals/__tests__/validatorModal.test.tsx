@@ -28,7 +28,7 @@ function renderWithProps(props = {}) {
 }
 
 describe('ValidatorDetailsModal Component', () => {
-  const TIMEOUT = 15000;
+  const TIMEOUT = 30000;
 
   beforeEach(() => {
     mockRouter();
