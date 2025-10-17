@@ -161,6 +161,7 @@ function IbcSendForm({ token }: { token: string }) {
     },
     success: {
       text: '#4caf50',
+      background: '#161616',
     },
     warning: {
       background: '#ffb300',

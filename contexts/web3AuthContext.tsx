@@ -115,11 +115,11 @@ export const Web3AuthProvider = ({ children }: { children: ReactNode }) => {
             logo: '/sms',
           },
         ],
-        mfaLevel: 'optional',
         client: {
           clientId: env.web3AuthClientId,
           web3AuthNetwork: env.web3AuthNetwork as WEB3AUTH_NETWORK_TYPE, // Safe to cast since we validate the env vars in config/env.ts
           sessionTime: 60 * 60 * 24 * 7, // 7 days in s
+          mfaLevel: 'optional',
         },
         promptSign: async (_, signData) =>
           new Promise(resolve =>
