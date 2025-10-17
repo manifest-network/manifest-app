@@ -181,6 +181,6 @@ describe('ValidatorDetailsModal Component', () => {
       expect(screen.getByText('POWER')).toBeInTheDocument();
       expect(screen.getByText('Update')).toBeInTheDocument();
     },
-   <TIMEOUT></TIMEOUT>T
+    TIMEOUT
   );
 });
