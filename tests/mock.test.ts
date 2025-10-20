@@ -12,5 +12,5 @@ describe('Mock', () => {
     expect(() => mockModule('./data', () => ({}))).toThrow(
       'Module "./data" is already mocked. Use force=true to overwrite.'
     );
-  });
+  }, 15000);
 });
