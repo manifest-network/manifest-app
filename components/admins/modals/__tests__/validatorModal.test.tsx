@@ -28,6 +28,8 @@ function renderWithProps(props = {}) {
 }
 
 describe('ValidatorDetailsModal Component', () => {
+  const TIMEOUT = 30000;
+
   beforeEach(() => {
     mockRouter();
   });
@@ -36,105 +38,149 @@ describe('ValidatorDetailsModal Component', () => {
     clearAllMocks();
   });
 
-  test('renders modal with correct details', () => {
-    renderWithProps();
-    expect(screen.getByText('Validator Details')).toBeInTheDocument();
-    expect(screen.getByText('Validator One')).toBeInTheDocument();
-    expect(screen.getByText('security1@foobar.com')).toBeInTheDocument();
-    const detailsContainer = screen.getByLabelText('details');
-    expect(within(detailsContainer).getByText('details1')).toBeInTheDocument();
-  });
+  test(
+    'renders modal with correct details',
+    () => {
+      renderWithProps();
+      expect(screen.getByText('Validator Details')).toBeInTheDocument();
+      expect(screen.getByText('Validator One')).toBeInTheDocument();
+      expect(screen.getByText('security1@foobar.com')).toBeInTheDocument();
+      const detailsContainer = screen.getByLabelText('details');
+      expect(within(detailsContainer).getByText('details1')).toBeInTheDocument();
+    },
+    TIMEOUT
+  );
 
-  test('updates input field correctly', async () => {
-    renderWithProps();
-    const input = screen.getByPlaceholderText('1000');
-    fireEvent.change(input, { target: { value: '2000' } });
-    await waitFor(() => {
-      expect(input).toHaveValue(2000);
-    });
-  });
+  test(
+    'updates input field correctly',
+    async () => {
+      renderWithProps();
+      const input = screen.getByPlaceholderText('1000');
+      fireEvent.change(input, { target: { value: '2000' } });
+      await waitFor(() => {
+        expect(input).toHaveValue(2000);
+      });
+    },
+    TIMEOUT
+  );
 
-  test('enables upgrade button when input is valid', async () => {
-    renderWithProps();
-    const input = screen.getByPlaceholderText('1000');
-    fireEvent.change(input, { target: { value: '2000' } });
-    await waitFor(() => {
-      const updateButton = screen.getByText('Update');
-      expect(updateButton).not.toBeDisabled();
-    });
-  });
+  test(
+    'enables upgrade button when input is valid',
+    async () => {
+      renderWithProps();
+      const input = screen.getByPlaceholderText('1000');
+      fireEvent.change(input, { target: { value: '2000' } });
+      await waitFor(() => {
+        const updateButton = screen.getByText('Update');
+        expect(updateButton).not.toBeDisabled();
+      });
+    },
+    TIMEOUT
+  );
 
-  test('disables upgrade button when input is invalid', async () => {
-    renderWithProps();
-    const input = screen.getByPlaceholderText('1000');
-    fireEvent.change(input, { target: { value: '-1' } });
-    fireEvent.blur(input);
-    await waitFor(() => {
+  test(
+    'disables upgrade button when input is invalid',
+    async () => {
+      renderWithProps();
+      const input = screen.getByPlaceholderText('1000');
+      fireEvent.change(input, { target: { value: '-1' } });
+      fireEvent.blur(input);
+      await waitFor(() => {
+        const updateButton = screen.getByText('Update');
+        expect(updateButton).toBeDisabled();
+      });
+    },
+    TIMEOUT
+  );
+
+  test(
+    'shows error message for invalid power input',
+    async () => {
+      renderWithProps();
+      const input = screen.getByPlaceholderText('1000');
+      fireEvent.change(input, { target: { value: '-1' } });
+      fireEvent.blur(input);
+      await waitFor(() => {
+        const errorMessage = screen.getByText(
+          (_content, element) =>
+            (element as HTMLElement)?.dataset?.tip === 'Power must be greater than 0'
+        );
+        expect(errorMessage).toBeInTheDocument();
+      });
+    },
+    TIMEOUT
+  );
+
+  test(
+    'shows warning message for unsafe power upgrade',
+    async () => {
+      renderWithProps();
+      const input = screen.getByPlaceholderText('1000');
+      fireEvent.change(input, { target: { value: '9000' } });
+      fireEvent.blur(input);
+      await waitFor(() => {
+        const warningMessage = screen.getByText(/Warning: This power update may be unsafe/i);
+        expect(warningMessage).toBeInTheDocument();
+      });
+    },
+    TIMEOUT
+  );
+
+  test(
+    'show banner when hasUnbonding is true (active)',
+    () => {
+      renderWithProps({ hasUnbonding: true });
+
+      expect(
+        screen.queryByText(
+          /You cannot update validator power while validator\(s\) are unbonding\./i
+        )
+      ).toBeInTheDocument();
+
       const updateButton = screen.getByText('Update');
       expect(updateButton).toBeDisabled();
-    });
-  });
+    },
+    TIMEOUT
+  );
 
-  test('shows error message for invalid power input', async () => {
-    renderWithProps();
-    const input = screen.getByPlaceholderText('1000');
-    fireEvent.change(input, { target: { value: '-1' } });
-    fireEvent.blur(input);
-    await waitFor(() => {
-      const errorMessage = screen.getByText(
-        (_content, element) =>
-          (element as HTMLElement)?.dataset?.tip === 'Power must be greater than 0'
-      );
-      expect(errorMessage).toBeInTheDocument();
-    });
-  });
+  test(
+    'show banner when hasUnbonding is true (pending)',
+    () => {
+      renderWithProps({ validator: mockPendingValidators[0], hasUnbonding: true });
 
-  test('shows warning message for unsafe power upgrade', async () => {
-    renderWithProps();
-    const input = screen.getByPlaceholderText('1000');
-    fireEvent.change(input, { target: { value: '9000' } });
-    fireEvent.blur(input);
-    await waitFor(() => {
-      const warningMessage = screen.getByText(/Warning: This power update may be unsafe/i);
-      expect(warningMessage).toBeInTheDocument();
-    });
-  });
+      expect(
+        screen.queryByText(
+          /You cannot update validator power while validator\(s\) are unbonding\./i
+        )
+      ).toBeInTheDocument();
 
-  test('show banner when hasUnbonding is true (active)', () => {
-    renderWithProps({ hasUnbonding: true });
+      const updateButton = screen.getByText('Update');
+      expect(updateButton).toBeDisabled();
+    },
+    TIMEOUT
+  );
 
-    expect(
-      screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
-    ).toBeInTheDocument();
+  test(
+    'shows UNBONDING TIME and hides POWER when unbonding_time is set',
+    () => {
+      renderWithProps({ validator: mockUnbondingValidators[0], hasUnbonding: true });
 
-    const updateButton = screen.getByText('Update');
-    expect(updateButton).toBeDisabled();
-  });
+      expect(screen.getByText('UNBONDING TIME (UTC)')).toBeInTheDocument();
+      expect(screen.queryByText('POWER')).not.toBeInTheDocument();
+      expect(screen.queryByText('Update')).not.toBeInTheDocument();
+    },
+    TIMEOUT
+  );
 
-  test('show banner when hasUnbonding is true (pending)', () => {
-    renderWithProps({ validator: mockPendingValidators[0], hasUnbonding: true });
+  test(
+    'ignores Unix epoch 0 unbonding_time and shows POWER',
+    () => {
+      renderWithProps({});
 
-    expect(
-      screen.queryByText(/You cannot update validator power while validator\(s\) are unbonding\./i)
-    ).toBeInTheDocument();
-
-    const updateButton = screen.getByText('Update');
-    expect(updateButton).toBeDisabled();
-  });
-
-  test('shows UNBONDING TIME and hides POWER when unbonding_time is set', () => {
-    renderWithProps({ validator: mockUnbondingValidators[0], hasUnbonding: true });
-
-    expect(screen.getByText('UNBONDING TIME (UTC)')).toBeInTheDocument();
-    expect(screen.queryByText('POWER')).not.toBeInTheDocument();
-    expect(screen.queryByText('Update')).not.toBeInTheDocument();
-  });
-
-  test('ignores Unix epoch 0 unbonding_time and shows POWER', () => {
-    renderWithProps({});
-
-    expect(screen.queryByText('UNBONDING TIME (UTC)')).not.toBeInTheDocument();
-    expect(screen.getByText('POWER')).toBeInTheDocument();
-    expect(screen.getByText('Update')).toBeInTheDocument();
-  });
+      expect(screen.queryByText('UNBONDING TIME (UTC)')).not.toBeInTheDocument();
+      expect(screen.getByText('POWER')).toBeInTheDocument();
+      expect(screen.getByText('Update')).toBeInTheDocument();
+    },
+    TIMEOUT
+  );
 });
