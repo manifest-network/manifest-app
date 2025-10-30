@@ -11,7 +11,10 @@ import { Octokit } from 'octokit';
 import { useEffect, useState } from 'react';
 
 import { TxMessage } from '@/components/bank/types';
+import env from '@/config/env';
+import { useCosmWasmRpcQueryClient } from '@/hooks/useCosmWasmRpcQueryClient';
 import { useOsmosisRpcQueryClient } from '@/hooks/useOsmosisRpcQueryClient';
+import { useCosmosRpcQueryClient } from '@/hooks/useRpcQueryClient';
 import { getLogoUrls } from '@/utils';
 
 import { useLcdQueryClient, useOsmosisLcdQueryClient } from './useLcdQueryClient';
@@ -672,6 +675,37 @@ export const useTokenFactoryDenomsMetadata = () => {
   };
 };
 
+export const useTokenMetadata = (denom?: string) => {
+  const { rpcQueryClient } = useCosmosRpcQueryClient();
+
+  const fetchMetadata = async () => {
+    if (!rpcQueryClient) {
+      throw new Error('RPC Client not ready');
+    }
+    if (!denom) {
+      throw new Error('Denom not provided');
+    }
+    return await rpcQueryClient.cosmos.bank.v1beta1.denomMetadata({
+      denom: denom,
+    });
+  };
+  const debounced = useDebounce(denom, DEBOUNCE_TIME);
+  const metadataQuery = useQuery({
+    queryKey: ['metadata', debounced],
+    queryFn: fetchMetadata,
+    enabled: !!rpcQueryClient && !!denom,
+    staleTime: DEBOUNCE_TIME,
+    placeholderData: keepPreviousData,
+  });
+  return {
+    metadata: metadataQuery.data?.metadata,
+    isMetadataLoading: metadataQuery.isLoading,
+    isMetadataError: metadataQuery.isError,
+    refetchMetadata: metadataQuery.refetch,
+    error: metadataQuery.error,
+  };
+};
+
 export const useOsmosisTokenFactoryDenomsMetadata = () => {
   const { lcdQueryClient } = useOsmosisLcdQueryClient();
 
@@ -918,5 +952,46 @@ export const useBlockHeight = () => {
     isBlockHeightLoading: blockHeightQuery.isLoading,
     isBlockHeightError: blockHeightQuery.isError,
     refetchBlockHeight: blockHeightQuery.refetch,
+  };
+};
+
+export type MfxPwrConversionConfig = {
+  poa_admin: string;
+  rate: string;
+  source_denom: string;
+  target_denom: string;
+  paused: boolean;
+};
+
+export const useMfxPwrConversionConfig = () => {
+  const { rpcQueryClient } = useCosmWasmRpcQueryClient();
+
+  const fetchConfig = async () => {
+    if (!rpcQueryClient) {
+      throw new Error('RPC Client not ready');
+    }
+    return await rpcQueryClient.cosmwasm.wasm.v1.smartContractState({
+      address: env.mfxToPwrConversionContractAddress!,
+      queryData: new TextEncoder().encode(JSON.stringify({ config: {} })),
+    });
+  };
+
+  const configQuery = useQuery({
+    queryKey: ['mfxPwrConversionConfig'],
+    queryFn: fetchConfig,
+    enabled: !!rpcQueryClient && !!env.mfxToPwrConversionContractAddress,
+    staleTime: DEBOUNCE_TIME,
+    select: ({ data }) => {
+      const decodedData: MfxPwrConversionConfig = JSON.parse(new TextDecoder().decode(data));
+      return decodedData;
+    },
+  });
+
+  return {
+    config: configQuery.data,
+    isConfigLoading: configQuery.isLoading,
+    isConfigError: configQuery.isError,
+    error: configQuery.error,
+    refetchConfig: configQuery.refetch,
   };
 };

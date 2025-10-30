@@ -1,10 +1,12 @@
 import React, { useContext, useMemo, useState } from 'react';
+import { PiSwap } from 'react-icons/pi';
 
 import { Pagination, SearchContext, SearchFilter, TokenBalance } from '@/components';
+import ConvertModal from '@/components/bank/modals/convertModal';
 import SendModal from '@/components/bank/modals/sendModal';
 import { DenomDisplay, DenomInfoModal } from '@/components/factory';
 import { QuestionIcon, SendTxIcon } from '@/components/icons';
-import { truncateString } from '@/utils';
+import { isMfxToken, truncateString } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
 
 interface TokenListProps {
@@ -28,6 +30,7 @@ const TokenListContent = ({
   const [selectedDenomBase, setSelectedDenomBase] = useState<any>(null);
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [openDenomInfoModal, setOpenDenomInfoModal] = useState(false);
+  const [isConvertModalOpen, setIsConvertModalOpen] = useState(false);
   const { term } = useContext(SearchContext);
 
   // Memoize filtered balances to prevent unnecessary pagination resets
@@ -86,6 +89,27 @@ const TokenListContent = ({
                     <QuestionIcon className="w-7 h-7 text-current" />
                   </button>
                 </div>
+
+                {isMfxToken(balance?.base) && (
+                  <div
+                    className="tooltip tooltip-left tooltip-primary hover:after:delay-1000 hover:before:delay-1000"
+                    data-tip="Convert MFX to PWR"
+                  >
+                    <button
+                      aria-label="convert-mfx"
+                      data-testid="convert-mfx-button"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setSelectedDenomBase(balance?.base);
+                        setIsConvertModalOpen(true);
+                      }}
+                      className="btn btn-md bg-base-300 text-primary btn-square group-hover:bg-secondary hover:outline hover:outline-primary hover:outline-1 outline-hidden"
+                    >
+                      <PiSwap className="w-7 h-7 text-current" />
+                    </button>
+                  </div>
+                )}
+
                 <div
                   className="tooltip tooltip-left tooltip-primary hover:after:delay-1000 hover:before:delay-1000"
                   data-tip="Send Tokens"
@@ -123,6 +147,16 @@ const TokenListContent = ({
         selectedDenom={selectedDenomBase}
         isOpen={isSendModalOpen}
         onClose={() => setIsSendModalOpen(false)}
+        isGroup={isGroup}
+        admin={admin}
+      />
+
+      <ConvertModal
+        address={address}
+        balances={balances?.find(b => isMfxToken(b.base))}
+        isBalancesLoading={isLoading}
+        isOpen={isConvertModalOpen}
+        onClose={() => setIsConvertModalOpen(false)}
         isGroup={isGroup}
         admin={admin}
       />

@@ -8,5 +8,6 @@ export * from './group';
 export * from './upgrade';
 export * from './poa';
 export * from './vesting';
+export * from './wasm';
 export { createTokenMessage } from '@/components/bank/handlers/createMessageUtils';
 export { createValidatorMessage } from '@/components/bank/handlers/createMessageUtils';
