@@ -1,11 +1,11 @@
-import { cosmos } from '@manifest-network/manifestjs';
+import { cosmwasm } from '@manifest-network/manifestjs';
 import { useQuery } from '@tanstack/react-query';
 
 import env from '@/config/env';
 
-const createRpcQueryClient = cosmos.ClientFactory.createRPCQueryClient;
+const createRpcQueryClient = cosmwasm.ClientFactory.createRPCQueryClient;
 
-export const useCosmosRpcQueryClient = () => {
+export const useCosmWasmRpcQueryClient = () => {
   const rpcQueryClient = useQuery({
     queryKey: ['rpcQueryClient', env.rpcUrl],
     queryFn: () =>
