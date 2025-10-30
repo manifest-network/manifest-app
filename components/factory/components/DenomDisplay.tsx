@@ -2,13 +2,14 @@ import { MetadataSDKType } from '@manifest-network/manifestjs/dist/codegen/cosmo
 import React from 'react';
 
 import { DenomImage, VerifiedIcon } from '@/components';
+import env from '@/config/env';
 import { formatTokenDisplay } from '@/utils';
 
 export const DenomVerifiedBadge = ({
   base,
   ...props
 }: { base?: string } & { [i: string]: unknown }) => {
-  const verified = base === 'umfx';
+  const verified = base === 'umfx' || base === env.pwrTokenDenom;
 
   return verified ? <VerifiedIcon {...props} /> : <></>;
 };

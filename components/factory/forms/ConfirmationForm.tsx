@@ -100,6 +100,7 @@ export default function ConfirmationForm({
         fee: () => estimateFee(address, [msg]),
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['allMetadatas'] });
+          queryClient.invalidateQueries({ queryKey: ['metadata'] });
           queryClient.invalidateQueries({ queryKey: ['denoms'] });
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['totalSupply'] });
@@ -146,6 +147,7 @@ export default function ConfirmationForm({
         fee: () => estimateFee(address, [createDenomMsg, setMetadataMsg]),
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['allMetadatas'] });
+          queryClient.invalidateQueries({ queryKey: ['metadata'] });
           queryClient.invalidateQueries({ queryKey: ['denoms'] });
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['totalSupply'] });
