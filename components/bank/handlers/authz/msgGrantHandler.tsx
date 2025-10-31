@@ -10,7 +10,7 @@ const createMessage = (template: string, addr: string, msg: string) => {
   const message = format(
     template,
     addr ? <TruncatedAddressWithCopy address={addr} /> : 'unknown',
-    <span className={`text-yellow-500`}>{msg}</span>
+    <span className="text-yellow-500">{msg}</span>
   );
   return <span className="flex flex-wrap gap-1">{message}</span>;
 };
@@ -31,7 +31,7 @@ export const MsgGrantHandler = createSenderReceiverHandler({
     ),
   successReceiver: tx =>
     createMessage(
-      'You were granted permission to execute {1} on-behalf of {0}',
+      'You were granted permission to execute {1} on behalf of {0}',
       tx.metadata?.granter,
       tx.metadata?.grant?.authorization?.msg
     ),
