@@ -1,10 +1,10 @@
 import { MsgGrant } from '@manifest-network/manifestjs/dist/codegen/cosmos/authz/v1beta1/tx';
 import { format } from 'react-string-format';
 
-import { AdminsIcon, TruncatedAddressWithCopy } from '@/components';
-
-import { createSenderReceiverHandler } from '../createSenderReceiverHandler';
-import { registerHandler } from '../handlerRegistry';
+import { createSenderReceiverHandler } from '@/components/bank/handlers/createSenderReceiverHandler';
+import { registerHandler } from '@/components/bank/handlers/handlerRegistry';
+import { AdminsIcon } from '@/components/icons/AdminsIcon';
+import { TruncatedAddressWithCopy } from '@/components/react/addressCopy';
 
 const createMessage = (template: string, addr: string, msg: string) => {
   const message = format(
