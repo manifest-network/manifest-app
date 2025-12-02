@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`TimeAgo renders correctly in the past: 1-day 1`] = `
 "<DocumentFragment>
