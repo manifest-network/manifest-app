@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "remove": "rm -rf node_modules/ bun.lockb $HOME/.bun/install/cache/ .next/",
+    "remove": "rm -rf node_modules/ bun.lock $HOME/.bun/install/cache/ .next/",
     "update-deps": "bunx npm-check-updates --root --format group -i",
     "test:coverage": "bun test --coverage",
     "test:coverage:lcov": "bun run test:coverage --coverage-reporter=lcov --coverage-dir ./coverage",
@@ -28,7 +28,19 @@
   },
   "resolutions": {
     "**/@chain-registry/types": "0.25.0",
-    "**/@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3"
+    "**/@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
+    "**/@cosmjs/proto-signing": "0.32.4",
+    "**/@cosmjs/amino": "0.32.4",
+    "**/@cosmjs/encoding": "0.32.4",
+    "**/@cosmjs/math": "0.32.4",
+    "**/@cosmjs/crypto": "0.32.4",
+    "**/@cosmjs/utils": "0.32.4",
+    "**/debug": "4.4.3",
+    "**/sha.js": "2.4.12",
+    "**/ses": "1.14.0",
+    "**/axios": "1.13.2",
+    "**/prismjs": "1.30.0",
+    "**/js-yaml": "3.14.2"
   },
   "dependencies": {
     "@chain-registry/assets": "1.70.340",
@@ -96,7 +108,7 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "15.11.7",
+    "@happy-dom/global-registrator": "20.0.11",
     "@tailwindcss/aspect-ratio": "0.4.2",
     "@tailwindcss/forms": "0.5.10",
     "@tailwindcss/typography": "0.5.16",

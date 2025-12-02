@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://goo.gl/fbAQLP
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`ModalDialog renders correctly: standin 1`] = `"<DocumentFragment />"`;
 
@@ -24,15 +24,17 @@ exports[`ModalDialog renders correctly: portal 1`] = `
     data-open=""
     id="headlessui-dialog-panel-«normalized»"
   >
-    bound HTMLFormElement {
-      "0": <button
+    <form
+      method="dialog"
+    >
+      <button
         aria-label="Close"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-[#00000099] dark:text-[#FFFFFF99] hover:bg-[#0000000A] dark:hover:bg-[#FFFFFF1A] disabled:cursor-not-allowed"
         role="button"
       >
         ✕
-      </button>,
-    }
+      </button>
+    </form>
     Hello World
   </div>
 </div>"
