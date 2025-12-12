@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@chain-registry/assets": "1.70.340",
-    "@cosmjs/cosmwasm-stargate": "0.32.4",
+    "@cosmjs/cosmwasm-stargate": "0.37.0",
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
     "@cosmos-kit/leap-metamask-cosmos-snap": "0.15.3",
     "@cosmos-kit/ledger": "2.14.3",
