@@ -43,7 +43,7 @@ export const MsgAuthzExecHandler = createSenderReceiverHandler({
   iconSender: AdminsIcon,
   successSender: tx =>
     createMessage(
-      'You executed {0} message of type {1} on behalf of another account',
+      'You executed {0} message(s) of type {1} on behalf of another account',
       'You executed {0} message(s) on behalf of another account',
       tx.metadata?.msgs
     ),
