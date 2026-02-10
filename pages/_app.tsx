@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import { useContext, useEffect } from 'react';
 
 import MobileNav from '@/components/react/mobileNav';
+import RuntimeConfigLoader from '@/components/RuntimeConfigLoader';
 import { ManifestAppProviders } from '@/contexts/manifestAppProviders';
 import { useTheme } from '@/contexts/useTheme';
 import { Web3AuthContext } from '@/contexts/web3AuthContext';
@@ -16,14 +17,16 @@ function ManifestApp({ Component, pageProps }: AppProps) {
   const [drawer, setDrawer] = useLocalStorage('isDrawerVisible', true);
 
   return (
-    <ManifestAppProviders>
-      <AppContent
-        Component={Component}
-        pageProps={pageProps}
-        drawer={drawer}
-        setDrawer={setDrawer}
-      />
-    </ManifestAppProviders>
+    <RuntimeConfigLoader>
+      <ManifestAppProviders>
+        <AppContent
+          Component={Component}
+          pageProps={pageProps}
+          drawer={drawer}
+          setDrawer={setDrawer}
+        />
+      </ManifestAppProviders>
+    </RuntimeConfigLoader>
   );
 }
 
