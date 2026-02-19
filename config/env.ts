@@ -1,11 +1,5 @@
 import parse from 'parse-duration';
 
-declare global {
-  interface Window {
-    __ENV__?: Record<string, string | undefined>;
-  }
-}
-
 function getEnvVar(key: string): string | undefined {
   if (typeof window !== 'undefined' && window.__ENV__ !== undefined) {
     // In the browser, window.__ENV__ is the source of truth.

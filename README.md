@@ -108,7 +108,6 @@ docker run -p 3000:3000 \
   -e NEXT_PUBLIC_CHAIN_TIER=mainnet \
   -e NEXT_PUBLIC_RPC_URL=https://rpc.manifest.example.com \
   -e NEXT_PUBLIC_API_URL=https://api.manifest.example.com \
-  # ... other NEXT_PUBLIC_* vars
   manifest-app
 ```
 
