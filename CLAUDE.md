@@ -56,11 +56,19 @@ Feature-based directories under `components/`:
 - **@cosmjs** — signing, stargate client, proto-signing
 - Multi-chain: Manifest (primary) + Osmosis (IBC/swaps)
 
-### Configuration
+### Configuration & Runtime Environment Variables
 
-- `config/env.ts` — centralized env var access with defaults
+- `config/env.ts` — centralized env var access via `getEnvVar(key)` helper. All consumer files import `env` from here.
 - `config/manifestChain.ts` / `config/osmosisChain.ts` — chain registry, selected by `NEXT_PUBLIC_CHAIN_TIER` (qa/testnet/mainnet)
 - `.env.test` for test environment variables
+
+**Runtime env vars**: `NEXT_PUBLIC_*` variables are **not** inlined at build time. Instead:
+- `config/env.ts` uses dynamic `process.env[key]` access (server) and `window.__ENV__[key]` (client) to avoid Next.js build-time inlining.
+- `pages/_document.tsx` injects `<script src="/env-config.js" />` synchronously before React hydrates.
+- `public/env-config.js` is a committed empty placeholder (`window.__ENV__ = {}`). In production Docker containers, `docker-entrypoint.mjs` overwrites it at container start with actual `NEXT_PUBLIC_*` values from the environment.
+- During `bun dev`, Next.js reads `.env.local` and provides values via `process.env` server-side as usual.
+
+This allows **one Docker image** to be built and configured at runtime for any environment (qa/testnet/mainnet) by passing env vars at `docker run` time.
 
 ### Styling
 
@@ -77,4 +85,4 @@ Tailwind CSS v4 + DaisyUI v5. Dark/light theme via `data-theme` attribute. Custo
 
 ## CI
 
-GitHub Actions runs on push and PR: build check, test coverage (uploaded to Codecov), and Prettier formatting check. Docker builds trigger on `release/*` branches and version tags, deploying to GHCR with per-tier (qa/testnet/mainnet) environment configs.
+GitHub Actions runs on push and PR: build check, test coverage (uploaded to Codecov), and Prettier formatting check. Docker builds trigger on `release/*` branches and version tags, deploying a single environment-agnostic image to GHCR. Environment-specific `NEXT_PUBLIC_*` vars are passed at `docker run` time, not at build time.
