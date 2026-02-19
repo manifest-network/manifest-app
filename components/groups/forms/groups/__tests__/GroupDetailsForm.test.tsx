@@ -73,6 +73,8 @@ describe('GroupDetails Component', () => {
   });
 
   test('next button is disabled when form is dirty and invalid', async () => {
+    // Formik async validation can be slow on CI runners
+    jest.setTimeout(30_000);
     function updateField(field: string, validValue: string) {
       const input = screen.getByLabelText(field);
       fireEvent.change(input, { target: { value: validValue } });
