@@ -44,6 +44,7 @@ Next.js **Pages Router** (`pages/` directory). Dynamic routes: `pages/factory/[i
 ### Component Organization
 
 Feature-based directories under `components/`:
+
 - `admins/`, `bank/`, `factory/`, `groups/`, `tokens/` — domain features
 - `react/` — shared layout and UI components (Nav, Sidebar, etc.)
 - `3js/` — Three.js visualizations (dynamically imported to avoid SSR issues)
@@ -63,6 +64,7 @@ Feature-based directories under `components/`:
 - `.env.test` for test environment variables
 
 **Runtime env vars**: `NEXT_PUBLIC_*` variables are **not** inlined at build time. Instead:
+
 - `config/env.ts` uses dynamic `process.env[key]` access (server) and `window.__ENV__[key]` (client) to avoid Next.js build-time inlining.
 - `pages/_document.tsx` injects `<script src="/env-config.js" />` synchronously before React hydrates.
 - `public/env-config.js` is a committed empty placeholder (`window.__ENV__ = {}`). In production Docker containers, `docker-entrypoint.mjs` overwrites it at container start with actual `NEXT_PUBLIC_*` values from the environment.
