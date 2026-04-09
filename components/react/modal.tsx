@@ -15,7 +15,11 @@
  * the onWalletClicked() function (which is the main handler for selecting / connecting to wallets).
  */
 import { State } from '@cosmos-kit/core';
-import { Web3AuthClient, Web3AuthWallet } from '@cosmos-kit/web3auth';
+import {
+  WEB3AUTH_REDIRECT_AUTO_CONNECT_KEY,
+  Web3AuthClient,
+  Web3AuthWallet,
+} from '@cosmos-kit/web3auth';
 import { Dialog, Portal, Transition } from '@headlessui/react';
 import type { ChainWalletBase, WalletModalProps } from 'cosmos-kit';
 import { WalletStatus } from 'cosmos-kit';
@@ -54,6 +58,8 @@ const WALLET_ERRORS = {
   RECORD_DELETED: 'Record was recently deleted',
 } as const;
 
+const isWeb3AuthWallet = (name: string): boolean => name.startsWith('web3auth_');
+
 /**
  * Helper to check if an error message matches known wallet connection errors
  */
@@ -84,6 +90,16 @@ export const TailwindModal: React.FC<
   const currentWalletName = current?.walletName;
   const { isMobile } = useDeviceDetect();
   const { forceCompleteReset } = useClientReset();
+
+  // After a Web3Auth redirect login on mobile, the page reloads.
+  // Detect this and open the modal with a connecting state while auto-reconnect runs.
+  useEffect(() => {
+    const redirectProvider = localStorage.getItem(WEB3AUTH_REDIRECT_AUTO_CONNECT_KEY);
+    if (redirectProvider && !isOpen) {
+      setCurrentView(ModalView.Connecting);
+      setOpen(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (isOpen) {
@@ -232,6 +248,11 @@ export const TailwindModal: React.FC<
       setQRWallet(undefined);
       setCurrentView(ModalView.Connecting);
 
+      // On mobile, Web3Auth uses redirect mode which navigates the page away.
+      // The connect() promise will reject because the redirect interrupts it.
+      // We should not treat that as a connection error.
+      const isWeb3AuthRedirect = isWeb3AuthWallet(name) && isMobile;
+
       const timeoutId = setTimeout(() => {
         if (wallet?.walletStatus === WalletStatus.Connecting) {
           wallet.disconnect();
@@ -242,6 +263,11 @@ export const TailwindModal: React.FC<
       walletRepo
         ?.connect(name)
         .catch(error => {
+          if (isWeb3AuthRedirect) {
+            // Expected on mobile — the page is about to redirect to Web3Auth.
+            // Don't show the error view; just keep showing "Connecting".
+            return;
+          }
           console.error('Wallet connection error:', error);
           setCurrentView(ModalView.Error);
         })
@@ -249,7 +275,7 @@ export const TailwindModal: React.FC<
           clearTimeout(timeoutId);
         });
     },
-    [walletRepo]
+    [walletRepo, isMobile]
   );
 
   /**
@@ -375,14 +401,19 @@ export const TailwindModal: React.FC<
                   ) as Web3AuthWallet | undefined;
 
                   if (emailWallet?.client instanceof Web3AuthClient) {
-                    // Provide the user's email to the client before connecting
                     emailWallet.client.setLoginHint(email);
+                    if (isMobile) {
+                      setCurrentView(ModalView.Connecting);
+                    }
                     await walletRepo?.connect(emailWallet.walletInfo.name);
                   } else {
                     console.error('Email wallet or client not found');
                   }
                 } catch (error) {
-                  console.error('Email login error:', error);
+                  // On mobile, Web3Auth redirects — the promise rejection is expected
+                  if (!isMobile) {
+                    console.error('Email login error:', error);
+                  }
                 }
               }}
             />
@@ -399,9 +430,15 @@ export const TailwindModal: React.FC<
                 ) as Web3AuthWallet | undefined;
 
                 if (smsWallet?.client instanceof Web3AuthClient) {
-                  // Provide the user's phone number to the client before connecting
                   smsWallet.client.setLoginHint(phone);
-                  walletRepo?.connect(smsWallet.walletInfo.name);
+                  if (isMobile) {
+                    setCurrentView(ModalView.Connecting);
+                  }
+                  walletRepo?.connect(smsWallet.walletInfo.name).catch(error => {
+                    if (!isMobile) {
+                      console.error('SMS login error:', error);
+                    }
+                  });
                 }
               }}
             />
@@ -423,10 +460,14 @@ export const TailwindModal: React.FC<
             />
           );
 
-        case ModalView.Connecting:
-          // Decide a tailored message if it's a WalletConnect flow
+        case ModalView.Connecting: {
+          // Decide a tailored message based on wallet type
           let subtitle: string;
-          if (currentWalletData!?.mode === 'wallet-connect') {
+          let title: string = 'Requesting Connection';
+          if (isMobile && currentWalletData?.name && isWeb3AuthWallet(currentWalletData.name)) {
+            title = 'Redirecting...';
+            subtitle = `You will be redirected to sign in with ${currentWalletData.prettyName}.`;
+          } else if (currentWalletData!?.mode === 'wallet-connect') {
             subtitle = `Approve ${currentWalletData!.prettyName} connection request on your mobile device.`;
           } else {
             subtitle = `Open the ${
@@ -439,10 +480,11 @@ export const TailwindModal: React.FC<
               onReturn={() => setCurrentView(ModalView.WalletList)}
               name={currentWalletData?.prettyName!}
               logo={currentWalletData?.logo!.toString() ?? ''}
-              title="Requesting Connection"
+              title={title}
               subtitle={subtitle}
             />
           );
+        }
 
         case ModalView.QRCode:
           return (
