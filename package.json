@@ -40,7 +40,9 @@
     "**/ses": "1.14.0",
     "**/axios": "1.13.2",
     "**/prismjs": "1.30.0",
-    "**/js-yaml": "3.14.2"
+    "**/js-yaml": "3.14.2",
+    "**/@web3auth/modal": "10.15.0",
+    "**/viem": "2.48.4"
   },
   "dependencies": {
     "@chain-registry/assets": "1.70.340",
