@@ -86,3 +86,29 @@ where
 3. Navigate to `http://localhost:3000` in your browser
 
 4. Enjoy!
+
+### Docker
+
+The Docker image is environment-agnostic — it is built **once** and configured at runtime via environment variables. No `.env` file is needed at build time.
+
+#### Build
+
+```bash
+docker build -t manifest-app .
+```
+
+#### Run
+
+Pass `NEXT_PUBLIC_*` variables at container start:
+
+```bash
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_CHAIN=manifest \
+  -e NEXT_PUBLIC_CHAIN_ID=manifest-1 \
+  -e NEXT_PUBLIC_CHAIN_TIER=mainnet \
+  -e NEXT_PUBLIC_RPC_URL=https://rpc.manifest.example.com \
+  -e NEXT_PUBLIC_API_URL=https://api.manifest.example.com \
+  manifest-app
+```
+
+At container start, `docker-entrypoint.mjs` writes all `NEXT_PUBLIC_*` environment variables into `public/env-config.js` as `window.__ENV__`, which is loaded by the browser before React hydrates. This allows the same image to serve any environment (qa, testnet, mainnet).

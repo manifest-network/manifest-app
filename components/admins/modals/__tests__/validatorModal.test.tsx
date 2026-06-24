@@ -85,10 +85,18 @@ describe('ValidatorDetailsModal Component', () => {
       const input = screen.getByPlaceholderText('1000');
       fireEvent.change(input, { target: { value: '-1' } });
       fireEvent.blur(input);
+      // Wait for Formik validation to complete by checking for the error tooltip
       await waitFor(() => {
-        const updateButton = screen.getByText('Update');
-        expect(updateButton).toBeDisabled();
+        expect(
+          screen.getByText(
+            (_content, element) =>
+              (element as HTMLElement)?.dataset?.tip === 'Power must be greater than 0'
+          )
+        ).toBeInTheDocument();
       });
+      // Validation is done — isValid should now be false
+      const updateButton = screen.getByText('Update');
+      expect(updateButton).toBeDisabled();
     },
     TIMEOUT
   );
