@@ -38,7 +38,7 @@
         "cosmjs-types": "0.9.0",
         "cosmos-kit": "2.25.2",
         "country-flag-icons": "1.5.18",
-        "daisyui": "5.0.6",
+        "daisyui": "5.5.13",
         "dayjs": "1.11.13",
         "decimal.js": "10.5.0",
         "file-saver": "2.0.5",
@@ -2106,7 +2106,7 @@
 
     "csstype": ["csstype@3.2.3", "", {}, "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ=="],
 
-    "daisyui": ["daisyui@5.0.6", "", {}, "sha512-/e/9Gw/2y9oawBJlWkJMSEhRXdmfOLvcPl+6q/x2rPEdIVOtebs1t3ex2vwySl9vCRs1GGNBKCiL+P60Ps/wUw=="],
+    "daisyui": ["daisyui@5.5.13", "", {}, "sha512-Y1tHPzxU3a/MsArjQ5Bw4DaOnC1IsT9O+M9Wz2NwCw08vuCGhM+xx3ScWfL6IS4YiJXZHh73qNK9GhBWMRKY6Q=="],
 
     "damerau-levenshtein": ["damerau-levenshtein@1.0.8", "", {}, "sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA=="],
 
