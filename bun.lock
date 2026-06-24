@@ -20,7 +20,7 @@
         "@manifest-network/manifestjs": "2.1.0",
         "@react-three/drei": "10.0.5",
         "@react-three/fiber": "9.1.0",
-        "@sinonjs/fake-timers": "14.0.0",
+        "@sinonjs/fake-timers": "15.0.0",
         "@skip-go/client": "1.5.9",
         "@skip-go/widget": "3.14.14",
         "@tailwindcss/postcss": "4.1.16",
@@ -29,7 +29,7 @@
         "@trivago/prettier-plugin-sort-imports": "5.2.2",
         "@types/file-saver": "2.0.7",
         "@types/react-syntax-highlighter": "15.5.13",
-        "@types/sinonjs__fake-timers": "8.1.5",
+        "@types/sinonjs__fake-timers": "15.0.1",
         "@uidotdev/usehooks": "2.4.1",
         "autoprefixer": "10.4.21",
         "babel-plugin-glsl": "1.0.0",
@@ -1148,7 +1148,7 @@
 
     "@sinonjs/commons": ["@sinonjs/commons@3.0.1", "", { "dependencies": { "type-detect": "4.0.8" } }, "sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ=="],
 
-    "@sinonjs/fake-timers": ["@sinonjs/fake-timers@14.0.0", "", { "dependencies": { "@sinonjs/commons": "^3.0.1" } }, "sha512-QfoXRaUTjMVVn/ZbnD4LS3TPtqOkOdKIYCKldIVPnuClcwRKat6LI2mRZ2s5qiBfO6Fy03An35dSls/2/FEc0Q=="],
+    "@sinonjs/fake-timers": ["@sinonjs/fake-timers@15.0.0", "", { "dependencies": { "@sinonjs/commons": "^3.0.1" } }, "sha512-dlUB2oL+hDIYkIq/OWFBDhQAuU6kDey3eeMiYpVb7UXHhkMq/r1HloKXAbJwJZpYWkFWsydLjMqDpueMUEOjXQ=="],
 
     "@skip-go/client": ["@skip-go/client@1.5.9", "", { "dependencies": { "@cosmjs/amino": "0.33.1", "@cosmjs/cosmwasm-stargate": "0.33.1", "@cosmjs/encoding": "0.33.1", "@cosmjs/math": "0.33.1", "@cosmjs/proto-signing": "0.33.1", "@cosmjs/stargate": "0.33.1", "@keplr-wallet/unit": "^0.12.143", "@solana/wallet-adapter-base": "^0.9.23", "bech32": "^2.0.0", "bignumber.js": "^9.1.2", "cosmjs-types": "^0.9.0", "keccak": "3.0.4", "uuid": "^11.1.0" }, "peerDependencies": { "@solana/web3.js": "^1.95.8", "viem": "2.x" } }, "sha512-Udw0ni1lCdFsavHIqSNDXdTFq8k7j80dU91Dcd+d9vl4nUrvoX0ILWPJ4etGiepFcJsKvZtv32EoHAou5OWs2A=="],
 
@@ -1578,7 +1578,7 @@
 
     "@types/react-syntax-highlighter": ["@types/react-syntax-highlighter@15.5.13", "", { "dependencies": { "@types/react": "*" } }, "sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA=="],
 
-    "@types/sinonjs__fake-timers": ["@types/sinonjs__fake-timers@8.1.5", "", {}, "sha512-mQkU2jY8jJEF7YHjHvsQO8+3ughTL1mcnn96igfhONmR+fUPSKIkefQYpSe8bsly2Ep7oQbn/6VG5/9/0qcArQ=="],
+    "@types/sinonjs__fake-timers": ["@types/sinonjs__fake-timers@15.0.1", "", {}, "sha512-Ko2tjWJq8oozHzHV+reuvS5KYIRAokHnGbDwGh/J64LntgpbuylF74ipEL24HCyRjf9FOlBiBHWBR1RlVKsI1w=="],
 
     "@types/stack-utils": ["@types/stack-utils@2.0.3", "", {}, "sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw=="],
 
