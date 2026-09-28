@@ -45,6 +45,9 @@ jobs:
       - name: Set IMAGE env
         run: echo "IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/manifest-app" >> "$GITHUB_ENV"
 
+      # Build-time defaults. Current deployments do not pass NEXT_PUBLIC_* at container
+      # start yet, so keep baking per-environment values until they all do (e.g. after the
+      # move to Fred). Values passed at container start override these.
       - name: Create .env from environment vars/secrets
         run: |
           touch .env

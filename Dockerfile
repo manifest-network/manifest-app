@@ -27,8 +27,10 @@ COPY . .
 
 RUN apt update && apt install -y git
 
-RUN \
-    if [ -f .env ]; then echo ".env file found, continuing..."; else echo ".env file not found, exiting..."; exit 1; fi
+# CI writes a .env with per-environment build-time defaults; a local build without
+# one gets an empty file so next build still succeeds. NEXT_PUBLIC_* values passed
+# at container start override the defaults via docker-entrypoint.mjs.
+RUN touch .env
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -43,8 +45,6 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-RUN rm -rf .env
-
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
@@ -56,7 +56,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# public/ stays root-owned. env-config.js is a symlink into /tmp, where
+# docker-entrypoint.mjs writes the runtime config, so the container can run
+# with a read-only root filesystem: only /tmp has to be writable.
 COPY --from=builder /app/public ./public
+RUN ln -sf /tmp/env-config.js /app/public/env-config.js
+
+# Copy the entrypoint script
+COPY --from=builder /app/docker-entrypoint.mjs ./docker-entrypoint.mjs
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
@@ -72,4 +79,4 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["bun", "server.js"]
+CMD ["bun", "docker-entrypoint.mjs"]
