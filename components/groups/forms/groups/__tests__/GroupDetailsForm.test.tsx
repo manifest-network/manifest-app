@@ -73,11 +73,6 @@ describe('GroupDetails Component', () => {
   });
 
   test('next button is disabled when form is dirty and invalid', async () => {
-    function updateField(field: string, validValue: string) {
-      const input = screen.getByLabelText(field);
-      fireEvent.change(input, { target: { value: validValue } });
-    }
-
     const invalidProps = {
       ...mockProps,
       formData: {
@@ -93,13 +88,21 @@ describe('GroupDetails Component', () => {
 
     renderWithChainProvider(<GroupDetails {...invalidProps} />);
     const nextButton = screen.getByText('Next: Group Members');
-    await waitFor(() => expect(nextButton).toBeDisabled());
+    // Initially disabled because authors is [''] (empty string)
+    expect(nextButton).toBeDisabled();
 
-    updateField('Group Title', 'New Group Title');
-    await waitFor(() => expect(nextButton).toBeDisabled());
-    updateField('Author name or address', manifestAddr1);
-    await waitFor(() => expect(nextButton).toBeDisabled());
-    updateField('Description', 'New Long Description is Long Enough well well well...');
+    // Fill all fields to valid values
+    fireEvent.change(screen.getByLabelText('Group Title'), {
+      target: { value: 'New Group Title' },
+    });
+    fireEvent.change(screen.getByLabelText('Author name or address'), {
+      target: { value: manifestAddr1 },
+    });
+    fireEvent.change(screen.getByLabelText('Description'), {
+      target: { value: 'New Long Description is Long Enough well well well...' },
+    });
+
+    // Wait for Formik validation to settle and button to become enabled
     await waitFor(() => expect(nextButton).toBeEnabled());
   });
 
