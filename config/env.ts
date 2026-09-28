@@ -1,12 +1,42 @@
 import parse from 'parse-duration';
 
-function getEnvVar(key: string): string | undefined {
-  if (typeof window !== 'undefined' && window.__ENV__ !== undefined) {
-    // In the browser, window.__ENV__ is the source of truth.
-    return window.__ENV__[key];
+// Literal `process.env.NEXT_PUBLIC_*` references so Next.js inlines them into the client
+// bundle at build time. This keeps `bun dev`, `next build && next start` and any non-Docker
+// deploy working from a normal .env. In Docker images, values passed at container start
+// (written to window.__ENV__ by docker-entrypoint.mjs) take precedence over these.
+const buildTimeEnv = {
+  NEXT_PUBLIC_WALLETCONNECT_KEY: process.env.NEXT_PUBLIC_WALLETCONNECT_KEY,
+  NEXT_PUBLIC_WEB3AUTH_NETWORK: process.env.NEXT_PUBLIC_WEB3AUTH_NETWORK,
+  NEXT_PUBLIC_WEB3AUTH_CLIENT_ID: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID,
+  NEXT_PUBLIC_CHAIN: process.env.NEXT_PUBLIC_CHAIN,
+  NEXT_PUBLIC_OSMOSIS_CHAIN: process.env.NEXT_PUBLIC_OSMOSIS_CHAIN,
+  NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,
+  NEXT_PUBLIC_OSMOSIS_CHAIN_ID: process.env.NEXT_PUBLIC_OSMOSIS_CHAIN_ID,
+  NEXT_PUBLIC_LEAP_DEEPLINK: process.env.NEXT_PUBLIC_LEAP_DEEPLINK,
+  NEXT_PUBLIC_CHAIN_TIER: process.env.NEXT_PUBLIC_CHAIN_TIER,
+  NEXT_PUBLIC_EXPLORER_URL: process.env.NEXT_PUBLIC_EXPLORER_URL,
+  NEXT_PUBLIC_OSMOSIS_EXPLORER_URL: process.env.NEXT_PUBLIC_OSMOSIS_EXPLORER_URL,
+  NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL,
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  NEXT_PUBLIC_INDEXER_URL: process.env.NEXT_PUBLIC_INDEXER_URL,
+  NEXT_PUBLIC_OSMOSIS_API_URL: process.env.NEXT_PUBLIC_OSMOSIS_API_URL,
+  NEXT_PUBLIC_OSMOSIS_RPC_URL: process.env.NEXT_PUBLIC_OSMOSIS_RPC_URL,
+  NEXT_PUBLIC_MINIMUM_VOTING_PERIOD: process.env.NEXT_PUBLIC_MINIMUM_VOTING_PERIOD,
+  NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET: process.env.NEXT_PUBLIC_UPGRADE_MIN_BLOCK_OFFSET,
+  NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS:
+    process.env.NEXT_PUBLIC_MFX_TO_PWR_CONVERSION_CONTRACT_ADDRESS,
+};
+
+type EnvKey = keyof typeof buildTimeEnv;
+
+function getEnvVar(key: EnvKey): string | undefined {
+  if (typeof window !== 'undefined') {
+    // Browser: runtime values written by docker-entrypoint.mjs win; otherwise use the
+    // build-time value. The committed placeholder (window.__ENV__ = {}) falls through here.
+    return window.__ENV__?.[key] ?? buildTimeEnv[key];
   }
-  // Dynamic key access prevents Next.js from inlining at build time.
-  return process.env[key];
+  // Server / tests: dynamic access reads the live environment.
+  return process.env[key] ?? buildTimeEnv[key];
 }
 
 function parseDuration(duration: string | undefined, defaultValue: number): number {
