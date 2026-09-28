@@ -55,11 +55,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# public/ must be writable so docker-entrypoint.mjs can generate env-config.js
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+# public/ stays root-owned. env-config.js is a symlink into /tmp, where
+# docker-entrypoint.mjs writes the runtime config, so the container can run
+# with a read-only root filesystem: only /tmp has to be writable.
+COPY --from=builder /app/public ./public
+RUN ln -sf /tmp/env-config.js /app/public/env-config.js
 
 # Copy the entrypoint script
-COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.mjs ./docker-entrypoint.mjs
+COPY --from=builder /app/docker-entrypoint.mjs ./docker-entrypoint.mjs
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing

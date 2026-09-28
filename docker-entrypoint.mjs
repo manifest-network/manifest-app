@@ -1,8 +1,4 @@
 import { writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Collect all NEXT_PUBLIC_* environment variables.
 const runtimeEnv = {};
@@ -24,14 +20,16 @@ if (keys.length === 0) {
 const json = JSON.stringify(runtimeEnv).replace(/</g, '\\u003c');
 const script = `window.__ENV__ = ${json};`;
 
-const outputPath = join(__dirname, 'public', 'env-config.js');
+// public/env-config.js is a symlink to this file (created as root in the Dockerfile), so the
+// image runs with a read-only root filesystem: only /tmp has to be writable.
+const outputPath = '/tmp/env-config.js';
 try {
   writeFileSync(outputPath, script);
   console.log(`[entrypoint] Wrote env-config.js with keys: ${keys.join(', ')}`);
 } catch (err) {
   console.error(
     `[entrypoint] FATAL: Failed to write ${outputPath}: ${err.message}\n` +
-      'Ensure the public/ directory exists and is writable by the container user.'
+      'Ensure /tmp is writable by the container user (e.g. a tmpfs mount).'
   );
   process.exit(1);
 }
