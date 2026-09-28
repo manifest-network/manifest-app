@@ -86,3 +86,29 @@ where
 3. Navigate to `http://localhost:3000` in your browser
 
 4. Enjoy!
+
+### Docker
+
+The Docker image can be configured at runtime via environment variables, so one image can serve any environment. No `.env` file is needed at build time. If one is present, its `NEXT_PUBLIC_*` values become build-time defaults, and values passed at container start override them. CI still bakes per-environment defaults until every deployment passes its values at runtime.
+
+#### Build
+
+```bash
+docker build -t manifest-app .
+```
+
+#### Run
+
+Pass `NEXT_PUBLIC_*` variables at container start:
+
+```bash
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_CHAIN=manifest \
+  -e NEXT_PUBLIC_CHAIN_ID=manifest-1 \
+  -e NEXT_PUBLIC_CHAIN_TIER=mainnet \
+  -e NEXT_PUBLIC_RPC_URL=https://rpc.manifest.example.com \
+  -e NEXT_PUBLIC_API_URL=https://api.manifest.example.com \
+  manifest-app
+```
+
+At container start, `docker-entrypoint.mjs` writes all non-empty `NEXT_PUBLIC_*` environment variables to `/tmp/env-config.js` as `window.__ENV__`. The browser loads that file as `/env-config.js` before React hydrates. Only `/tmp` needs to be writable, so the container can run with a read-only root filesystem (e.g. `--read-only --tmpfs /tmp`).
