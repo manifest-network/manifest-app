@@ -63,14 +63,13 @@ Feature-based directories under `components/`:
 - `config/manifestChain.ts` / `config/osmosisChain.ts` — chain registry, selected by `NEXT_PUBLIC_CHAIN_TIER` (qa/testnet/mainnet)
 - `.env.test` for test environment variables
 
-**Runtime env vars**: `NEXT_PUBLIC_*` variables are **not** inlined at build time. Instead:
+**Runtime env vars**: `NEXT_PUBLIC_*` values can be overridden at container start:
 
-- `config/env.ts` uses dynamic `process.env[key]` access (server) and `window.__ENV__[key]` (client) to avoid Next.js build-time inlining.
+- `config/env.ts` keeps a `buildTimeEnv` map of literal `process.env.NEXT_PUBLIC_*` references, which Next.js inlines at build time. In the browser, `getEnvVar` prefers `window.__ENV__[key]` and falls back to `buildTimeEnv`; on the server and in tests it reads `process.env`. New variables must be added to `buildTimeEnv`; the `EnvKey` type enforces this.
 - `pages/_document.tsx` injects `<script src="/env-config.js" />` synchronously before React hydrates.
-- `public/env-config.js` is a committed empty placeholder (`window.__ENV__ = {}`). In production Docker containers, `docker-entrypoint.mjs` overwrites it at container start with actual `NEXT_PUBLIC_*` values from the environment.
-- During `bun dev`, Next.js reads `.env.local` and provides values via `process.env` server-side as usual.
+- `public/env-config.js` is a committed empty placeholder (`window.__ENV__ = {}`), so `bun dev` and `next start` use the build-time values from `.env`/`.env.local`. In the Docker image it is a symlink to `/tmp/env-config.js`, which `docker-entrypoint.mjs` writes at container start from the non-empty `NEXT_PUBLIC_*` variables. The container can therefore run with a read-only root filesystem (Fred's default).
 
-This allows **one Docker image** to be built and configured at runtime for any environment (qa/testnet/mainnet) by passing env vars at `docker run` time.
+CI still bakes per-environment build-time defaults (`.github/workflows/_docker-build.yml`, "Create .env") until every deployment passes its values at runtime.
 
 ### Styling
 
@@ -87,4 +86,4 @@ Tailwind CSS v4 + DaisyUI v5. Dark/light theme via `data-theme` attribute. Custo
 
 ## CI
 
-GitHub Actions runs on push and PR: build check, test coverage (uploaded to Codecov), and Prettier formatting check. Docker builds trigger on `release/*` branches and version tags, deploying a single environment-agnostic image to GHCR. Environment-specific `NEXT_PUBLIC_*` vars are passed at `docker run` time, not at build time.
+GitHub Actions runs on push and PR: build check, test coverage (uploaded to Codecov), and Prettier formatting check. Docker builds trigger on `release/*` branches and version tags and push one image per environment (`:qa`, `:testnet`, `:mainnet`) to GHCR, with that environment's `NEXT_PUBLIC_*` values baked in as defaults. Values passed at `docker run` time override them.

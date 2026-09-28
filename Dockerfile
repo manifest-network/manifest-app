@@ -27,8 +27,9 @@ COPY . .
 
 RUN apt update && apt install -y git
 
-# Create a dummy .env so next build succeeds without real env values.
-# Runtime env vars are injected at container start via docker-entrypoint.mjs.
+# CI writes a .env with per-environment build-time defaults; a local build without
+# one gets an empty file so next build still succeeds. NEXT_PUBLIC_* values passed
+# at container start override the defaults via docker-entrypoint.mjs.
 RUN touch .env
 
 # Next.js collects completely anonymous telemetry data about general usage.

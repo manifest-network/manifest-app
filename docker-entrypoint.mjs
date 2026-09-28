@@ -1,9 +1,10 @@
 import { writeFileSync } from 'node:fs';
 
-// Collect all NEXT_PUBLIC_* environment variables.
+// Collect all non-empty NEXT_PUBLIC_* environment variables. Empty values are skipped so
+// they fall back to the build-time defaults in the client bundle instead of blanking them.
 const runtimeEnv = {};
 for (const [key, value] of Object.entries(process.env)) {
-  if (key.startsWith('NEXT_PUBLIC_')) {
+  if (key.startsWith('NEXT_PUBLIC_') && value) {
     runtimeEnv[key] = value;
   }
 }

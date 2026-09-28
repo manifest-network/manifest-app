@@ -89,7 +89,7 @@ where
 
 ### Docker
 
-The Docker image is environment-agnostic — it is built **once** and configured at runtime via environment variables. No `.env` file is needed at build time.
+The Docker image can be configured at runtime via environment variables, so one image can serve any environment. No `.env` file is needed at build time. If one is present, its `NEXT_PUBLIC_*` values become build-time defaults, and values passed at container start override them. CI still bakes per-environment defaults until every deployment passes its values at runtime.
 
 #### Build
 
@@ -111,4 +111,4 @@ docker run -p 3000:3000 \
   manifest-app
 ```
 
-At container start, `docker-entrypoint.mjs` writes all `NEXT_PUBLIC_*` environment variables into `public/env-config.js` as `window.__ENV__`, which is loaded by the browser before React hydrates. This allows the same image to serve any environment (qa, testnet, mainnet).
+At container start, `docker-entrypoint.mjs` writes all non-empty `NEXT_PUBLIC_*` environment variables to `/tmp/env-config.js` as `window.__ENV__`. The browser loads that file as `/env-config.js` before React hydrates. Only `/tmp` needs to be writable, so the container can run with a read-only root filesystem (e.g. `--read-only --tmpfs /tmp`).
