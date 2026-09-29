@@ -58,6 +58,25 @@ describe('Web3AuthContext', () => {
     jest.clearAllMocks();
   });
 
+  test('disables Web3Auth SDK analytics', () => {
+    // Guards against loading Segment's analytics.js (and its remotely configured plugins)
+    // into the wallet origin, where social-login key material lives.
+    const makeWeb3AuthWallets = jest.fn().mockReturnValue([]);
+    mockModule.force('@cosmos-kit/web3auth', () => ({ makeWeb3AuthWallets }));
+
+    render(
+      <Web3AuthProvider>
+        <div />
+      </Web3AuthProvider>
+    );
+
+    expect(makeWeb3AuthWallets).toHaveBeenCalledWith(
+      expect.objectContaining({
+        client: expect.objectContaining({ disableAnalytics: true }),
+      })
+    );
+  });
+
   test('provides resetWeb3AuthClients function', () => {
     const TestComponent = () => {
       const context = React.useContext(Web3AuthContext);
