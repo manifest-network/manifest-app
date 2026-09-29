@@ -120,6 +120,9 @@ export const Web3AuthProvider = ({ children }: { children: ReactNode }) => {
           web3AuthNetwork: env.web3AuthNetwork as WEB3AUTH_NETWORK_TYPE, // Safe to cast since we validate the env vars in config/env.ts
           sessionTime: 60 * 60 * 24 * 7, // 7 days in s
           mfaLevel: 'optional',
+          // Don't load Web3Auth's Segment analytics (analytics.js plus remotely configured
+          // plugins) into the wallet origin, where social-login key material lives.
+          disableAnalytics: true,
         },
         promptSign: async (_, signData) =>
           new Promise(resolve =>
