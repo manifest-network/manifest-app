@@ -104,7 +104,7 @@ Pass `NEXT_PUBLIC_*` variables at container start:
 ```bash
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_CHAIN=manifest \
-  -e NEXT_PUBLIC_CHAIN_ID=manifest-1 \
+  -e NEXT_PUBLIC_CHAIN_ID=manifest-ledger-mainnet \
   -e NEXT_PUBLIC_CHAIN_TIER=mainnet \
   -e NEXT_PUBLIC_RPC_URL=https://rpc.manifest.example.com \
   -e NEXT_PUBLIC_API_URL=https://api.manifest.example.com \
