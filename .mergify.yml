@@ -3,24 +3,14 @@ queue_rules:
     # What must be true to enter the queue
     queue_conditions:
       - check-success=build
-      - or:
-          - and:
-              - check-success=prettier
-              - check-success=test
-          # Until the CI hardening PR (ENG-1098) is promoted to these branches, their Prettier
-          # and test jobs still report as `build`. Remove each line once it is.
-          - base=release/testnet
-          - base=release/mainnet
+      - check-success=prettier
+      - check-success=test
       - -conflict
     # What must be true to merge once at queue head
     merge_conditions:
       - check-success=build
-      - or:
-          - and:
-              - check-success=prettier
-              - check-success=test
-          - base=release/testnet
-          - base=release/mainnet
+      - check-success=prettier
+      - check-success=test
     merge_method: squash
 
 pull_request_rules:
