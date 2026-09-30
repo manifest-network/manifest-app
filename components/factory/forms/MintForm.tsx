@@ -10,7 +10,14 @@ import { NumberInput, TextInput } from '@/components/react/inputs';
 import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
-import { ExtendedMetadataSDKType, parseNumberToBigInt, shiftDigits, truncateString } from '@/utils';
+import {
+  ExtendedMetadataSDKType,
+  amountPrecisionError,
+  getDisplayExponent,
+  parseNumberToBigInt,
+  shiftDigits,
+  truncateString,
+} from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 export default function MintForm({
@@ -39,9 +46,20 @@ export default function MintForm({
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
   const isMFX = denom.base === 'umfx';
+  const exponent = getDisplayExponent(denom);
 
   const MintSchema = Yup.object().shape({
-    amount: Yup.number().positive('Amount must be positive').required('Amount is required'),
+    amount: Yup.number()
+      .positive('Amount must be positive')
+      .required('Amount is required')
+      // Check the amount as typed. Yup.number() has already made `value` a double, which drops
+      // the fraction of large amounts (4503599627370496.5 becomes 4503599627370496).
+      .test('display-precision', 'Too many decimal places', function (value) {
+        const typed = this.originalValue ?? value;
+        const message =
+          typed === undefined || typed === '' ? undefined : amountPrecisionError(typed, exponent);
+        return message ? this.createError({ message }) : true;
+      }),
     recipient: Yup.string().required('Recipient address is required').manifestAddress(),
   });
 
@@ -51,7 +69,7 @@ export default function MintForm({
     }
 
     try {
-      const amountInBaseUnits = parseNumberToBigInt(amount).toString();
+      const amountInBaseUnits = parseNumberToBigInt(amount, exponent).toString();
       let msg;
 
       msg = isGroup
@@ -124,8 +142,8 @@ export default function MintForm({
                 </p>
                 <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-4 rounded-md">
                   <p className="font-semibold text-md truncate text-black dark:text-white">
-                    {Number(shiftDigits(totalSupply, -6)).toLocaleString(undefined, {
-                      maximumFractionDigits: 6,
+                    {Number(shiftDigits(totalSupply, -exponent)).toLocaleString(undefined, {
+                      maximumFractionDigits: exponent,
                     })}{' '}
                   </p>
                 </div>

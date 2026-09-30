@@ -6,7 +6,7 @@ import { DenomImage, ModalDialog } from '@/components';
 import { DenomDisplay } from '@/components/factory';
 import { TruncatedAddressWithCopy } from '@/components/react/addressCopy';
 import env from '@/config/env';
-import { formatLargeNumber, shiftDigits } from '@/utils';
+import { formatLargeNumber, getDisplayExponent, shiftDigits } from '@/utils';
 
 export interface DenomInfoModalProps {
   open: boolean;
@@ -23,9 +23,7 @@ export const DenomInfoModal: React.FC<DenomInfoModalProps> = ({
 }) => {
   let nameIsAddress = denom?.name?.startsWith('factory/manifest1') ?? false;
 
-  const units = denom?.denom_units;
-  const denomUnit = units?.[units.length - 1];
-  const exponent = denomUnit?.exponent ?? 6;
+  const exponent = getDisplayExponent(denom);
 
   const [tooltipAmount] = React.useMemo(() => {
     const amount = shiftDigits(balance ?? 0, -exponent);

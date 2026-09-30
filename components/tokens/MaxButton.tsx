@@ -1,8 +1,9 @@
+import BigNumber from 'bignumber.js';
 import React from 'react';
 
 import { HelpIcon } from '@/components';
 import { MFX_FEES_CONSTANT, useEstimateMaxTokenAmount } from '@/hooks';
-import { CombinedBalanceInfo, isMfxToken } from '@/utils';
+import { CombinedBalanceInfo, getDisplayExponent, isMfxToken } from '@/utils';
 
 export interface MaxButtonProps {
   token: CombinedBalanceInfo | null;
@@ -22,8 +23,10 @@ export const MaxButton = ({ token, setTokenAmount, disabled }: MaxButtonProps) =
         if (!token) return;
 
         const amount = estimateMax(token);
-        const decimals = token.metadata?.denom_units[1]?.exponent ?? 6;
-        const formattedAmount = amount.toFixed(decimals).replace(/\.?0+$/, '');
+        // toFixed() without arguments drops trailing zeros but, unlike a regex, never strips
+        // the zeros of an integer amount (a display exponent of 0).
+        const decimals = getDisplayExponent(token.metadata);
+        const formattedAmount = amount.decimalPlaces(decimals, BigNumber.ROUND_DOWN).toFixed();
 
         setTokenAmount(formattedAmount);
       }}

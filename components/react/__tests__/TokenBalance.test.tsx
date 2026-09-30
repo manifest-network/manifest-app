@@ -3,7 +3,7 @@ import { afterEach, describe, expect, test } from 'bun:test';
 
 import { TokenBalance } from '@/components';
 import { formatComponent } from '@/tests';
-import { mockDenomMeta1 } from '@/tests/data';
+import { mockDenomMeta1, mockOneUnitDenomMeta } from '@/tests/data';
 import { unsafeConvertTokenBase } from '@/utils';
 
 describe('TokenBalance', () => {
@@ -56,5 +56,38 @@ describe('TokenBalance', () => {
     );
 
     expect(document.querySelector('.tooltip')).not.toBeInTheDocument();
+  });
+});
+
+describe('TokenBalance display unit', () => {
+  afterEach(cleanup);
+
+  test('shows a one-unit token in display units, not base units', () => {
+    render(<TokenBalance token={{ amount: '5000000', metadata: mockOneUnitDenomMeta }} />);
+
+    // Its metadata has only the base unit; the UI still uses 6 decimals (it showed "5M").
+    expect(screen.getByText('5')).toBeInTheDocument();
+  });
+
+  test('uses the unit named by display, even when it is not the last one', () => {
+    render(
+      <TokenBalance
+        token={{
+          amount: '1234000',
+          metadata: {
+            ...mockDenomMeta1,
+            display: 'mtoken1',
+            denom_units: [
+              { denom: 'utoken1', exponent: 0, aliases: [] },
+              { denom: 'mtoken1', exponent: 3, aliases: [] },
+              { denom: 'token1', exponent: 6, aliases: [] },
+            ],
+          },
+        }}
+      />
+    );
+
+    expect(screen.getByText('1,234')).toBeInTheDocument();
+    expect(screen.getByText('MTOKEN1')).toBeInTheDocument();
   });
 });
