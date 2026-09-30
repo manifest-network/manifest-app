@@ -54,10 +54,10 @@ describe('useEstimateMaxTokenAmount', () => {
 });
 
 describe('useEstimateMaxTokenAmount display exponent', () => {
-  test('keeps one-unit token amounts in base units', () => {
+  test('gives one-unit tokens in display units, not base units', () => {
     const estimateMax = useEstimateMaxTokenAmount();
 
-    // One-unit metadata has exponent 0: the whole balance, not balance / 10^6.
-    expect(estimateMax(mockOneUnitBalance).toFixed()).toBe('5000000');
+    // 5,000,000 base units of a token whose metadata has only its base unit: 5 tokens.
+    expect(estimateMax(mockOneUnitBalance).toFixed()).toBe('5');
   });
 });

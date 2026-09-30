@@ -64,11 +64,13 @@ export function formatDenom(denom: string): string {
 }
 
 /**
- * The unit a token's amounts are shown and entered in: the denom unit named by
- * `metadata.display`, or the unit with the largest exponent if none is. A display amount is
- * the base amount shifted by `exponent` digits.
+ * The unit a token's amounts are shown and entered in. The chain works in base units (umfx,
+ * upwr); the UI never does. A display amount is the base amount shifted by `exponent` digits.
  *
- * Without metadata (or denom units), assume 6 decimals.
+ * The display unit is the denom unit named by `metadata.display`, or else the unit with the
+ * largest exponent, provided its exponent is above 0. Metadata that declares no unit above the
+ * base (the default tokenfactory and IBC give new denoms), or no metadata at all, gets 6
+ * decimals, like MFX and PWR. `denom` names the unit found, for labels.
  *
  * Everything that shows, validates or converts a user-facing amount must use this, so the
  * number a user types means the same thing as the number they see.
@@ -77,12 +79,15 @@ export function getDisplayUnit(
   metadata?: Pick<MetadataSDKType, 'denom_units' | 'display'> | null
 ): { denom?: string; exponent: number } {
   const units = metadata?.denom_units ?? [];
-  if (units.length === 0) return { exponent: 6 };
+  const named = units.find(u => u.denom === metadata?.display);
+  const largest = units.reduce<(typeof units)[number] | undefined>(
+    (max, u) => (max && (max.exponent ?? 0) >= (u.exponent ?? 0) ? max : u),
+    undefined
+  );
+  const unit = named && (named.exponent ?? 0) > 0 ? named : largest;
 
-  const unit =
-    units.find(u => u.denom === metadata?.display) ??
-    units.reduce((max, u) => ((u.exponent ?? 0) > (max.exponent ?? 0) ? u : max));
-  return { denom: unit.denom, exponent: unit.exponent ?? 0 };
+  if (unit && (unit.exponent ?? 0) > 0) return { denom: unit.denom, exponent: unit.exponent };
+  return { denom: unit?.denom, exponent: 6 };
 }
 
 /** The decimal exponent of a token's display unit. See {@link getDisplayUnit}. */

@@ -106,23 +106,25 @@ describe('SendForm amounts', () => {
     tx.mockClear();
   });
 
-  test('sends the typed amount of a one-unit token, not 10^6 times it', async () => {
+  test('shows and sends a one-unit token in display units, like MFX', async () => {
     renderWithProps({ balances: [mockOneUnitBalance] });
 
+    // 5,000,000 base units show as 5 (they showed as "5M"), and 1.5 sends 1,500,000.
+    expect(screen.getByText('5')).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText('Enter address'), {
       target: { value: manifestAddr2 },
     });
-    fireEvent.change(screen.getByPlaceholderText('0.00'), { target: { value: '1' } });
+    fireEvent.change(screen.getByPlaceholderText('0.00'), { target: { value: '1.5' } });
     const sendButton = screen.getByRole('button', { name: 'send-btn' });
     await waitFor(() => expect(sendButton).not.toBeDisabled());
     fireEvent.click(sendButton);
 
     await waitFor(() => expect(tx).toHaveBeenCalledTimes(1));
     const [msgs] = tx.mock.calls[0];
-    expect(msgs[0].value.amount).toEqual([{ denom: mockOneUnitBalance.base, amount: '1' }]);
+    expect(msgs[0].value.amount).toEqual([{ denom: mockOneUnitBalance.base, amount: '1500000' }]);
   });
 
-  test('rejects fractional amounts of a one-unit token instead of rounding them', async () => {
+  test('rejects more decimals than the display unit has instead of rounding them', async () => {
     renderWithProps({ balances: [mockOneUnitBalance] });
     fireEvent.change(screen.getByPlaceholderText('Enter address'), {
       target: { value: manifestAddr2 },
@@ -130,12 +132,10 @@ describe('SendForm amounts', () => {
     const amountInput = screen.getByPlaceholderText('0.00');
     const sendButton = screen.getByRole('button', { name: 'send-btn' });
 
-    // 1.5 used to sign "2" and 0.1 used to sign "0".
-    for (const amount of ['1.5', '0.1']) {
-      fireEvent.change(amountInput, { target: { value: amount } });
-      expect(await screen.findByText('Amount must be a whole number')).toBeInTheDocument();
-      expect(sendButton).toBeDisabled();
-    }
+    // Seven decimals of a 6-decimal token would be rounded to a whole base unit.
+    fireEvent.change(amountInput, { target: { value: '0.0000005' } });
+    expect(await screen.findByText('Amount can have at most 6 decimal places')).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
     fireEvent.click(sendButton);
     expect(tx).not.toHaveBeenCalled();
   });

@@ -46,18 +46,19 @@ describe('getDisplayUnit', () => {
     ).toEqual({ denom: 'mtok', exponent: 3 });
   });
 
-  test('gives one-unit metadata (the tokenfactory default) exponent 0', () => {
+  test('never uses the base unit: one-unit metadata gets 6 decimals, like MFX and PWR', () => {
+    // Tokenfactory and IBC give new denoms metadata with only the base unit (exponent 0).
     expect(getDisplayUnit(mockOneUnitDenomMeta)).toEqual({
       denom: mockOneUnitDenomMeta.base,
-      exponent: 0,
+      exponent: 6,
     });
-    expect(getDisplayExponent({ ...mockOneUnitDenomMeta, display: '' })).toBe(0);
+    expect(getDisplayExponent({ ...mockOneUnitDenomMeta, display: '' })).toBe(6);
   });
 
-  test('keeps an exponent of 0 on the display unit', () => {
+  test('skips a display unit of exponent 0 for a larger unit', () => {
     expect(
-      getDisplayExponent({ display: 'utok', denom_units: units(['utok', 0], ['tok', 6]) })
-    ).toBe(0);
+      getDisplayUnit({ display: 'utok', denom_units: units(['utok', 0], ['tok', 6]) })
+    ).toEqual({ denom: 'tok', exponent: 6 });
   });
 
   test('falls back to the largest exponent when display names no unit', () => {
@@ -76,8 +77,8 @@ describe('formatAmount', () => {
   test('shifts by the display exponent of the matching metadata', () => {
     const metadata = [mockDenomMeta1, mockOneUnitDenomMeta];
     expect(formatAmount('1500000', mockDenomMeta1.base, metadata)).toBe(1.5);
-    // One-unit metadata: amounts are already in display units.
-    expect(formatAmount('5000000', mockOneUnitDenomMeta.base, metadata)).toBe(5000000);
+    // One-unit metadata: shown in display units (6 decimals), never base units.
+    expect(formatAmount('5000000', mockOneUnitDenomMeta.base, metadata)).toBe(5);
     // No metadata for the denom: assume 6.
     expect(formatAmount('1500000', 'uunknown', metadata)).toBe(1.5);
   });

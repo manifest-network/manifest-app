@@ -41,12 +41,17 @@ describe('MaxButton', () => {
     expect(document.querySelector('.tooltip')).toBeInTheDocument();
   });
 
-  test('keeps the zeros of an integer amount', () => {
+  test('gives a one-unit token in display units, keeping the zeros of whole amounts', () => {
     let amount = '';
-    render(<MaxButton token={mockOneUnitBalance} setTokenAmount={a => (amount = a)} />);
+    render(
+      <MaxButton
+        token={{ ...mockOneUnitBalance, amount: '5000000000000' }}
+        setTokenAmount={a => (amount = a)}
+      />
+    );
 
     screen.getByText('MAX').click();
-    // One-unit token: exponent 0, so MAX is the whole balance as an integer.
+    // 5,000,000,000,000 base units at 6 decimals.
     expect(amount).toBe('5000000');
   });
 });

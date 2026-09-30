@@ -118,6 +118,9 @@ describe('MintForm Component', () => {
 });
 
 describe('MintForm amounts', () => {
+  // The form shows the amount's validation error in a tooltip once the field is touched.
+  const amountError = (message: string) => document.querySelector(`[data-tip="${message}"]`);
+
   const tx = jest.fn().mockResolvedValue({});
 
   beforeEach(() => {
@@ -133,11 +136,12 @@ describe('MintForm amounts', () => {
     tx.mockClear();
   });
 
-  test('mints the typed amount of a one-unit token, not 10^6 times it', async () => {
-    const denom = { ...mockOneUnitDenomMeta, balance: '5000000', totalSupply: '5000000' };
-    renderWithProps({ denom, totalSupply: '5000000' });
+  test('shows and mints a one-unit token in display units, like MFX', async () => {
+    const supply = '5000000000000';
+    const denom = { ...mockOneUnitDenomMeta, balance: supply, totalSupply: supply };
+    renderWithProps({ denom, totalSupply: supply });
 
-    // The supply is shown in the unit the amount is typed in.
+    // The supply is shown in the unit the amount is typed in: 5,000,000 tokens.
     expect(screen.getAllByText('5,000,000').length).toBeGreaterThan(0);
 
     fireEvent.change(screen.getByLabelText('AMOUNT'), { target: { value: '1' } });
@@ -148,20 +152,24 @@ describe('MintForm amounts', () => {
 
     await waitFor(() => expect(tx).toHaveBeenCalledTimes(1));
     const [msgs] = tx.mock.calls[0];
-    expect(msgs[0].value.amount).toEqual({ denom: denom.base, amount: '1' });
+    expect(msgs[0].value.amount).toEqual({ denom: denom.base, amount: '1000000' });
   });
 
-  test('rejects fractional amounts of a one-unit token', async () => {
+  test('rejects more decimals than the display unit has', async () => {
     const denom = { ...mockOneUnitDenomMeta, balance: '5000000', totalSupply: '5000000' };
     renderWithProps({ denom, totalSupply: '5000000' });
     const amountInput = screen.getByLabelText('AMOUNT');
     fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
     const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
 
-    fireEvent.change(amountInput, { target: { value: '2' } });
+    fireEvent.change(amountInput, { target: { value: '0.000001' } });
     await waitFor(() => expect(mintButton).toBeEnabled());
-    fireEvent.change(amountInput, { target: { value: '1.5' } });
-    await waitFor(() => expect(mintButton).toBeDisabled());
+    fireEvent.change(amountInput, { target: { value: '0.0000005' } });
+    fireEvent.blur(amountInput);
+    await waitFor(() =>
+      expect(amountError('Amount can have at most 6 decimal places')).not.toBeNull()
+    );
+    expect(mintButton).toBeDisabled();
   });
 
   test('checks the typed amount, not its rounded double', async () => {
@@ -172,10 +180,15 @@ describe('MintForm amounts', () => {
     fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
     const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
 
-    fireEvent.change(amountInput, { target: { value: '4503599627370496' } });
+    fireEvent.change(amountInput, { target: { value: '100000000000' } });
     await waitFor(() => expect(mintButton).toBeEnabled());
-    // As a double this is 4503599627370496, but it would be signed as 4503599627370497.
-    fireEvent.change(amountInput, { target: { value: '4503599627370496.5' } });
-    await waitFor(() => expect(mintButton).toBeDisabled());
+    // As a double this is 100000000000 (no decimals), but it has 7 and would be signed
+    // rounded up, as 100000000000000001 base units.
+    fireEvent.change(amountInput, { target: { value: '100000000000.0000005' } });
+    fireEvent.blur(amountInput);
+    await waitFor(() =>
+      expect(amountError('Amount can have at most 6 decimal places')).not.toBeNull()
+    );
+    expect(mintButton).toBeDisabled();
   });
 });
