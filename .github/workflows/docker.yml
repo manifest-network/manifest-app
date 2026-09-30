@@ -8,47 +8,84 @@ on:
       - release/mainnet
     tags:
       - 'v*.*.*' # release tags
+  # Build without publishing when a PR changes what goes into the image, so a broken image
+  # shows up before it reaches a release branch.
+  pull_request:
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - docker-entrypoint.mjs
+      - next.config.mjs
+      - package.json
+      - bun.lock
+      - scripts/update-version.js
+      - .github/workflows/docker.yml
+      - .github/workflows/_docker-build.yml
 
 concurrency:
   group: docker-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-  attestations: write
+permissions: {}
 
+# The environment secrets used by the build (NEXT_PUBLIC_WALLETCONNECT_KEY and
+# NEXT_PUBLIC_WEB3AUTH_CLIENT_ID) reach _docker-build.yml through its `environment:`, so no
+# repository secrets are passed down. The publishing jobs grant what its push job needs.
 jobs:
+  pr:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/_docker-build.yml
+    permissions:
+      contents: read
+    with:
+      image_tag: pr
+      push: false
+
   qa:
     if: github.ref == 'refs/heads/release/qa'
     uses: ./.github/workflows/_docker-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     with:
       environment: qa
       image_tag: qa
-    secrets: inherit
 
   testnet:
     if: github.ref == 'refs/heads/release/testnet'
     uses: ./.github/workflows/_docker-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     with:
       environment: testnet
       image_tag: testnet
-    secrets: inherit
 
   mainnet:
     if: github.ref == 'refs/heads/release/mainnet'
     uses: ./.github/workflows/_docker-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     with:
       environment: mainnet
       image_tag: mainnet
-    secrets: inherit
 
   release_tag:
     if: startsWith(github.ref, 'refs/tags/')
     uses: ./.github/workflows/_docker-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     with:
       environment: mainnet
       image_tag: mainnet
       release_tag: ${{ github.ref_name }} # e.g., v1.2.3
-    secrets: inherit
