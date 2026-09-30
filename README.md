@@ -89,13 +89,15 @@ where
 
 ### Docker
 
-The Docker image can be configured at runtime via environment variables, so one image can serve any environment. No `.env` file is needed at build time. If one is present, its `NEXT_PUBLIC_*` values become build-time defaults, and values passed at container start override them. CI still bakes per-environment defaults until every deployment passes its values at runtime.
+The Docker image can be configured at runtime via environment variables, so one image can serve any environment. No `.env` file is needed at build time. If one is present, its `NEXT_PUBLIC_*` values become build-time defaults, and values passed at container start override them. Other `.env*` files, such as `.env.local`, are kept out of the build (`.dockerignore`). CI still bakes per-environment defaults until every deployment passes its values at runtime.
 
 #### Build
 
 ```bash
-docker build -t manifest-app .
+docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) -t manifest-app .
 ```
+
+`.git` is not part of the build context, so `GIT_COMMIT` supplies the commit for the version shown in the app. Without it, the version ends in `-unknown`.
 
 #### Run
 

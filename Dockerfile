@@ -1,6 +1,9 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM oven/bun:1.2-slim AS base
+# Pinned by digest; Dependabot proposes updates. This is the image the old oven/bun:1.2-slim
+# tag pointed to. That tag no longer gets updates; moving to a maintained base is a
+# separate change.
+FROM oven/bun:1.2.23-slim@sha256:9654aa08d4b7e778b84148921bab8edc1409c8d0a85707b8c801dd7cf1878971 AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -8,15 +11,9 @@ WORKDIR /app
 
 RUN apt update && apt install -y --no-install-recommends build-essential python3
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* bun.lock* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  elif [ -f bun.lockb ] || [ -f bun.lock ]; then bun install --no-save; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install exactly what bun.lock lists; fail if it is out of date with package.json.
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 
 # Rebuild the source code only when needed
@@ -24,8 +21,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-RUN apt update && apt install -y git
 
 # CI writes a .env with per-environment build-time defaults; a local build without
 # one gets an empty file so next build still succeeds. NEXT_PUBLIC_* values passed
@@ -37,13 +32,10 @@ RUN touch .env
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build-release; \
-  elif [ -f package-lock.json ]; then npm run build-release; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build-release; \
-  elif [ -f bun.lockb ] || [ -f bun.lock ]; then bun run build-release; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# .git is not in the build context (.dockerignore), so the commit that goes into the
+# version string arrives as a build arg (scripts/update-version.js).
+ARG GIT_COMMIT
+RUN bun run build-release
 
 # Production image, copy all the files and run next
 FROM base AS runner
