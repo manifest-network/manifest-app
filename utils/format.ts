@@ -1,4 +1,5 @@
 import { MetadataSDKType } from '@manifest-network/manifestjs/dist/codegen/cosmos/bank/v1beta1/bank';
+import BigNumber from 'bignumber.js';
 
 import env from '@/config/env';
 import { shiftDigits } from '@/utils/maths';
@@ -89,6 +90,21 @@ export function getDisplayExponent(
   metadata?: Pick<MetadataSDKType, 'denom_units' | 'display'> | null
 ): number {
   return getDisplayUnit(metadata).exponent;
+}
+
+/**
+ * The validation message for an amount with more decimal places than the display `exponent`
+ * allows, or undefined if it fits. Converting such an amount to base units would silently round
+ * it (`1.5` of a token with exponent 0 would become 2 base units).
+ */
+export function amountPrecisionError(
+  amount: BigNumber.Value,
+  exponent: number
+): string | undefined {
+  if ((new BigNumber(amount).decimalPlaces() ?? 0) <= exponent) return undefined;
+  return exponent === 0
+    ? 'Amount must be a whole number'
+    : `Amount can have at most ${exponent} decimal places`;
 }
 
 export function formatAmount(amount: string, denom: string, metadata?: MetadataSDKType[]) {

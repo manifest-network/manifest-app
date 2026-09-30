@@ -11,6 +11,7 @@ import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
 import {
   ExtendedMetadataSDKType,
+  amountPrecisionError,
   getDisplayExponent,
   parseNumberToBigInt,
   shiftDigits,
@@ -56,6 +57,10 @@ export default function BurnForm({
       .required('Amount is required')
       .test('max-balance', 'Amount exceeds balance', function (value) {
         return value <= Number(shiftDigits(balance, -exponent));
+      })
+      .test('display-precision', 'Too many decimal places', function (value) {
+        const message = value === undefined ? undefined : amountPrecisionError(value, exponent);
+        return message ? this.createError({ message }) : true;
       }),
     recipient: Yup.string().required('Recipient address is required').manifestAddress(),
   });

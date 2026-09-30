@@ -1,7 +1,13 @@
 import { describe, expect, test } from 'bun:test';
 
 import { mockDenomMeta1, mockOneUnitDenomMeta } from '@/tests/data';
-import { formatAmount, formatLargeNumber, getDisplayExponent, getDisplayUnit } from '@/utils';
+import {
+  amountPrecisionError,
+  formatAmount,
+  formatLargeNumber,
+  getDisplayExponent,
+  getDisplayUnit,
+} from '@/utils';
 
 describe('formatLargeNumber', () => {
   test('should work', () => {
@@ -74,5 +80,21 @@ describe('formatAmount', () => {
     expect(formatAmount('5000000', mockOneUnitDenomMeta.base, metadata)).toBe(5000000);
     // No metadata for the denom: assume 6.
     expect(formatAmount('1500000', 'uunknown', metadata)).toBe(1.5);
+  });
+});
+
+describe('amountPrecisionError', () => {
+  test('accepts amounts that fit the display exponent', () => {
+    expect(amountPrecisionError('1', 0)).toBeUndefined();
+    expect(amountPrecisionError('1.0', 0)).toBeUndefined();
+    expect(amountPrecisionError('0.000001', 6)).toBeUndefined();
+    expect(amountPrecisionError(2, 0)).toBeUndefined();
+  });
+
+  test('rejects amounts that would be rounded to base units', () => {
+    expect(amountPrecisionError('1.5', 0)).toBe('Amount must be a whole number');
+    expect(amountPrecisionError('0.1', 0)).toBe('Amount must be a whole number');
+    expect(amountPrecisionError(1.5, 0)).toBe('Amount must be a whole number');
+    expect(amountPrecisionError('0.0000001', 6)).toBe('Amount can have at most 6 decimal places');
   });
 });

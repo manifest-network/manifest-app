@@ -121,4 +121,22 @@ describe('SendForm amounts', () => {
     const [msgs] = tx.mock.calls[0];
     expect(msgs[0].value.amount).toEqual([{ denom: mockOneUnitBalance.base, amount: '1' }]);
   });
+
+  test('rejects fractional amounts of a one-unit token instead of rounding them', async () => {
+    renderWithProps({ balances: [mockOneUnitBalance] });
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: manifestAddr2 },
+    });
+    const amountInput = screen.getByPlaceholderText('0.00');
+    const sendButton = screen.getByRole('button', { name: 'send-btn' });
+
+    // 1.5 used to sign "2" and 0.1 used to sign "0".
+    for (const amount of ['1.5', '0.1']) {
+      fireEvent.change(amountInput, { target: { value: amount } });
+      expect(await screen.findByText('Amount must be a whole number')).toBeInTheDocument();
+      expect(sendButton).toBeDisabled();
+    }
+    fireEvent.click(sendButton);
+    expect(tx).not.toHaveBeenCalled();
+  });
 });

@@ -150,4 +150,17 @@ describe('MintForm amounts', () => {
     const [msgs] = tx.mock.calls[0];
     expect(msgs[0].value.amount).toEqual({ denom: denom.base, amount: '1' });
   });
+
+  test('rejects fractional amounts of a one-unit token', async () => {
+    const denom = { ...mockOneUnitDenomMeta, balance: '5000000', totalSupply: '5000000' };
+    renderWithProps({ denom, totalSupply: '5000000' });
+    const amountInput = screen.getByLabelText('AMOUNT');
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+
+    fireEvent.change(amountInput, { target: { value: '2' } });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    fireEvent.change(amountInput, { target: { value: '1.5' } });
+    await waitFor(() => expect(mintButton).toBeDisabled());
+  });
 });

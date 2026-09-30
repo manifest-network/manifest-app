@@ -12,6 +12,7 @@ import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
 import {
   ExtendedMetadataSDKType,
+  amountPrecisionError,
   getDisplayExponent,
   parseNumberToBigInt,
   shiftDigits,
@@ -48,7 +49,13 @@ export default function MintForm({
   const exponent = getDisplayExponent(denom);
 
   const MintSchema = Yup.object().shape({
-    amount: Yup.number().positive('Amount must be positive').required('Amount is required'),
+    amount: Yup.number()
+      .positive('Amount must be positive')
+      .required('Amount is required')
+      .test('display-precision', 'Too many decimal places', function (value) {
+        const message = value === undefined ? undefined : amountPrecisionError(value, exponent);
+        return message ? this.createError({ message }) : true;
+      }),
     recipient: Yup.string().required('Recipient address is required').manifestAddress(),
   });
 
