@@ -79,3 +79,21 @@ pull_request_rules:
     actions:
       queue:
         name: default
+
+# Release branches need no approval, and only Mergify can merge into them. So the commands that
+# can put code there are limited to admins: `copy` works on unmerged PRs, and the rules above
+# auto-merge any release PR Mergify authors. Everyone else promotes with the promote:* labels,
+# which only backport merged, reviewed PRs from main.
+commands_restrictions:
+  copy:
+    conditions:
+      - sender-permission >= admin
+  backport:
+    conditions:
+      - sender-permission >= admin
+  queue:
+    conditions:
+      - sender-permission >= admin
+  requeue:
+    conditions:
+      - sender-permission >= admin
