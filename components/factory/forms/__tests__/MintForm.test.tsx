@@ -163,4 +163,19 @@ describe('MintForm amounts', () => {
     fireEvent.change(amountInput, { target: { value: '1.5' } });
     await waitFor(() => expect(mintButton).toBeDisabled());
   });
+
+  test('checks the typed amount, not its rounded double', async () => {
+    const supply = '5000000000000000';
+    const denom = { ...mockOneUnitDenomMeta, balance: supply, totalSupply: supply };
+    renderWithProps({ denom, totalSupply: supply });
+    const amountInput = screen.getByLabelText('AMOUNT');
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+
+    fireEvent.change(amountInput, { target: { value: '4503599627370496' } });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    // As a double this is 4503599627370496, but it would be signed as 4503599627370497.
+    fireEvent.change(amountInput, { target: { value: '4503599627370496.5' } });
+    await waitFor(() => expect(mintButton).toBeDisabled());
+  });
 });

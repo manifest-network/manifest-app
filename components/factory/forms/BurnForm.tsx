@@ -2,6 +2,7 @@ import { cosmos, liftedinit, osmosis } from '@manifest-network/manifestjs';
 import { Any } from '@manifest-network/manifestjs/dist/codegen/google/protobuf/any';
 import { MsgBurnHeldBalance } from '@manifest-network/manifestjs/dist/codegen/liftedinit/manifest/v1/tx';
 import { MsgBurn } from '@manifest-network/manifestjs/dist/codegen/osmosis/tokenfactory/v1beta1/tx';
+import BigNumber from 'bignumber.js';
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 
@@ -56,10 +57,15 @@ export default function BurnForm({
       .positive('Amount must be positive')
       .required('Amount is required')
       .test('max-balance', 'Amount exceeds balance', function (value) {
-        return value <= Number(shiftDigits(balance, -exponent));
+        // Compare the typed amount exactly: as doubles, a large amount can round to the balance.
+        return new BigNumber(this.originalValue ?? value).lte(shiftDigits(balance, -exponent));
       })
+      // Check the amount as typed. Yup.number() has already made `value` a double, which drops
+      // the fraction of large amounts (4503599627370496.5 becomes 4503599627370496).
       .test('display-precision', 'Too many decimal places', function (value) {
-        const message = value === undefined ? undefined : amountPrecisionError(value, exponent);
+        const typed = this.originalValue ?? value;
+        const message =
+          typed === undefined || typed === '' ? undefined : amountPrecisionError(typed, exponent);
         return message ? this.createError({ message }) : true;
       }),
     recipient: Yup.string().required('Recipient address is required').manifestAddress(),

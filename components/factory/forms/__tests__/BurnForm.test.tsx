@@ -129,4 +129,38 @@ describe('BurnForm amounts', () => {
     fireEvent.change(amountInput, { target: { value: '1.5' } });
     await waitFor(() => expect(burnButton).toBeDisabled());
   });
+
+  test('checks the typed amount, not its rounded double', async () => {
+    const balance = '5000000000000000';
+    const denom = { ...mockOneUnitDenomMeta, balance, totalSupply: balance };
+    renderWithProps({ denom, balance, totalSupply: balance });
+    const amountInput = screen.getByPlaceholderText('Enter amount');
+    fireEvent.change(screen.getByPlaceholderText('Recipient address'), {
+      target: { value: manifestAddr1 },
+    });
+    const burnButton = screen.getByLabelText(`burn-btn-${denom.base}`);
+
+    fireEvent.change(amountInput, { target: { value: '4503599627370496' } });
+    await waitFor(() => expect(burnButton).toBeEnabled());
+    // As a double this is 4503599627370496, but it would be signed as 4503599627370497.
+    fireEvent.change(amountInput, { target: { value: '4503599627370496.5' } });
+    await waitFor(() => expect(burnButton).toBeDisabled());
+  });
+
+  test('compares the typed amount to the balance exactly', async () => {
+    // 2^53 + 1 has no exact double: as numbers, the amount and the balance compare equal.
+    const balance = '9007199254740992';
+    const denom = { ...mockOneUnitDenomMeta, balance, totalSupply: balance };
+    renderWithProps({ denom, balance, totalSupply: balance });
+    const amountInput = screen.getByPlaceholderText('Enter amount');
+    fireEvent.change(screen.getByPlaceholderText('Recipient address'), {
+      target: { value: manifestAddr1 },
+    });
+    const burnButton = screen.getByLabelText(`burn-btn-${denom.base}`);
+
+    fireEvent.change(amountInput, { target: { value: balance } });
+    await waitFor(() => expect(burnButton).toBeEnabled());
+    fireEvent.change(amountInput, { target: { value: '9007199254740993' } });
+    await waitFor(() => expect(burnButton).toBeDisabled());
+  });
 });

@@ -52,8 +52,12 @@ export default function MintForm({
     amount: Yup.number()
       .positive('Amount must be positive')
       .required('Amount is required')
+      // Check the amount as typed. Yup.number() has already made `value` a double, which drops
+      // the fraction of large amounts (4503599627370496.5 becomes 4503599627370496).
       .test('display-precision', 'Too many decimal places', function (value) {
-        const message = value === undefined ? undefined : amountPrecisionError(value, exponent);
+        const typed = this.originalValue ?? value;
+        const message =
+          typed === undefined || typed === '' ? undefined : amountPrecisionError(typed, exponent);
         return message ? this.createError({ message }) : true;
       }),
     recipient: Yup.string().required('Recipient address is required').manifestAddress(),

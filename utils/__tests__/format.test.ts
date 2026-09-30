@@ -96,5 +96,7 @@ describe('amountPrecisionError', () => {
     expect(amountPrecisionError('0.1', 0)).toBe('Amount must be a whole number');
     expect(amountPrecisionError(1.5, 0)).toBe('Amount must be a whole number');
     expect(amountPrecisionError('0.0000001', 6)).toBe('Amount can have at most 6 decimal places');
+    // Exact on strings, even where a double would drop the fraction.
+    expect(amountPrecisionError('4503599627370496.5', 0)).toBe('Amount must be a whole number');
   });
 });
