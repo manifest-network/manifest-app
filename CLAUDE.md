@@ -86,4 +86,6 @@ Tailwind CSS v4 + DaisyUI v5. Dark/light theme via `data-theme` attribute. Custo
 
 ## CI
 
-GitHub Actions runs on push and PR: build check, test coverage (uploaded to Codecov), and Prettier formatting check. Docker builds trigger on `release/*` branches and version tags and push one image per environment (`:qa`, `:testnet`, `:mainnet`) to GHCR, with that environment's `NEXT_PUBLIC_*` values baked in as defaults. Values passed at `docker run` time override them.
+GitHub Actions runs on PRs and on pushes to `main` and `release/*`, with three jobs: `build`, `test` (coverage uploaded to Codecov) and `prettier`. Mergify's queue requires all three. Installs use `bun install --frozen-lockfile`, so `bun.lock` must match `package.json`. Actions are pinned by commit SHA, and Dependabot keeps the pins current.
+
+Docker builds trigger on `release/*` branches and version tags and push one image per environment (`:qa`, `:testnet`, `:mainnet`) to GHCR, with that environment's `NEXT_PUBLIC_*` values baked in as defaults. Values passed at `docker run` time override them. The build job has a read-only token and no registry credentials; a separate job that runs no repo code pushes the image and attests it. PRs that change the image inputs (Dockerfile, dependencies, the Docker workflows) build it without pushing.
