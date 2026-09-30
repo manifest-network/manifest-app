@@ -79,3 +79,31 @@ pull_request_rules:
     actions:
       queue:
         name: default
+
+# Release branches need no approval, and only Mergify can merge into them or push to its
+# mergify/** branches (a repository ruleset). So the commands that make Mergify move code there
+# are limited to admins:
+# - `copy` works on unmerged PRs, and the rules above auto-merge any release PR Mergify authors.
+# - `update` and `rebase` bring a PR's base into its head. A PR whose head is a pending
+#   mergify/bp/... branch and whose base is any branch would inject that base into the backport.
+# Everyone else promotes with the promote:* labels, which only backport merged, reviewed PRs from
+# main. (`squash` keeps the head's content, so it stays open.)
+commands_restrictions:
+  copy:
+    conditions:
+      - sender-permission >= admin
+  backport:
+    conditions:
+      - sender-permission >= admin
+  queue:
+    conditions:
+      - sender-permission >= admin
+  requeue:
+    conditions:
+      - sender-permission >= admin
+  update:
+    conditions:
+      - sender-permission >= admin
+  rebase:
+    conditions:
+      - sender-permission >= admin
