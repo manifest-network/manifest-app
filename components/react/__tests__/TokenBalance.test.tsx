@@ -58,3 +58,29 @@ describe('TokenBalance', () => {
     expect(document.querySelector('.tooltip')).not.toBeInTheDocument();
   });
 });
+
+describe('TokenBalance display unit', () => {
+  afterEach(cleanup);
+
+  test('uses the unit named by display, even when it is not the last one', () => {
+    render(
+      <TokenBalance
+        token={{
+          amount: '1234000',
+          metadata: {
+            ...mockDenomMeta1,
+            display: 'mtoken1',
+            denom_units: [
+              { denom: 'utoken1', exponent: 0, aliases: [] },
+              { denom: 'mtoken1', exponent: 3, aliases: [] },
+              { denom: 'token1', exponent: 6, aliases: [] },
+            ],
+          },
+        }}
+      />
+    );
+
+    expect(screen.getByText('1,234')).toBeInTheDocument();
+    expect(screen.getByText('MTOKEN1')).toBeInTheDocument();
+  });
+});

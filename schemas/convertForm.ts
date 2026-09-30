@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 
-import { MFX_TOKEN_BASE } from '@/utils';
+import { MFX_TOKEN_BASE, getDisplayExponent } from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 function amountToBN(amount: string, selectedToken: any) {
-  const exponent = selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
+  const exponent = getDisplayExponent(selectedToken.metadata);
   return new BigNumber(amount).div(Math.pow(10, exponent));
 }
 

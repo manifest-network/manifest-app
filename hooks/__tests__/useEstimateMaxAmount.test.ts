@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 
 import { useEstimateMaxTokenAmount } from '@/hooks';
+import { mockOneUnitBalance } from '@/tests/data';
 import { CombinedBalanceInfo, MFX_TOKEN_BASE, unsafeConvertTokenBase } from '@/utils';
 
 const mockBalances: CombinedBalanceInfo[] = [
@@ -49,5 +50,14 @@ describe('useEstimateMaxTokenAmount', () => {
     expect(estimateMax(mockBalances[0]).toFixed()).toBe('0.001');
     // MFX should have 0.1 subtracted from the max amount.
     expect(estimateMax(mockBalances[1]).toFixed()).toBe('1.9');
+  });
+});
+
+describe('useEstimateMaxTokenAmount display exponent', () => {
+  test('keeps one-unit token amounts in base units', () => {
+    const estimateMax = useEstimateMaxTokenAmount();
+
+    // One-unit metadata has exponent 0: the whole balance, not balance / 10^6.
+    expect(estimateMax(mockOneUnitBalance).toFixed()).toBe('5000000');
   });
 });

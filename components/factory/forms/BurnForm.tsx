@@ -9,7 +9,13 @@ import { NumberInput } from '@/components/react/inputs';
 import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
-import { ExtendedMetadataSDKType, parseNumberToBigInt, shiftDigits, truncateString } from '@/utils';
+import {
+  ExtendedMetadataSDKType,
+  getDisplayExponent,
+  parseNumberToBigInt,
+  shiftDigits,
+  truncateString,
+} from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 interface BurnFormProps {
@@ -41,7 +47,7 @@ export default function BurnForm({
   const { burn } = osmosis.tokenfactory.v1beta1.MessageComposer.withTypeUrl;
 
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
-  const exponent = denom?.denom_units?.find(unit => unit.denom === denom.display)?.exponent || 0;
+  const exponent = getDisplayExponent(denom);
   const isMFX = denom?.base === 'umfx';
 
   const BurnSchema = Yup.object().shape({

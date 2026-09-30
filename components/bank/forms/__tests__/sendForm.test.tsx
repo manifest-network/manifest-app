@@ -1,10 +1,10 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import SendForm from '@/components/bank/forms/sendForm';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
-import { mockBalances } from '@/tests/data';
+import { manifestAddr2, mockBalances, mockOneUnitBalance } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
 function renderWithProps(props = {}) {
@@ -87,5 +87,38 @@ describe('SendForm Component', () => {
     fireEvent.click(dropdownItems[dropdownItems.length - 1]);
     const sendButton = screen.getByRole('button', { name: 'send-btn' });
     expect(sendButton).not.toBeDisabled();
+  });
+});
+
+describe('SendForm amounts', () => {
+  const tx = jest.fn().mockResolvedValue({});
+
+  beforeEach(() => {
+    mockRouter();
+    mockModule('@/hooks', () => ({
+      useTx: () => ({ isSigning: false, tx }),
+      useFeeEstimation: () => ({ estimateFee: jest.fn() }),
+    }));
+  });
+  afterEach(() => {
+    cleanup();
+    clearAllMocks();
+    tx.mockClear();
+  });
+
+  test('sends the typed amount of a one-unit token, not 10^6 times it', async () => {
+    renderWithProps({ balances: [mockOneUnitBalance] });
+
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: manifestAddr2 },
+    });
+    fireEvent.change(screen.getByPlaceholderText('0.00'), { target: { value: '1' } });
+    const sendButton = screen.getByRole('button', { name: 'send-btn' });
+    await waitFor(() => expect(sendButton).not.toBeDisabled());
+    fireEvent.click(sendButton);
+
+    await waitFor(() => expect(tx).toHaveBeenCalledTimes(1));
+    const [msgs] = tx.mock.calls[0];
+    expect(msgs[0].value.amount).toEqual([{ denom: mockOneUnitBalance.base, amount: '1' }]);
   });
 });

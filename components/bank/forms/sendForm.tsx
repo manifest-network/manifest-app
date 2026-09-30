@@ -14,7 +14,7 @@ import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
 import { sendForm } from '@/schemas';
-import { parseNumberToBigInt } from '@/utils';
+import { getDisplayExponent, parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
 
 export default function SendForm({
@@ -59,7 +59,7 @@ export default function SendForm({
 
   const handleSend = async (values: sendForm.SendForm) => {
     try {
-      const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
+      const exponent = getDisplayExponent(values.selectedToken.metadata);
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
 
       const msg = isGroup

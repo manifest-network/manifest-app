@@ -3,8 +3,14 @@ import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import MintForm from '@/components/factory/forms/MintForm';
-import { clearAllMocks, mockRouter } from '@/tests';
-import { mockDenomMeta1, mockFakeMfxDenom, mockMfxDenom } from '@/tests/data';
+import { clearAllMocks, mockModule, mockRouter } from '@/tests';
+import {
+  manifestAddr2,
+  mockDenomMeta1,
+  mockFakeMfxDenom,
+  mockMfxDenom,
+  mockOneUnitDenomMeta,
+} from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
 const mockProps = {
@@ -108,5 +114,40 @@ describe('MintForm Component', () => {
     await waitFor(() => {
       expect(mintButton).toBeEnabled();
     });
+  });
+});
+
+describe('MintForm amounts', () => {
+  const tx = jest.fn().mockResolvedValue({});
+
+  beforeEach(() => {
+    mockRouter();
+    mockModule('@/hooks', () => ({
+      useTx: () => ({ isSigning: false, tx }),
+      useFeeEstimation: () => ({ estimateFee: jest.fn() }),
+    }));
+  });
+  afterEach(() => {
+    cleanup();
+    clearAllMocks();
+    tx.mockClear();
+  });
+
+  test('mints the typed amount of a one-unit token, not 10^6 times it', async () => {
+    const denom = { ...mockOneUnitDenomMeta, balance: '5000000', totalSupply: '5000000' };
+    renderWithProps({ denom, totalSupply: '5000000' });
+
+    // The supply is shown in the unit the amount is typed in.
+    expect(screen.getAllByText('5,000,000').length).toBeGreaterThan(0);
+
+    fireEvent.change(screen.getByLabelText('AMOUNT'), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    fireEvent.click(mintButton);
+
+    await waitFor(() => expect(tx).toHaveBeenCalledTimes(1));
+    const [msgs] = tx.mock.calls[0];
+    expect(msgs[0].value.amount).toEqual({ denom: denom.base, amount: '1' });
   });
 });

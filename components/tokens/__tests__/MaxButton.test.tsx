@@ -4,7 +4,7 @@ import React from 'react';
 
 import { MaxButton } from '@/components';
 import { formatComponent } from '@/tests';
-import { mockBalances, mockMfxBalance } from '@/tests/data';
+import { mockBalances, mockMfxBalance, mockOneUnitBalance } from '@/tests/data';
 
 describe('MaxButton', () => {
   afterEach(cleanup);
@@ -39,5 +39,14 @@ describe('MaxButton', () => {
     screen.getByText('MAX').click();
     expect(amount).toBe(1.9);
     expect(document.querySelector('.tooltip')).toBeInTheDocument();
+  });
+
+  test('keeps the zeros of an integer amount', () => {
+    let amount = '';
+    render(<MaxButton token={mockOneUnitBalance} setTokenAmount={a => (amount = a)} />);
+
+    screen.getByText('MAX').click();
+    // One-unit token: exponent 0, so MAX is the whole balance as an integer.
+    expect(amount).toBe('5000000');
   });
 });
