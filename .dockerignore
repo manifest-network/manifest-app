@@ -1,0 +1,14 @@
+# .git can hold repository credentials (actions/checkout persists them by default), and
+# `next build` runs dependency code. The Dockerfile takes the commit as the GIT_COMMIT build
+# arg instead.
+.git
+
+# Local env files stay out of images. .env is the exception: the CI Docker build writes it
+# with the per-environment build-time defaults (.github/workflows/_docker-build.yml).
+.env*
+!.env
+
+# Host build output. A local node_modules would also overwrite the one installed in the image.
+node_modules
+.next
+coverage
