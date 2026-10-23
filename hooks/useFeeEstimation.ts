@@ -1,8 +1,10 @@
 import { Coin, EncodeObject } from '@cosmjs/proto-signing';
 import { GasPrice, SigningStargateClient, StdFee, calculateFee } from '@cosmjs/stargate';
 import { useChain } from '@cosmos-kit/react';
+import { MsgSend } from '@manifest-network/manifestjs/dist/codegen/cosmos/bank/v1beta1/tx';
+import { MsgExecuteContract } from '@manifest-network/manifestjs/dist/codegen/cosmwasm/wasm/v1/tx';
 import BigNumber from 'bignumber.js';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { useToast } from '@/contexts/toastContext';
 import { MFX_TOKEN_BASE, formatDenom } from '@/utils';
@@ -18,6 +20,7 @@ const DEFAULT_GAS_MODIFIER = 1.5;
  * Sum, by denom, what `address` itself spends in the messages (bank sends and contract
  * funds), so a fee paid in the same denom still has to fit in the balance. Messages
  * sent on behalf of a group policy are not counted: the policy pays, not `address`.
+ * Other message types that spend a fee token (e.g. a token factory burn) are not counted.
  */
 export function messageSpends(address: string, messages: EncodeObject[]): Map<string, BigNumber> {
   const spends = new Map<string, BigNumber>();
@@ -27,12 +30,9 @@ export function messageSpends(address: string, messages: EncodeObject[]): Map<st
     }
   };
   for (const msg of messages) {
-    if (msg.typeUrl === '/cosmos.bank.v1beta1.MsgSend' && msg.value?.fromAddress === address) {
+    if (msg.typeUrl === MsgSend.typeUrl && msg.value?.fromAddress === address) {
       add(msg.value.amount);
-    } else if (
-      msg.typeUrl === '/cosmwasm.wasm.v1.MsgExecuteContract' &&
-      msg.value?.sender === address
-    ) {
+    } else if (msg.typeUrl === MsgExecuteContract.typeUrl && msg.value?.sender === address) {
       add(msg.value.funds);
     }
   }
@@ -77,6 +77,11 @@ export function maxAfterFee(
 export const useFeeEstimation = (chainName: string) => {
   const { getSigningStargateClient, chain } = useChain(chainName);
   const { setToastMessage } = useToast();
+  // The fee estimateMax worked out, reused by estimateFee for a transaction that spends
+  // exactly that max amount, so amount + fee matches the balance.
+  const maxFee = useRef<{ address: string; denom: string; amount: string; fee: StdFee } | null>(
+    null
+  );
 
   const feeTokens = useMemo<FeeToken[]>(() => {
     const tokens = (chain.fees?.fee_tokens ?? []).flatMap(t => {
@@ -114,6 +119,14 @@ export const useFeeEstimation = (chainName: string) => {
     modifier?: number,
     memo?: string
   ) => {
+    const max = maxFee.current;
+    if (
+      max?.address === address &&
+      messageSpends(address, messages).get(max.denom)?.eq(max.amount)
+    ) {
+      return max.fee;
+    }
+
     try {
       const stargateClient = await getClient();
       if (!stargateClient) {
@@ -121,16 +134,8 @@ export const useFeeEstimation = (chainName: string) => {
       }
 
       // Check if account exists before simulation
-      try {
-        const account = await stargateClient.getAccount(address);
-        if (!account) {
-          showError(
-            'Account Error',
-            `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`
-          );
-          return null;
-        }
-      } catch (accountError) {
+      const account = await stargateClient.getAccount(address).catch(() => null);
+      if (!account) {
         showError(
           'Account Error',
           `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`
@@ -176,36 +181,42 @@ export const useFeeEstimation = (chainName: string) => {
   };
 
   /**
-   * Max amount of `denom` that `buildMsg(amount)` can spend. For a fee token, the fee is
-   * paid in that same token and taken out of the amount, so amount + fee is exactly the
-   * balance; send with the returned fee. For any other token it is the whole balance.
+   * Max amount (base units) of fee token `denom` that `buildMsg(amount)` can spend, with
+   * the fee paid in that same token and taken out of the amount, so amount + fee is
+   * exactly the balance. estimateFee then returns that fee for a transaction spending
+   * exactly this amount. Only for fee tokens (see isFeeDenom); other tokens max out at
+   * the whole balance.
    */
   const estimateMax = async (
     address: string,
     denom: string,
     buildMsg: (amount: string) => EncodeObject,
     memo?: string
-  ): Promise<{ amount: string; fee?: StdFee } | null> => {
+  ): Promise<string | null> => {
+    maxFee.current = null;
+    const feeToken = feeTokens.find(t => t.denom === denom);
+    if (!feeToken) {
+      return null;
+    }
     try {
       const stargateClient = await getClient();
       if (!stargateClient) {
         return null;
       }
       const { amount: balance } = await stargateClient.getBalance(address, denom);
-      const feeToken = feeTokens.find(t => t.denom === denom);
-      if (!feeToken || new BigNumber(balance).isZero()) {
-        return { amount: balance };
-      }
-
-      const gasEstimation = await stargateClient.simulate(address, [buildMsg(balance)], memo);
+      const gasEstimation = new BigNumber(balance).isZero()
+        ? 0
+        : await stargateClient.simulate(address, [buildMsg(balance)], memo);
       const max = maxAfterFee(balance, Math.round(gasEstimation * DEFAULT_GAS_MODIFIER), feeToken);
       if (!max) {
         showError(
           'Insufficient Funds for Fees',
           `Your ${formatDenom(denom)} balance is too low to cover the transaction fee.`
         );
+        return null;
       }
-      return max;
+      maxFee.current = { address, denom, ...max };
+      return max.amount;
     } catch (error: any) {
       showError(
         'Fee Estimation Error',

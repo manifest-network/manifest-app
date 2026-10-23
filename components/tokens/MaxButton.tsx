@@ -9,23 +9,13 @@ export interface MaxButtonProps {
   setTokenAmount: (amount: string) => void;
   disabled?: boolean;
   /**
-   * Returns the max amount in base units, or null to leave the amount unchanged.
-   * Defaults to the whole balance.
+   * Returns the max amount in base units after taking out the network fee, or null to
+   * leave the amount unchanged. Without it, MAX is the whole balance.
    */
   estimateMax?: (token: CombinedBalanceInfo) => Promise<string | null>;
-  /**
-   * Whether the network fee is taken out of the max amount.
-   */
-  feeDeducted?: boolean;
 }
 
-export const MaxButton = ({
-  token,
-  setTokenAmount,
-  disabled,
-  estimateMax,
-  feeDeducted,
-}: MaxButtonProps) => {
+export const MaxButton = ({ token, setTokenAmount, disabled, estimateMax }: MaxButtonProps) => {
   const [isEstimating, setIsEstimating] = useState(false);
 
   return (
@@ -54,7 +44,7 @@ export const MaxButton = ({
       }}
     >
       MAX
-      {token && feeDeducted && (
+      {token && estimateMax && (
         <span
           className="tooltip tooltip-primary align-baseline"
           data-tip="Network fee is deducted from the max amount"

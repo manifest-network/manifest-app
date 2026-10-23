@@ -1,4 +1,3 @@
-import { StdFee } from '@cosmjs/stargate';
 import { cosmos } from '@manifest-network/manifestjs';
 import { MsgSend } from '@manifest-network/manifestjs/dist/codegen/cosmos/bank/v1beta1/tx';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,11 +33,6 @@ export default function SendForm({
   admin?: string;
 }>) {
   const [searchTerm, setSearchTerm] = useState('');
-  // Fee worked out by MAX, used as-is when sending exactly that amount so amount + fee
-  // matches the balance.
-  const [maxSend, setMaxSend] = useState<{ denom: string; amount: string; fee: StdFee } | null>(
-    null
-  );
 
   const queryClient = useQueryClient();
 
@@ -91,22 +85,6 @@ export default function SendForm({
           amount: [{ denom, amount }],
         });
 
-  // A group send is paid from the policy while the fee is paid by the proposer, so MAX
-  // is the whole balance there.
-  const estimateMaxSend = isGroup
-    ? undefined
-    : async (token: CombinedBalanceInfo, memo?: string) => {
-        // Simulated as a send to self: the recipient may not be filled in yet.
-        const max = await estimateMax(
-          address,
-          token.base,
-          amount => buildSendMsg(address, token.base, amount),
-          memo
-        );
-        setMaxSend(max?.fee ? { denom: token.base, amount: max.amount, fee: max.fee } : null);
-        return max?.amount ?? null;
-      };
-
   const handleSend = async (values: sendForm.SendForm) => {
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
@@ -119,16 +97,11 @@ export default function SendForm({
         amountInBaseUnits,
         `${values.amount} ${values.selectedToken.metadata?.display}`
       );
-      const maxFee =
-        maxSend && maxSend.denom === denom && maxSend.amount === amountInBaseUnits
-          ? maxSend.fee
-          : null;
 
       await tx([msg], {
         memo: values.memo,
-        fee: maxFee ?? (() => estimateFee(address, [msg])),
+        fee: () => estimateFee(address, [msg]),
         onSuccess: () => {
-          setMaxSend(null);
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
           queryClient.invalidateQueries({ queryKey: ['getMessagesForAddress'] });
@@ -251,17 +224,24 @@ export default function SendForm({
                         token={values.selectedToken}
                         setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
                         disabled={isSigning}
+                        // A group send is paid from the policy while the proposer pays the fee, so
+                        // MAX is the whole balance there. Simulated as a send to self, since the
+                        // recipient may not be filled in yet.
                         estimateMax={
-                          estimateMaxSend && (token => estimateMaxSend(token, values.memo))
+                          !isGroup && isFeeDenom(values.selectedToken.base)
+                            ? token =>
+                                estimateMax(
+                                  address,
+                                  token.base,
+                                  amount => buildSendMsg(address, token.base, amount),
+                                  values.memo
+                                )
+                            : undefined
                         }
-                        feeDeducted={!isGroup && isFeeDenom(values.selectedToken.base)}
                       />
                     </div>
                     {errors.amount && (
                       <div className="text-red-500 text-xs text-right">{errors.amount}</div>
-                    )}
-                    {errors.feeWarning && !errors.amount && (
-                      <div className="text-yellow-500 text-xs">{errors.feeWarning}</div>
                     )}
                   </div>
                 </div>

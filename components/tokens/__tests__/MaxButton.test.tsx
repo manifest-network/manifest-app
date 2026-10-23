@@ -37,7 +37,6 @@ describe('MaxButton', () => {
         token={token}
         setTokenAmount={a => (amount = parseFloat(a))}
         estimateMax={estimateMax}
-        feeDeducted
       />
     );
 

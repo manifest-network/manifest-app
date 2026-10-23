@@ -7,6 +7,8 @@ import env from '@/config/env';
 import { useToast } from '@/contexts/toastContext';
 import { Web3AuthContext } from '@/contexts/web3AuthContext';
 
+import { useFeeEstimation } from './useFeeEstimation';
+
 interface Msg {
   typeUrl: string;
   value: any;
@@ -50,8 +52,8 @@ const extractSimulationErrorMessage = (fullErrorMessage: string): string => {
 
 export const useTx = (chainName: string, promptId?: string) => {
   const { isSigning, setIsSigning, setPromptId } = useContext(Web3AuthContext);
-  const { address, getSigningStargateClient, estimateFee, disconnect, connect } =
-    useChain(chainName);
+  const { address, getSigningStargateClient } = useChain(chainName);
+  const { estimateFee } = useFeeEstimation(chainName);
   const { setToastMessage } = useToast();
   const explorerUrl = chainName === env.osmosisChain ? env.osmosisExplorerUrl : env.explorerUrl;
   const lastUsedAddress = useRef<string | null>(null);
@@ -112,7 +114,7 @@ export const useTx = (chainName: string, promptId?: string) => {
       if (options.fee) {
         fee = typeof options.fee === 'function' ? await options.fee() : options.fee;
       } else {
-        fee = await estimateFee(msgs);
+        fee = await estimateFee(address, msgs, undefined, options.memo);
       }
 
       if (!fee) {

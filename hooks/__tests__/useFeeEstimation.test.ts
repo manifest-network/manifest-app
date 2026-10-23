@@ -1,8 +1,10 @@
 import { GasPrice } from '@cosmjs/stargate';
-import { describe, expect, test } from 'bun:test';
+import { act, cleanup, renderHook } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 
 import env from '@/config/env';
-import { FeeToken, maxAfterFee, messageSpends, selectFee } from '@/hooks';
+import { FeeToken, maxAfterFee, messageSpends, selectFee, useFeeEstimation } from '@/hooks';
+import { clearAllMocks, mockModule } from '@/tests';
 
 const ADDRESS = 'manifest1sender';
 const PWR = env.pwrTokenDenom;
@@ -114,5 +116,73 @@ describe('maxAfterFee', () => {
   test('returns null when the balance does not cover the fee', () => {
     expect(maxAfterFee('50000', 100_000, pwrFee)).toBeNull();
     expect(maxAfterFee('49999', 100_000, pwrFee)).toBeNull();
+  });
+});
+
+describe('useFeeEstimation MAX', () => {
+  const balances: Record<string, string> = { umfx: '0', [PWR]: '1000000' };
+  let client: any;
+
+  beforeEach(() => {
+    client = {
+      getAccount: jest.fn().mockResolvedValue({ address: ADDRESS }),
+      getBalance: jest.fn(async (_: string, denom: string) => ({
+        denom,
+        amount: balances[denom] ?? '0',
+      })),
+      simulate: jest.fn().mockResolvedValue(100_000),
+    };
+    mockModule('@cosmos-kit/react', () => ({
+      useChain: () => ({
+        getSigningStargateClient: async () => client,
+        chain: {
+          fees: {
+            fee_tokens: [
+              { denom: 'umfx', average_gas_price: 1.1 },
+              { denom: PWR, average_gas_price: 0.5 },
+            ],
+          },
+        },
+      }),
+    }));
+    mockModule('@/contexts/toastContext', () => ({
+      useToast: () => ({ setToastMessage: jest.fn() }),
+    }));
+  });
+
+  afterEach(() => {
+    cleanup();
+    clearAllMocks();
+  });
+
+  test('a PWR-only wallet sends its whole balance, fee included', async () => {
+    const { result } = renderHook(() => useFeeEstimation('manifest'));
+    const build = (amount: string) => sendMsg(PWR, amount);
+
+    let max: string | null = null;
+    await act(async () => {
+      max = await result.current.estimateMax(ADDRESS, PWR, build);
+    });
+    // 100_000 gas * 1.5 * 0.5 upwr = 75_000 upwr fee.
+    expect(max).toBe('925000');
+
+    // Sending exactly the max reuses that fee without simulating again.
+    client.simulate.mockClear();
+    const fee = await result.current.estimateFee(ADDRESS, [build(max!)]);
+    expect(fee).toEqual({ amount: [{ denom: PWR, amount: '75000' }], gas: '150000' });
+    expect(client.simulate).not.toHaveBeenCalled();
+
+    // Any other amount is estimated afresh.
+    const other = await result.current.estimateFee(ADDRESS, [build('900000')]);
+    expect(client.simulate).toHaveBeenCalledTimes(1);
+    expect(other?.amount[0].denom).toBe(PWR);
+  });
+
+  test('MAX gives nothing when the balance cannot cover the fee', async () => {
+    balances[PWR] = '75000';
+    const { result } = renderHook(() => useFeeEstimation('manifest'));
+    const max = await result.current.estimateMax(ADDRESS, PWR, a => sendMsg(PWR, a));
+    expect(max).toBeNull();
+    balances[PWR] = '1000000';
   });
 });

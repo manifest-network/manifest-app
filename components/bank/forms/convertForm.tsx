@@ -1,5 +1,4 @@
 import { toUtf8 } from '@cosmjs/encoding';
-import { StdFee } from '@cosmjs/stargate';
 import { cosmos, cosmwasm } from '@manifest-network/manifestjs';
 import {
   DenomUnit,
@@ -12,7 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import { Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { AmountInput, MaxButton, TokenBalance } from '@/components';
 import { DenomDisplay } from '@/components/factory';
@@ -76,13 +75,6 @@ export default function ConvertForm({
 
   const { isSigning, tx } = useTx(env.chain);
   const { estimateFee, estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
-  // Fee worked out by MAX, used as-is when converting exactly that amount so amount + fee
-  // matches the balance.
-  const [maxConvert, setMaxConvert] = useState<{
-    denom: string;
-    amount: string;
-    fee: StdFee;
-  } | null>(null);
   const { executeContract } = cosmwasm.wasm.v1.MessageComposer.withTypeUrl;
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
@@ -151,21 +143,6 @@ export default function ConvertForm({
           sender: address,
         });
 
-  // A group conversion is paid from the policy while the fee is paid by the proposer, so
-  // MAX is the whole balance there.
-  const estimateMaxConvert = isGroup
-    ? undefined
-    : async (token: CombinedBalanceInfo, memo?: string) => {
-        const max = await estimateMax(
-          address,
-          token.base,
-          amount => buildConvertMsg(token.base, amount),
-          memo
-        );
-        setMaxConvert(max?.fee ? { denom: token.base, amount: max.amount, fee: max.fee } : null);
-        return max?.amount ?? null;
-      };
-
   const handleConvert = async (values: convertForm.ConvertForm) => {
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
@@ -177,16 +154,11 @@ export default function ConvertForm({
         amountInBaseUnits,
         `${values.amount} ${values.selectedToken.metadata?.display}`
       );
-      const maxFee =
-        maxConvert && maxConvert.denom === denom && maxConvert.amount === amountInBaseUnits
-          ? maxConvert.fee
-          : null;
 
       await tx([msg], {
         memo: values.memo,
-        fee: maxFee ?? (() => estimateFee(address, [msg])),
+        fee: () => estimateFee(address, [msg]),
         onSuccess: () => {
-          setMaxConvert(null);
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
           queryClient.invalidateQueries({ queryKey: ['getMessagesForAddress'] });
@@ -257,18 +229,24 @@ export default function ConvertForm({
                           token={values.selectedToken}
                           setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
                           disabled={isSigning}
+                          // A group conversion is paid from the policy while the proposer pays the
+                          // fee, so MAX is the whole balance there.
                           estimateMax={
-                            estimateMaxConvert && (token => estimateMaxConvert(token, values.memo))
+                            !isGroup && isFeeDenom(values.selectedToken.base)
+                              ? token =>
+                                  estimateMax(
+                                    address,
+                                    token.base,
+                                    amount => buildConvertMsg(token.base, amount),
+                                    values.memo
+                                  )
+                              : undefined
                           }
-                          feeDeducted={!isGroup && isFeeDenom(values.selectedToken.base)}
                         />
                       </div>
                     )}
                     {errors.amount && (
                       <div className="text-red-500 text-xs text-right">{errors.amount}</div>
-                    )}
-                    {errors.feeWarning && !errors.amount && (
-                      <div className="text-yellow-500 text-xs">{errors.feeWarning}</div>
                     )}
                   </div>
                 </div>
