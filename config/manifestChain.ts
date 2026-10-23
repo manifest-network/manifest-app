@@ -37,4 +37,28 @@ if (buildType === 'qa') {
   manifestIbc = ibc!;
 }
 
+// The chain accepts PWR for fees on mainnet and testnet (node minimum gas price is
+// 0.37 upwr), but the pinned chain-registry only lists umfx. Add PWR after umfx so
+// MFX stays the preferred fee token. chain-registry 1.69.723 already includes it.
+if (
+  buildType !== 'qa' &&
+  !manifestChain.fees?.fee_tokens.some(t => t.denom === env.pwrTokenDenom)
+) {
+  manifestChain = {
+    ...manifestChain,
+    fees: {
+      fee_tokens: [
+        ...(manifestChain.fees?.fee_tokens ?? []),
+        {
+          denom: env.pwrTokenDenom,
+          fixed_min_gas_price: 0.37,
+          low_gas_price: 0.4,
+          average_gas_price: 0.5,
+          high_gas_price: 1,
+        },
+      ],
+    },
+  };
+}
+
 export { manifestAssets, manifestChain, manifestIbc };
