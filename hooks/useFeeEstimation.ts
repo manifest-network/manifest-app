@@ -1,29 +1,39 @@
 import { Coin, EncodeObject } from '@cosmjs/proto-signing';
-import { GasPrice, StdFee, calculateFee } from '@cosmjs/stargate';
+import { GasPrice, SigningStargateClient, StdFee, calculateFee } from '@cosmjs/stargate';
 import { useChain } from '@cosmos-kit/react';
 import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 
-import env from '@/config/env';
 import { useToast } from '@/contexts/toastContext';
-import { MFX_TOKEN_BASE } from '@/utils';
+import { MFX_TOKEN_BASE, formatDenom } from '@/utils';
 
 export interface FeeToken {
   denom: string;
-  gasPrice: number;
+  gasPrice: GasPrice;
 }
 
+const DEFAULT_GAS_MODIFIER = 1.5;
+
 /**
- * Sum, by denom, what `address` sends directly in bank `MsgSend` messages, so a fee
- * paid in the same denom as the transfer still has to fit in the balance.
+ * Sum, by denom, what `address` itself spends in the messages (bank sends and contract
+ * funds), so a fee paid in the same denom still has to fit in the balance. Messages
+ * sent on behalf of a group policy are not counted: the policy pays, not `address`.
  */
-export function bankSpends(address: string, messages: EncodeObject[]): Map<string, BigNumber> {
+export function messageSpends(address: string, messages: EncodeObject[]): Map<string, BigNumber> {
   const spends = new Map<string, BigNumber>();
-  for (const msg of messages) {
-    if (msg.typeUrl !== '/cosmos.bank.v1beta1.MsgSend' || msg.value?.fromAddress !== address) {
-      continue;
-    }
-    for (const coin of (msg.value.amount ?? []) as Coin[]) {
+  const add = (coins: Coin[] | undefined) => {
+    for (const coin of coins ?? []) {
       spends.set(coin.denom, (spends.get(coin.denom) ?? new BigNumber(0)).plus(coin.amount));
+    }
+  };
+  for (const msg of messages) {
+    if (msg.typeUrl === '/cosmos.bank.v1beta1.MsgSend' && msg.value?.fromAddress === address) {
+      add(msg.value.amount);
+    } else if (
+      msg.typeUrl === '/cosmwasm.wasm.v1.MsgExecuteContract' &&
+      msg.value?.sender === address
+    ) {
+      add(msg.value.funds);
     }
   }
   return spends;
@@ -31,7 +41,7 @@ export function bankSpends(address: string, messages: EncodeObject[]): Map<strin
 
 /**
  * Pick the fee from the first fee token (in chain order, so MFX first) whose balance
- * covers the fee plus anything sent in that denom. Returns null if none does.
+ * covers the fee plus anything spent in that denom. Returns null if none does.
  */
 export function selectFee(
   gasLimit: number,
@@ -40,7 +50,7 @@ export function selectFee(
   spends: Map<string, BigNumber> = new Map()
 ): StdFee | null {
   for (const token of feeTokens) {
-    const fee = calculateFee(gasLimit, GasPrice.fromString(`${token.gasPrice}${token.denom}`));
+    const fee = calculateFee(gasLimit, token.gasPrice);
     const balance = new BigNumber(balances.find(b => b.denom === token.denom)?.amount ?? 0);
     const needed = new BigNumber(fee.amount[0].amount).plus(spends.get(token.denom) ?? 0);
     if (balance.gte(needed)) {
@@ -50,20 +60,53 @@ export function selectFee(
   return null;
 }
 
-const feeTokenName = (denom: string) =>
-  denom === MFX_TOKEN_BASE ? 'MFX' : denom === env.pwrTokenDenom ? 'PWR' : denom;
+/**
+ * Largest amount of a fee token's balance that can be spent when the fee is paid in that
+ * same token, and the fee to send it with. Null if the balance doesn't cover the fee.
+ */
+export function maxAfterFee(
+  balance: string,
+  gasLimit: number,
+  feeToken: FeeToken
+): { amount: string; fee: StdFee } | null {
+  const fee = calculateFee(gasLimit, feeToken.gasPrice);
+  const amount = new BigNumber(balance).minus(fee.amount[0].amount);
+  return amount.gt(0) ? { amount: amount.toFixed(), fee } : null;
+}
 
 export const useFeeEstimation = (chainName: string) => {
   const { getSigningStargateClient, chain } = useChain(chainName);
   const { setToastMessage } = useToast();
 
-  const chainFeeTokens: FeeToken[] = (chain.fees?.fee_tokens ?? []).flatMap(t => {
-    const gasPrice = t.average_gas_price ?? t.low_gas_price ?? t.fixed_min_gas_price;
-    return gasPrice ? [{ denom: t.denom, gasPrice }] : [];
-  });
-  const feeTokens: FeeToken[] = chainFeeTokens.length
-    ? chainFeeTokens
-    : [{ denom: MFX_TOKEN_BASE, gasPrice: 0.025 }];
+  const feeTokens = useMemo<FeeToken[]>(() => {
+    const tokens = (chain.fees?.fee_tokens ?? []).flatMap(t => {
+      const price = t.average_gas_price ?? t.low_gas_price ?? t.fixed_min_gas_price;
+      return price
+        ? [
+            {
+              denom: t.denom,
+              gasPrice: GasPrice.fromString(`${new BigNumber(price).toFixed()}${t.denom}`),
+            },
+          ]
+        : [];
+    });
+    return tokens.length
+      ? tokens
+      : [{ denom: MFX_TOKEN_BASE, gasPrice: GasPrice.fromString(`0.025${MFX_TOKEN_BASE}`) }];
+  }, [chain]);
+
+  const isFeeDenom = (denom: string) => feeTokens.some(t => t.denom === denom);
+
+  const showError = (title: string, description: string) =>
+    setToastMessage({ type: 'alert-error', title, description, bgColor: '#e74c3c' });
+
+  const getClient = async (): Promise<SigningStargateClient | null> => {
+    const stargateClient = await getSigningStargateClient();
+    if (!stargateClient) {
+      showError('Fee Estimation Error', 'Unable to connect to the network. Please try again.');
+    }
+    return stargateClient ?? null;
+  };
 
   const estimateFee = async (
     address: string,
@@ -72,14 +115,8 @@ export const useFeeEstimation = (chainName: string) => {
     memo?: string
   ) => {
     try {
-      const stargateClient = await getSigningStargateClient();
+      const stargateClient = await getClient();
       if (!stargateClient) {
-        setToastMessage({
-          type: 'alert-error',
-          title: 'Fee Estimation Error',
-          description: 'Unable to connect to the network. Please try again.',
-          bgColor: '#e74c3c',
-        });
         return null;
       }
 
@@ -87,69 +124,96 @@ export const useFeeEstimation = (chainName: string) => {
       try {
         const account = await stargateClient.getAccount(address);
         if (!account) {
-          setToastMessage({
-            type: 'alert-error',
-            title: 'Account Error',
-            description: `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`,
-            bgColor: '#e74c3c',
-          });
+          showError(
+            'Account Error',
+            `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`
+          );
           return null;
         }
       } catch (accountError) {
-        setToastMessage({
-          type: 'alert-error',
-          title: 'Account Error',
-          description: `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`,
-          bgColor: '#e74c3c',
-        });
-        return null;
-      }
-
-      const gasEstimation = await stargateClient.simulate(address, messages, memo);
-      if (!gasEstimation) {
-        setToastMessage({
-          type: 'alert-error',
-          title: 'Fee Estimation Error',
-          description: 'Failed to estimate transaction fees. Please try again.',
-          bgColor: '#e74c3c',
-        });
-        return null;
-      }
-
-      const gasLimit = Math.round(gasEstimation * (modifier || 1.5));
-
-      let balances: readonly Coin[];
-      try {
-        balances = await stargateClient.getAllBalances(address);
-      } catch {
-        // Can't see balances: fall back to the preferred fee token and let the chain decide.
-        return calculateFee(
-          gasLimit,
-          GasPrice.fromString(`${feeTokens[0].gasPrice}${feeTokens[0].denom}`)
+        showError(
+          'Account Error',
+          `Account ${address} does not exist on chain. Please ensure you have funds in your wallet.`
         );
+        return null;
       }
 
-      const fee = selectFee(gasLimit, feeTokens, balances, bankSpends(address, messages));
+      const [gasEstimation, balances] = await Promise.all([
+        stargateClient.simulate(address, messages, memo),
+        Promise.all(feeTokens.map(t => stargateClient.getBalance(address, t.denom))).catch(
+          () => null
+        ),
+      ]);
+      if (!gasEstimation) {
+        showError('Fee Estimation Error', 'Failed to estimate transaction fees. Please try again.');
+        return null;
+      }
+      if (!balances) {
+        showError(
+          'Fee Estimation Error',
+          'Unable to check your balance to pay the fee. Please try again.'
+        );
+        return null;
+      }
+
+      const gasLimit = Math.round(gasEstimation * (modifier || DEFAULT_GAS_MODIFIER));
+      const fee = selectFee(gasLimit, feeTokens, balances, messageSpends(address, messages));
       if (!fee) {
-        setToastMessage({
-          type: 'alert-error',
-          title: 'Insufficient Funds for Fees',
-          description: `Not enough ${feeTokens.map(t => feeTokenName(t.denom)).join(' or ')} to pay the transaction fee.`,
-          bgColor: '#e74c3c',
-        });
+        showError(
+          'Insufficient Funds for Fees',
+          `Not enough ${feeTokens.map(t => formatDenom(t.denom)).join(' or ')} to pay the transaction fee.`
+        );
         return null;
       }
       return fee;
     } catch (error: any) {
-      setToastMessage({
-        type: 'alert-error',
-        title: 'Fee Estimation Error',
-        description: error.message || 'Failed to estimate transaction fees. Please try again.',
-        bgColor: '#e74c3c',
-      });
+      showError(
+        'Fee Estimation Error',
+        error.message || 'Failed to estimate transaction fees. Please try again.'
+      );
       return null;
     }
   };
 
-  return { estimateFee };
+  /**
+   * Max amount of `denom` that `buildMsg(amount)` can spend. For a fee token, the fee is
+   * paid in that same token and taken out of the amount, so amount + fee is exactly the
+   * balance; send with the returned fee. For any other token it is the whole balance.
+   */
+  const estimateMax = async (
+    address: string,
+    denom: string,
+    buildMsg: (amount: string) => EncodeObject,
+    memo?: string
+  ): Promise<{ amount: string; fee?: StdFee } | null> => {
+    try {
+      const stargateClient = await getClient();
+      if (!stargateClient) {
+        return null;
+      }
+      const { amount: balance } = await stargateClient.getBalance(address, denom);
+      const feeToken = feeTokens.find(t => t.denom === denom);
+      if (!feeToken || new BigNumber(balance).isZero()) {
+        return { amount: balance };
+      }
+
+      const gasEstimation = await stargateClient.simulate(address, [buildMsg(balance)], memo);
+      const max = maxAfterFee(balance, Math.round(gasEstimation * DEFAULT_GAS_MODIFIER), feeToken);
+      if (!max) {
+        showError(
+          'Insufficient Funds for Fees',
+          `Your ${formatDenom(denom)} balance is too low to cover the transaction fee.`
+        );
+      }
+      return max;
+    } catch (error: any) {
+      showError(
+        'Fee Estimation Error',
+        error.message || 'Failed to estimate the maximum amount. Please try again.'
+      );
+      return null;
+    }
+  };
+
+  return { estimateFee, estimateMax, isFeeDenom };
 };
