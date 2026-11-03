@@ -8,6 +8,21 @@ updates:
       interval: 'daily'
     cooldown:
       default-days: 7
+    # At the default limit of 5, a handful of PRs left open stops all new version updates.
+    open-pull-requests-limit: 10
+    # Packages that must move in lockstep: the devtools peer-depend on the same react-query
+    # version, and eslint-config-next tracks next.
+    groups:
+      tanstack-query:
+        patterns: ['@tanstack/react-query', '@tanstack/react-query-devtools']
+      next:
+        patterns: ['next', 'eslint-config-next']
+    # next 16 is a deliberate hold: it fails the build and needs its own migration.
+    ignore:
+      - dependency-name: 'next'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint-config-next'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'docker'
     directory: '/'
