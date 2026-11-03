@@ -1,9 +1,9 @@
 # syntax=docker.io/docker/dockerfile:1
 
-# Pinned by digest; Dependabot proposes updates. This is the image the old oven/bun:1.2-slim
-# tag pointed to. That tag no longer gets updates; moving to a maintained base is a
-# separate change.
-FROM oven/bun:1.2.23-slim@sha256:9654aa08d4b7e778b84148921bab8edc1409c8d0a85707b8c801dd7cf1878971 AS base
+# Pinned by digest; Dependabot proposes updates. Same Bun version as CI (bun-version in the
+# workflows): Bun 1.4 breaks the test suite, so .github/dependabot.yml holds this image below
+# 1.4 too. Both pins move together.
+FROM oven/bun:1.3.14-slim@sha256:d56a2534ffd262e92c12fd3249d3924d296d97086da773f821d7d0477435ea04 AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -45,8 +45,9 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# The image is Debian trixie, which has no addgroup/adduser.
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid nodejs nextjs
 
 # public/ stays root-owned. env-config.js is a symlink into /tmp, where
 # docker-entrypoint.mjs writes the runtime config, so the container can run
@@ -59,8 +60,10 @@ COPY --from=builder /app/docker-entrypoint.mjs ./docker-entrypoint.mjs
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Root-owned like public/, so the runtime user can't rewrite the JS it serves. Every page is
+# static and images use a custom loader, so the server never writes under .next.
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 USER nextjs
 
