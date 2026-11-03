@@ -46,7 +46,7 @@
         "formik": "2.4.6",
         "identicon.js": "2.3.3",
         "install": "0.13.0",
-        "link": "2.1.1",
+        "link": "2.1.2",
         "next": "15.5.28",
         "obscenity": "0.4.3",
         "octokit": "4.1.2",
@@ -2831,7 +2831,7 @@
 
     "lines-and-columns": ["lines-and-columns@1.2.4", "", {}, "sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg=="],
 
-    "link": ["link@2.1.1", "", { "bin": { "link": "dist/cli.js" } }, "sha512-NV3AUVYBovJ6eVQcTeRoPnZSxzt2LOijNd+ugEZKRy/XeQlpTRhVRkuDv5kOlXwMAUx30vfUc7asRFb9RT65yg=="],
+    "link": ["link@2.1.2", "", { "bin": { "link": "dist/cli.js" } }, "sha512-n+OitQgtITNBGiWmEMgMiXo/fkf3yeyLm2nXm87vO4DDpaYrx57AZs/PMDk25qJIv+l586V226B2mA1H/n9zvg=="],
 
     "lit": ["lit@2.8.0", "", { "dependencies": { "@lit/reactive-element": "^1.6.0", "lit-element": "^3.3.0", "lit-html": "^2.8.0" } }, "sha512-4Sc3OFX9QHOJaHbmTMk28SYgVxLN3ePDjg7hofEft2zWlehFL3LiAuapWc4U/kYwMYJSh2hTCPZ6/LIC7ii0MA=="],
 
