@@ -52,7 +52,7 @@
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
     "@cosmos-kit/leap-metamask-cosmos-snap": "0.15.3",
     "@cosmos-kit/ledger": "2.14.3",
-    "@cosmos-kit/react": "2.22.3",
+    "@cosmos-kit/react": "2.24.1",
     "@cosmos-kit/web3auth": "2.18.1",
     "@fontsource/manrope": "5.2.5",
     "@headlessui/react": "2.2.0",
