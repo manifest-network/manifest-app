@@ -106,7 +106,7 @@
     "react-string-format": "1.2.0",
     "react-syntax-highlighter": "15.6.1",
     "sharp": "0.35.5",
-    "tailwind-scrollbar-hide": "2.0.0",
+    "tailwind-scrollbar-hide": "4.0.0",
     "tailwindcss": "4.1.16",
     "three": "0.174.0",
     "timeago.js": "4.0.2",
