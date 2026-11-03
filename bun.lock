@@ -10,7 +10,7 @@
         "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
         "@cosmos-kit/leap-metamask-cosmos-snap": "0.15.3",
         "@cosmos-kit/ledger": "2.14.3",
-        "@cosmos-kit/react": "2.22.3",
+        "@cosmos-kit/react": "2.24.1",
         "@cosmos-kit/web3auth": "2.18.1",
         "@fontsource/manrope": "5.2.5",
         "@headlessui/react": "2.2.0",
@@ -361,9 +361,9 @@
 
     "@cosmos-kit/owallet-mobile": ["@cosmos-kit/owallet-mobile@2.18.0", "", { "dependencies": { "@chain-registry/keplr": "1.68.2", "@cosmos-kit/core": "^2.18.0", "@cosmos-kit/walletconnect": "^2.15.0" } }, "sha512-sUWyW7LPrtpKZ6FGVw2i/OUVFe5JKV4tJNP2x83Z+7E/hBc0rfNV/PxwR7HZF/8HniUSU0CqPA1QPqnB4kRHRg=="],
 
-    "@cosmos-kit/react": ["@cosmos-kit/react@2.22.3", "", { "dependencies": { "@chain-registry/types": "^0.46.11", "@cosmos-kit/core": "^2.16.3", "@cosmos-kit/react-lite": "^2.16.3", "@react-icons/all-files": "^4.1.0" }, "peerDependencies": { "@interchain-ui/react": "^1.26.3", "@types/react": "latest", "@types/react-dom": "latest", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-rcSTmXzjGzDElA5ZsRnHs7CXZUu34ssRudw/Q3TgrqwWBmRTCWLPy+E5/6+y5Dz3vriVMxBUGE4u3RW+MDjiSg=="],
+    "@cosmos-kit/react": ["@cosmos-kit/react@2.24.1", "", { "dependencies": { "@chain-registry/types": "^0.46.11", "@cosmos-kit/core": "^2.18.1", "@cosmos-kit/react-lite": "^2.18.1", "@react-icons/all-files": "^4.1.0" }, "peerDependencies": { "@interchain-ui/react": "^1.26.3", "@types/react": "latest", "@types/react-dom": "latest", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-jNTye1dyw8QeVa2BCZccZPxTQBoqX8R9KchhNJFX74tWVgE4jjcz4bLlegjs/G1C8NLEqbDlUCRAiDTg9B92oA=="],
 
-    "@cosmos-kit/react-lite": ["@cosmos-kit/react-lite@2.18.0", "", { "dependencies": { "@chain-registry/types": "^0.46.11", "@cosmos-kit/core": "^2.18.0", "@dao-dao/cosmiframe": "^1.0.0" }, "peerDependencies": { "@types/react": "latest", "@types/react-dom": "latest", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-cN5oLs2pvGmDaBdczkbStIKGwHK9kBHqw7JFb2Sw6da9CqzkQx/SBVq+G2ohWN3L/8cFMHjVO66RwSEv/szr+g=="],
+    "@cosmos-kit/react-lite": ["@cosmos-kit/react-lite@2.18.1", "", { "dependencies": { "@chain-registry/types": "^0.46.11", "@cosmos-kit/core": "^2.18.1", "@dao-dao/cosmiframe": "^1.0.0" }, "peerDependencies": { "@types/react": "latest", "@types/react-dom": "latest", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-Us7gBZtb1eYxcwMu74ii+pIeR4TE5Q+JhSXkyKUJHh/wDQyTNhCYGpp9PJUMUAiuLuPsv1qToEoeuk6gcD7XaQ=="],
 
     "@cosmos-kit/shell": ["@cosmos-kit/shell@2.16.0", "", { "dependencies": { "@cosmos-kit/shell-extension": "^2.16.0" } }, "sha512-gjdCBYwuwrts6C6knSkhTwrQfp35E4F76ZbMwzGu4D6d2+8mcCH/IMfKORc9KlZ7k9VD8IV6OxYAOJLYKudBRw=="],
 
