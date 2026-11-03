@@ -61,7 +61,7 @@
     "@interchain-ui/react": "1.26.2",
     "@manifest-network/manifestjs": "2.1.0",
     "@react-three/drei": "10.0.5",
-    "@react-three/fiber": "9.1.0",
+    "@react-three/fiber": "9.8.2",
     "@sinonjs/fake-timers": "15.4.0",
     "@skip-go/client": "1.5.9",
     "@skip-go/widget": "3.14.14",
