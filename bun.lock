@@ -9,7 +9,7 @@
         "@cosmjs/cosmwasm-stargate": "0.32.4",
         "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
         "@cosmos-kit/leap-metamask-cosmos-snap": "0.15.3",
-        "@cosmos-kit/ledger": "2.14.3",
+        "@cosmos-kit/ledger": "2.16.1",
         "@cosmos-kit/react": "2.24.1",
         "@cosmos-kit/web3auth": "2.18.1",
         "@fontsource/manrope": "5.2.5",
@@ -347,7 +347,7 @@
 
     "@cosmos-kit/leap-mobile": ["@cosmos-kit/leap-mobile@2.16.0", "", { "dependencies": { "@chain-registry/keplr": "^1.69.13", "@cosmos-kit/core": "^2.18.0", "@cosmos-kit/walletconnect": "^2.15.0" } }, "sha512-tgMxRsmrLlUIeL7aReu+lEWTHvkTbuLFF96DnaKuLukD0tJr+SrDhH94ETUNDgqbitTJq9pcCeqn95iN+ljRfA=="],
 
-    "@cosmos-kit/ledger": ["@cosmos-kit/ledger@2.14.3", "", { "dependencies": { "@cosmos-kit/core": "^2.16.3", "@ledgerhq/hw-app-cosmos": "^6.30.4", "@ledgerhq/hw-transport-webhid": "^6.30.0", "@ledgerhq/hw-transport-webusb": "^6.29.4" }, "peerDependencies": { "@cosmjs/amino": ">=0.32.4", "@cosmjs/crypto": ">=0.32.4", "@cosmjs/encoding": ">=0.32.4", "@cosmjs/proto-signing": ">=0.32.4" } }, "sha512-GWHr21xDd+Y7YcrAxXKRunGvsYrGkA6z1WhHqo/PYDmCvmLRkDIKJvdWMYoxp9certdKjQfqV4jeChe++DVhIg=="],
+    "@cosmos-kit/ledger": ["@cosmos-kit/ledger@2.16.1", "", { "dependencies": { "@cosmos-kit/core": "^2.18.1", "@ledgerhq/hw-app-cosmos": "^6.30.4", "@ledgerhq/hw-transport-webhid": "^6.30.0", "@ledgerhq/hw-transport-webusb": "^6.29.4" }, "peerDependencies": { "@cosmjs/amino": ">=0.32.4", "@cosmjs/crypto": ">=0.32.4", "@cosmjs/encoding": ">=0.32.4", "@cosmjs/proto-signing": ">=0.32.4" } }, "sha512-r8rOn7/ngLTUOXwavvH5xeIpxAYrJEMshPmAxkXvc5PdNB5zx5D1tk3KiaSPGelU6hLLx5Ofa/RA7V0Oti+KnA=="],
 
     "@cosmos-kit/okxwallet-extension": ["@cosmos-kit/okxwallet-extension@2.16.0", "", { "dependencies": { "@cosmos-kit/core": "^2.18.0" }, "peerDependencies": { "@cosmjs/amino": ">=0.32.3", "@cosmjs/proto-signing": ">=0.32.3" } }, "sha512-IWf1LyiOfqhqDWFdct1z5kjeHesnjTKdfXd2ku+aolaIULZZSrETBcxYHl6O8/pyjq215yivdIN79YVCw0TXqA=="],
 
