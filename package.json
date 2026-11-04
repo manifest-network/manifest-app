@@ -50,7 +50,7 @@
     "@chain-registry/assets": "1.70.340",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
-    "@cosmos-kit/leap-metamask-cosmos-snap": "0.15.3",
+    "@cosmos-kit/leap-metamask-cosmos-snap": "0.17.1",
     "@cosmos-kit/ledger": "2.16.1",
     "@cosmos-kit/react": "2.24.1",
     "@cosmos-kit/web3auth": "2.18.1",
