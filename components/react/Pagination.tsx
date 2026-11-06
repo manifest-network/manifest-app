@@ -14,8 +14,10 @@ function validateIsInteger(value: number, field: string) {
   }
 }
 
-export interface PaginationProps<T>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onChange'> {
+export interface PaginationProps<T> extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'children' | 'onChange'
+> {
   pageSize: number;
   defaultPage?: number;
   selectedPage?: number;
