@@ -91,7 +91,7 @@
     "link": "2.1.2",
     "next": "15.5.28",
     "obscenity": "0.4.3",
-    "octokit": "4.1.2",
+    "octokit": "5.0.5",
     "parse-duration": "2.1.10",
     "postcss": "8.5.28",
     "pretty-format": "29.7.0",
