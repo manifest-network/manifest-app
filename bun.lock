@@ -5,7 +5,7 @@
     "": {
       "name": "@manifest-network/manifest-app",
       "dependencies": {
-        "@chain-registry/assets": "1.70.340",
+        "@chain-registry/assets": "1.70.724",
         "@cosmjs/cosmwasm-stargate": "0.32.4",
         "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
         "@cosmos-kit/ledger": "2.16.1",
@@ -240,7 +240,7 @@
 
     "@bufbuild/protobuf": ["@bufbuild/protobuf@1.10.1", "", {}, "sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ=="],
 
-    "@chain-registry/assets": ["@chain-registry/assets@1.70.340", "", { "dependencies": { "@chain-registry/types": "^0.50.211" } }, "sha512-tSe1LMsfPr72gpLge/HLHnn/w6z/6dkzuPLUP36RAa2MFuW8nSiXR8H7Obp3FksZmIm0Gifk75t2Tdu5oNvEHw=="],
+    "@chain-registry/assets": ["@chain-registry/assets@1.70.724", "", { "dependencies": { "@chain-registry/types": "^0.50.445" } }, "sha512-d36zfugSGDiqijcZVj2HRAmk4TnA3jTXQs5r9/rtNJidlELOZBfho95nNvHvr4ufiP8je6KCfyN0+iVjIBEzEg=="],
 
     "@chain-registry/client": ["@chain-registry/client@1.53.272", "", { "dependencies": { "@chain-registry/types": "^0.50.272", "@chain-registry/utils": "^1.51.272", "bfs-path": "^1.0.2", "cross-fetch": "^3.1.5" } }, "sha512-lLRE3gwxPUH8cXVL9/JAOfNbd3LwbkqZfFhLR3325KOe99VuPBIatFJzIBUAXGotKEz/8Awx3N98TG7ii7qkJw=="],
 
