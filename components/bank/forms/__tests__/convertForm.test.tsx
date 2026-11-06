@@ -57,6 +57,8 @@ describe('ConvertForm Component', () => {
       }),
       useFeeEstimation: () => ({
         estimateFee: jest.fn().mockResolvedValue({ amount: [{ denom: 'umfx', amount: '1000' }] }),
+        estimateMax: jest.fn().mockResolvedValue(null),
+        isFeeDenom: () => false,
       }),
       useTx: () => ({
         isSigning: false,
@@ -122,6 +124,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -157,6 +161,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -203,6 +209,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -254,6 +262,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -340,6 +350,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: true,

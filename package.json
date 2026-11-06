@@ -77,7 +77,7 @@
     "axios": "1.20.0",
     "babel-plugin-glsl": "1.0.0",
     "bech32": "2.0.0",
-    "chain-registry": "1.69.340",
+    "chain-registry": "1.69.723",
     "cosmjs-types": "0.9.0",
     "cosmos-kit": "2.25.2",
     "country-flag-icons": "1.5.18",

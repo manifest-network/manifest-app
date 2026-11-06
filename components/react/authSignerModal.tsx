@@ -36,7 +36,7 @@ import { ModalDialog } from '@/components';
 import env from '@/config/env';
 import { useTheme } from '@/contexts';
 import { Web3AuthContext } from '@/contexts/web3AuthContext';
-import { getRealLogo } from '@/utils';
+import { formatDenom, getRealLogo } from '@/utils';
 
 import { ArrowRightIcon } from '../icons';
 
@@ -270,11 +270,11 @@ const DisplayDataToSign = ({
         const amountNum = parseInt(coin.amount || '0');
         const denom = coin.denom || '';
 
-        // Format based on denomination
-        if (denom.startsWith('u')) {
-          const mainDenom = denom.substring(1).toUpperCase();
+        // Format based on denomination; token factory denoms (e.g. PWR) are named by their
+        // subdenom.
+        if (denom.replace(/^factory\/[^/]+\//, '').startsWith('u')) {
           const displayAmount = (amountNum / 1_000_000).toFixed(6).replace(/\.?0+$/, '');
-          return `${displayAmount} ${mainDenom}`;
+          return `${displayAmount} ${formatDenom(denom)}`;
         }
 
         return `${amountNum} ${denom.toUpperCase()}`;

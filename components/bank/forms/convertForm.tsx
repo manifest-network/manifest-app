@@ -74,7 +74,7 @@ export default function ConvertForm({
   const { setToastMessage } = useToast();
 
   const { isSigning, tx } = useTx(env.chain);
-  const { estimateFee } = useFeeEstimation(env.chain);
+  const { estimateFee, estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
   const { executeContract } = cosmwasm.wasm.v1.MessageComposer.withTypeUrl;
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
@@ -113,39 +113,47 @@ export default function ConvertForm({
     return receiveAmount.toString();
   }
 
+  const buildConvertMsg = (denom: string, amount: string, display?: string) =>
+    isGroup
+      ? submitProposal({
+          groupPolicyAddress: admin!,
+          messages: [
+            Any.fromPartial({
+              typeUrl: MsgExecuteContract.typeUrl,
+              value: MsgExecuteContract.encode(
+                executeContract({
+                  contract: env.mfxToPwrConversionContractAddress,
+                  funds: [{ denom, amount }],
+                  msg: msgConvert,
+                  sender: admin!,
+                }).value
+              ).finish(),
+            }),
+          ],
+          metadata: '',
+          proposers: [address],
+          title: `Convert MFX to PWR`,
+          summary: `This proposal will convert ${display} to PWR`,
+          exec: 0,
+        })
+      : executeContract({
+          contract: env.mfxToPwrConversionContractAddress,
+          funds: [{ denom, amount }],
+          msg: msgConvert,
+          sender: address,
+        });
+
   const handleConvert = async (values: convertForm.ConvertForm) => {
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
+      const denom = values.selectedToken.base;
 
-      const msg = isGroup
-        ? submitProposal({
-            groupPolicyAddress: admin!,
-            messages: [
-              Any.fromPartial({
-                typeUrl: MsgExecuteContract.typeUrl,
-                value: MsgExecuteContract.encode(
-                  executeContract({
-                    contract: env.mfxToPwrConversionContractAddress,
-                    funds: [{ denom: values.selectedToken.base, amount: amountInBaseUnits }],
-                    msg: msgConvert,
-                    sender: admin!,
-                  }).value
-                ).finish(),
-              }),
-            ],
-            metadata: '',
-            proposers: [address],
-            title: `Convert MFX to PWR`,
-            summary: `This proposal will convert ${values.amount} ${values.selectedToken.metadata?.display} to PWR`,
-            exec: 0,
-          })
-        : executeContract({
-            contract: env.mfxToPwrConversionContractAddress,
-            funds: [{ denom: values.selectedToken.base, amount: amountInBaseUnits }],
-            msg: msgConvert,
-            sender: address,
-          });
+      const msg = buildConvertMsg(
+        denom,
+        amountInBaseUnits,
+        `${values.amount} ${values.selectedToken.metadata?.display}`
+      );
 
       await tx([msg], {
         memo: values.memo,
@@ -221,14 +229,24 @@ export default function ConvertForm({
                           token={values.selectedToken}
                           setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
                           disabled={isSigning}
+                          // A group conversion is paid from the policy while the proposer pays the
+                          // fee, so MAX is the whole balance there.
+                          estimateMax={
+                            !isGroup && isFeeDenom(values.selectedToken.base)
+                              ? token =>
+                                  estimateMax(
+                                    address,
+                                    token.base,
+                                    amount => buildConvertMsg(token.base, amount),
+                                    values.memo
+                                  )
+                              : undefined
+                          }
                         />
                       </div>
                     )}
                     {errors.amount && (
                       <div className="text-red-500 text-xs text-right">{errors.amount}</div>
-                    )}
-                    {errors.feeWarning && !errors.amount && (
-                      <div className="text-yellow-500 text-xs">{errors.feeWarning}</div>
                     )}
                   </div>
                 </div>
