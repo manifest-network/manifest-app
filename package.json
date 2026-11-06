@@ -75,7 +75,7 @@
     "babel-plugin-glsl": "1.0.0",
     "bech32": "2.0.0",
     "chain-registry": "1.69.724",
-    "cosmjs-types": "0.9.0",
+    "cosmjs-types": "0.11.0",
     "cosmos-kit": "2.29.1",
     "country-flag-icons": "1.6.20",
     "daisyui": "5.7.50",
