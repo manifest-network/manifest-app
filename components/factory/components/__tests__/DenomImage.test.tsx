@@ -36,7 +36,7 @@ describe('DenomImage', () => {
 
   test('renders MFX token image correctly', async () => {
     const mockup = renderWithProps();
-    await waitFor(() => expect(document.querySelector('[src=/logo.svg]')).toBeInTheDocument());
+    await waitFor(() => expect(document.querySelector('[src="/logo.svg"]')).toBeInTheDocument());
     expect(formatComponent(mockup.asFragment())).toMatchSnapshot();
   });
 
