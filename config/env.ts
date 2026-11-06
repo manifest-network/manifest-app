@@ -12,7 +12,6 @@ const buildTimeEnv = {
   NEXT_PUBLIC_OSMOSIS_CHAIN: process.env.NEXT_PUBLIC_OSMOSIS_CHAIN,
   NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,
   NEXT_PUBLIC_OSMOSIS_CHAIN_ID: process.env.NEXT_PUBLIC_OSMOSIS_CHAIN_ID,
-  NEXT_PUBLIC_LEAP_DEEPLINK: process.env.NEXT_PUBLIC_LEAP_DEEPLINK,
   NEXT_PUBLIC_CHAIN_TIER: process.env.NEXT_PUBLIC_CHAIN_TIER,
   NEXT_PUBLIC_EXPLORER_URL: process.env.NEXT_PUBLIC_EXPLORER_URL,
   NEXT_PUBLIC_OSMOSIS_EXPLORER_URL: process.env.NEXT_PUBLIC_OSMOSIS_EXPLORER_URL,
@@ -61,9 +60,6 @@ const env = {
   osmosisChain: getEnvVar('NEXT_PUBLIC_OSMOSIS_CHAIN') ?? '',
   chainId: getEnvVar('NEXT_PUBLIC_CHAIN_ID') ?? '',
   osmosisChainId: getEnvVar('NEXT_PUBLIC_OSMOSIS_CHAIN_ID') ?? '',
-
-  // Leap Deeplink
-  leapDeeplink: getEnvVar('NEXT_PUBLIC_LEAP_DEEPLINK') ?? '',
 
   // Ops
   chainTier: getEnvVar('NEXT_PUBLIC_CHAIN_TIER') ?? '',
