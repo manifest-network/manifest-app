@@ -31,6 +31,10 @@ updates:
       # cosmjs minors are breaking.
       - dependency-name: '@cosmjs/*'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      # chain-registry 2 is built for interchain-kit (@chain-registry/types 2), while cosmos-kit 2
+      # uses the 0.x types. It moves with a cosmos-kit to interchain-kit migration.
+      - dependency-name: 'chain-registry'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'docker'
     directory: '/'
