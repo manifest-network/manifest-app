@@ -47,7 +47,7 @@
     "**/viem": "2.48.4"
   },
   "dependencies": {
-    "@chain-registry/assets": "1.70.340",
+    "@chain-registry/assets": "1.70.724",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
     "@cosmos-kit/ledger": "2.16.1",
