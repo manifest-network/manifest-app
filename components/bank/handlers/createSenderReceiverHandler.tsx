@@ -16,14 +16,11 @@ export function createSenderReceiverHandler({
   iconSender: React.ComponentType;
   iconReceiver?: React.ComponentType;
   successSender:
-    | string
-    | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
+    string | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
   failSender:
-    | string
-    | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
+    string | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
   successReceiver:
-    | string
-    | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
+    string | ((tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => React.ReactNode);
   failReceiver?: string | ((tx: TxMessage, address: string) => React.ReactNode);
 }) {
   return (tx: TxMessage, address: string, metadata?: MetadataSDKType[]) => {
