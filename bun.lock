@@ -61,7 +61,7 @@
         "react-intersection-observer": "9.16.0",
         "react-scroll": "1.9.3",
         "react-shadow-scope": "1.0.13",
-        "react-string-format": "1.2.0",
+        "react-string-format": "1.5.0",
         "react-syntax-highlighter": "15.6.1",
         "sharp": "0.35.5",
         "tailwind-scrollbar-hide": "4.0.0",
@@ -3289,7 +3289,7 @@
 
     "react-stately": ["react-stately@3.42.0", "", { "dependencies": { "@react-stately/calendar": "^3.9.0", "@react-stately/checkbox": "^3.7.2", "@react-stately/collections": "^3.12.8", "@react-stately/color": "^3.9.2", "@react-stately/combobox": "^3.12.0", "@react-stately/data": "^3.14.1", "@react-stately/datepicker": "^3.15.2", "@react-stately/disclosure": "^3.0.8", "@react-stately/dnd": "^3.7.1", "@react-stately/form": "^3.2.2", "@react-stately/list": "^3.13.1", "@react-stately/menu": "^3.9.8", "@react-stately/numberfield": "^3.10.2", "@react-stately/overlays": "^3.6.20", "@react-stately/radio": "^3.11.2", "@react-stately/searchfield": "^3.5.16", "@react-stately/select": "^3.8.0", "@react-stately/selection": "^3.20.6", "@react-stately/slider": "^3.7.2", "@react-stately/table": "^3.15.1", "@react-stately/tabs": "^3.8.6", "@react-stately/toast": "^3.1.2", "@react-stately/toggle": "^3.9.2", "@react-stately/tooltip": "^3.5.8", "@react-stately/tree": "^3.9.3", "@react-types/shared": "^3.32.1" }, "peerDependencies": { "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1" } }, "sha512-lYt2o1dd6dK8Bb4GRh08RG/2u64bSA1cqtRqtw4jEMgxC7Q17RFcIumBbChErndSdLzafEG/UBwV6shOfig6yw=="],
 
-    "react-string-format": ["react-string-format@1.2.0", "", {}, "sha512-fH/+zt++0IrO3ovSXR428+VQc/8bOVxn6JOd10xBteW9v4aQOuH9/+8SheV4qB1PDEnzNwZwl3sysEhWruTMrA=="],
+    "react-string-format": ["react-string-format@1.5.0", "", { "peerDependencies": { "react": ">=16" } }, "sha512-V2fMsPjLbSZamvglisfS9FBNY3eId+wH/kgrxlR8p4omffQ0IGsV0uYTyuEFO8skUMtQHIgXE/bIjjuaxoGZ6w=="],
 
     "react-syntax-highlighter": ["react-syntax-highlighter@15.6.1", "", { "dependencies": { "@babel/runtime": "^7.3.1", "highlight.js": "^10.4.1", "highlightjs-vue": "^1.0.0", "lowlight": "^1.17.0", "prismjs": "^1.27.0", "refractor": "^3.6.0" }, "peerDependencies": { "react": ">= 0.14.0" } }, "sha512-OqJ2/vL7lEeV5zTJyG7kmARppUjiB9h9udl4qHQjjgEos66z00Ia0OckwYfRxCSFrW8RJIBnsBwQsHZbVPspqg=="],
 
