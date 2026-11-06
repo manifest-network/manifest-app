@@ -11,8 +11,8 @@ updates:
     # At the default limit of 5, a handful of PRs left open stops all new version updates.
     open-pull-requests-limit: 10
     # Packages that must move in lockstep: the devtools peer-depend on the same react-query
-    # version, eslint-config-next tracks next, and react and react-dom must be the exact same
-    # version.
+    # version, eslint-config-next tracks next, react and react-dom must be the exact same
+    # version, and @tailwindcss/postcss (which compiles the CSS) pins its own tailwindcss.
     groups:
       tanstack-query:
         patterns: ['@tanstack/react-query', '@tanstack/react-query-devtools']
@@ -20,6 +20,8 @@ updates:
         patterns: ['next', 'eslint-config-next']
       react:
         patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      tailwind:
+        patterns: ['tailwindcss', '@tailwindcss/postcss']
     # next 16 is a deliberate hold: it fails the build and needs its own migration.
     ignore:
       - dependency-name: 'next'
@@ -34,6 +36,13 @@ updates:
       # cosmjs minors are breaking.
       - dependency-name: '@cosmjs/*'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      # cosmjs 0.32 is built on cosmjs-types 0.9; the app's direct imports move with it.
+      - dependency-name: 'cosmjs-types'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      # manifestjs 4 needs the stargate fork moved from ll.3 to ll.5 in package.json and
+      # resolutions too, or it installs a second signing client. That upgrade is ENG-1100.
+      - dependency-name: '@manifest-network/manifestjs'
+        update-types: ['version-update:semver-major']
       # chain-registry 2 is built for interchain-kit (@chain-registry/types 2), while cosmos-kit 2
       # uses the 0.x types. It moves with a cosmos-kit to interchain-kit migration.
       - dependency-name: 'chain-registry'
