@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 
-import { MFX_TOKEN_BASE } from '@/utils';
+import { MFX_TOKEN_BASE, amountPrecisionError, getDisplayExponent } from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 function amountToBN(amount: string, selectedToken: any) {
-  const exponent = selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
+  const exponent = getDisplayExponent(selectedToken.metadata);
   return new BigNumber(amount).div(Math.pow(10, exponent));
 }
 
@@ -16,6 +16,12 @@ export const schema = Yup.object().shape({
     .required('Amount is required')
     .test('is-greater-than-zero', 'Amount must be greater than zero', function (value) {
       return new BigNumber(value || 0).gt(0);
+    })
+    .test('display-precision', 'Too many decimal places', function (value) {
+      const { selectedToken } = this.parent;
+      if (!selectedToken || !value) return true;
+      const message = amountPrecisionError(value, getDisplayExponent(selectedToken.metadata));
+      return message ? this.createError({ message }) : true;
     })
     .test('sufficient-balance', 'Amount exceeds balance', function (value) {
       const { selectedToken } = this.parent;

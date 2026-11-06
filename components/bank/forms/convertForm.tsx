@@ -20,7 +20,7 @@ import env from '@/config/env';
 import { useToast } from '@/contexts';
 import { useFeeEstimation, useMfxPwrConversionConfig, useTokenMetadata, useTx } from '@/hooks';
 import { convertForm } from '@/schemas';
-import { parseNumberToBigInt } from '@/utils';
+import { getDisplayExponent, parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
 
 function toDenomUnitSDKType(du: DenomUnit): DenomUnitSDKType {
@@ -115,7 +115,7 @@ export default function ConvertForm({
 
   const handleConvert = async (values: convertForm.ConvertForm) => {
     try {
-      const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
+      const exponent = getDisplayExponent(values.selectedToken.metadata);
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
 
       const msg = isGroup

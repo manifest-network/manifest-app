@@ -380,7 +380,6 @@ function TokenRow({
   onUpdate: () => void;
 }) {
   // Add safety checks for the values
-  const exponent = denom?.denom_units?.[1]?.exponent ?? 0;
   const totalSupply = denom?.totalSupply ?? '0';
 
   return (
