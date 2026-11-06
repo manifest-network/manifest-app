@@ -47,7 +47,6 @@
     "**/viem": "2.48.4"
   },
   "dependencies": {
-    "@chain-registry/assets": "1.70.724",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
     "@cosmos-kit/ledger": "2.16.1",
@@ -72,7 +71,6 @@
     "@types/react-syntax-highlighter": "15.5.13",
     "@types/sinonjs__fake-timers": "15.0.1",
     "@uidotdev/usehooks": "2.4.1",
-    "autoprefixer": "10.6.2",
     "axios": "1.20.0",
     "babel-plugin-glsl": "1.0.0",
     "bech32": "2.0.0",
@@ -87,7 +85,6 @@
     "formik": "2.4.9",
     "identicon.js": "2.3.3",
     "install": "0.13.0",
-    "link": "2.1.2",
     "next": "15.5.28",
     "obscenity": "0.4.3",
     "octokit": "5.0.5",
@@ -115,8 +112,6 @@
     "@happy-dom/global-registrator": "20.0.11",
     "@tailwindcss/aspect-ratio": "0.4.2",
     "@tailwindcss/forms": "0.5.11",
-    "@tailwindcss/typography": "0.5.20",
-    "@tanstack/eslint-plugin-query": "5.68.0",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@types/crypto-js": "4.2.2",
