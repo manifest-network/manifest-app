@@ -35,7 +35,7 @@
         "chain-registry": "1.69.340",
         "cosmjs-types": "0.9.0",
         "cosmos-kit": "2.29.1",
-        "country-flag-icons": "1.5.18",
+        "country-flag-icons": "1.6.20",
         "daisyui": "5.0.6",
         "dayjs": "1.11.13",
         "decimal.js": "10.6.0",
@@ -2105,7 +2105,7 @@
 
     "cosmos-kit": ["cosmos-kit@2.29.1", "", { "dependencies": { "@cosmos-kit/bitgetwallet-extension": "^1.4.1", "@cosmos-kit/cdcwallet": "^2.18.1", "@cosmos-kit/coin98": "^2.16.1", "@cosmos-kit/compass": "^2.16.1", "@cosmos-kit/cosmostation": "^2.17.1", "@cosmos-kit/ctrl": "^2.16.1", "@cosmos-kit/exodus": "^2.15.1", "@cosmos-kit/fin": "^2.16.1", "@cosmos-kit/galaxy-station": "^2.16.1", "@cosmos-kit/gatewallet-extension": "1.1.2", "@cosmos-kit/keplr": "^2.17.1", "@cosmos-kit/leap": "^2.17.1", "@cosmos-kit/ledger": "^2.16.1", "@cosmos-kit/okxwallet-extension": "^2.16.1", "@cosmos-kit/omni": "^2.15.1", "@cosmos-kit/owallet": "^2.17.1", "@cosmos-kit/shell": "^2.16.1", "@cosmos-kit/tailwind": "^1.10.1", "@cosmos-kit/trust": "^2.16.1" } }, "sha512-RNKDxW6V1ov5+8ND869bXedZRkWeuRYawcByqrrLIGleiLmD1eCN7KJmWJymnPb7s9uwWLo73YNfgvITaUa/IA=="],
 
-    "country-flag-icons": ["country-flag-icons@1.5.18", "", {}, "sha512-z+Uzesi8u8IdkViqqbzzbkf3+a7WJpcET5B7sPwTg7GXqPYpVEgNlZ/FC3l8KO4mEf+mNkmzKLppKTN4PlCJEQ=="],
+    "country-flag-icons": ["country-flag-icons@1.6.20", "", {}, "sha512-py8JiEKzjhYw6HPJ0L7SxLgCYim36UPRTZX43/kqGueUCZLSvnrqAiwW8HtQibur7mdkFQUkjOgdK+o/9FBtaw=="],
 
     "crc": ["crc@3.8.0", "", { "dependencies": { "buffer": "^5.1.0" } }, "sha512-iX3mfgcTMIq3ZKLIsVFAbv7+Mc10kxabAGQb8HvjA1o3T1PIYprbakQ65d3I+2HGHt6nSKkM9PYjgoJO2KcFBQ=="],
 
