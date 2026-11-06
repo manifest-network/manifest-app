@@ -44,7 +44,7 @@
         "identicon.js": "2.3.3",
         "install": "0.13.0",
         "next": "15.5.28",
-        "obscenity": "0.4.3",
+        "obscenity": "0.4.6",
         "octokit": "5.0.5",
         "parse-duration": "2.1.10",
         "postcss": "8.5.28",
@@ -3055,7 +3055,7 @@
 
     "oblivious-set": ["oblivious-set@1.4.0", "", {}, "sha512-szyd0ou0T8nsAqHtprRcP3WidfsN1TnAR5yWXf2mFCEr5ek3LEOkT6EZ/92Xfs74HIdyhG5WkGxIssMU0jBaeg=="],
 
-    "obscenity": ["obscenity@0.4.3", "", {}, "sha512-DZKM0xUEksY5dVGaZoyC5VmIRMSbI6O0Gyb/07L+77d4zWJKKf5tQZrhlT0aiVYD6prTmnxiS3RhN0sfh5Q95Q=="],
+    "obscenity": ["obscenity@0.4.6", "", {}, "sha512-pHk7kNN7j3L3zGhhGnwxjvXIGsPpLrcZl2r58fqWh/V/rH6b/dafscj2sMmAY+A/9/wPsocLmimgGk2DKeKsFQ=="],
 
     "octokit": ["octokit@5.0.5", "", { "dependencies": { "@octokit/app": "^16.1.2", "@octokit/core": "^7.0.6", "@octokit/oauth-app": "^8.0.3", "@octokit/plugin-paginate-graphql": "^6.0.0", "@octokit/plugin-paginate-rest": "^14.0.0", "@octokit/plugin-rest-endpoint-methods": "^17.0.0", "@octokit/plugin-retry": "^8.0.3", "@octokit/plugin-throttling": "^11.0.3", "@octokit/request-error": "^7.0.2", "@octokit/types": "^16.0.0", "@octokit/webhooks": "^14.0.0" } }, "sha512-4+/OFSqOjoyULo7eN7EA97DE0Xydj/PW5aIckxqQIoFjFwqXKuFCvXUJObyJfBF9Khu4RL/jlDRI9FPaMGfPnw=="],
 
