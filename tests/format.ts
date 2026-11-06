@@ -16,5 +16,9 @@ export function formatComponent(value: any): string {
   });
 
   // Normalize dynamic Headless UI IDs for consistent snapshots
-  return formatted.replace(/headlessui-([\w-]+)-«r\w+»/g, 'headlessui-$1-«normalized»');
+  // React's useId values are «r1» up to 19.1 and _r_1_ from 19.2.
+  return formatted.replace(
+    /headlessui-([\w-]+?)-(?:«r\w+»|_r_\w+_)/g,
+    'headlessui-$1-«normalized»'
+  );
 }
