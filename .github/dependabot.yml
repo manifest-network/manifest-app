@@ -44,7 +44,8 @@ updates:
         versions: ['>= 7.0.0']
       # happy-dom 21 slows three form tests past Bun's 5 s timeout, but only after
       # sendBox.test.tsx has run: state it leaves in the shared test document (Web3Auth's modal
-      # stylesheet, interchain-ui's overlay root) costs far more under 21. Needs test isolation first.
+      # stylesheet, interchain-ui's overlay root) costs far more under 21. Needs test isolation
+      # first.
       - dependency-name: '@happy-dom/global-registrator'
         versions: ['>= 21.0.0']
 
