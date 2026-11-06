@@ -172,10 +172,7 @@ export const Web3AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [web3AuthWallets]);
 
   // Combine the Web3auth wallets with the other wallets
-  const wallets = [
-    ...web3AuthWallets,
-    ...cosmosWallets.for('keplr', 'cosmostation', 'leap', 'ledger'),
-  ];
+  const wallets = [...web3AuthWallets, ...cosmosWallets.for('keplr', 'ledger')];
 
   return (
     <Web3AuthContext.Provider
