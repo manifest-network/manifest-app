@@ -11,6 +11,5 @@ declare global {
     __ENV__?: Record<string, string | undefined>;
     keplr?: any;
     ethereum?: any;
-    leap?: any;
   }
 }

@@ -2,22 +2,8 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChainWalletBase } from 'cosmos-kit';
 
-import env from '@/config/env';
 import { useDeviceDetect } from '@/hooks';
 import { getRealLogo } from '@/utils';
-
-// Detect if we're in the Leap dApp browser
-const checkLeap = (): { isLeapExtension: boolean; isLeapMobile: boolean } => {
-  // Check if we're in a browser environment
-  if (typeof window === 'undefined') {
-    return { isLeapExtension: false, isLeapMobile: false };
-  }
-
-  const isLeapExtension = window.leap !== undefined;
-  const isLeapMobile = window.navigator?.userAgent?.includes('LeapCosmos') || false;
-
-  return { isLeapExtension, isLeapMobile };
-};
 
 export const WalletList = ({
   onClose,
@@ -28,20 +14,11 @@ export const WalletList = ({
   onWalletClicked: (name: string, isMobileConnect?: boolean) => void;
   wallets: ChainWalletBase[];
 }) => {
-  const { isLeapExtension, isLeapMobile } = checkLeap();
-  const isLeapDappBrowser = isLeapExtension && isLeapMobile;
   const isDarkMode = document.documentElement.classList.contains('dark');
 
   const socialOrder = ['Google', 'Twitter', 'Apple', 'Discord', 'GitHub', 'Reddit', 'Email', 'SMS'];
-  const browserOrder = ['Leap', 'Keplr', 'Cosmostation', 'Leap Cosmos MetaMask', 'Ledger'];
-  let mobileOrder = ['Wallet Connect', 'Keplr Mobile'];
-  let leapLogo;
-  if (isLeapDappBrowser) {
-    mobileOrder = ['Wallet Connect', 'Leap', 'Keplr Mobile'];
-  } else {
-    leapLogo = wallets.find(wallet => wallet.walletInfo.prettyName === 'Leap Mobile')?.walletInfo
-      ?.logo;
-  }
+  const browserOrder = ['Keplr', 'Ledger'];
+  const mobileOrder = ['Wallet Connect', 'Keplr Mobile'];
 
   const social = wallets
     .filter(wallet => socialOrder.includes(wallet.walletInfo.prettyName))
@@ -93,31 +70,23 @@ export const WalletList = ({
                 className="flex items-center w-full p-3 rounded-lg dark:bg-[#ffffff0c] bg-[#f0f0ff5c] dark:hover:bg-[#0000004c] hover:bg-[#a8a8a84c] transition cursor-pointer"
               >
                 <img
-                  src={
-                    prettyName === 'Leap Cosmos MetaMask'
-                      ? '/metamask.svg'
-                      : getRealLogo(logo?.toString() ?? '', isDarkMode)
-                  }
+                  src={getRealLogo(logo?.toString() ?? '', isDarkMode)}
                   alt={prettyName}
                   className="w-10 h-10 rounded-xl mr-3"
                 />
-                <span className="text-md flex-1 text-left">
-                  {prettyName === 'Leap Cosmos MetaMask' ? 'MetaMask' : prettyName}
-                </span>
-                {hasMobileVersion(prettyName) &&
-                  prettyName !== 'Cosmostation' &&
-                  prettyName !== 'Leap' && (
-                    <div
-                      onClick={e => {
-                        e.stopPropagation();
-                        onWalletClicked(getMobileWalletName(prettyName) || '', true);
-                      }}
-                      className="p-1.5 rounded-lg dark:hover:bg-[#ffffff1a] hover:bg-[#0000000d] dark:bg-[#ffffff37] bg-[#d5d5e4]  transition cursor-pointer"
-                      title={`Connect with ${prettyName} Mobile`}
-                    >
-                      <img src={getRealLogo('/sms')} alt="mobile" className="w-5 h-5" />
-                    </div>
-                  )}
+                <span className="text-md flex-1 text-left">{prettyName}</span>
+                {hasMobileVersion(prettyName) && (
+                  <div
+                    onClick={e => {
+                      e.stopPropagation();
+                      onWalletClicked(getMobileWalletName(prettyName) || '', true);
+                    }}
+                    className="p-1.5 rounded-lg dark:hover:bg-[#ffffff1a] hover:bg-[#0000000d] dark:bg-[#ffffff37] bg-[#d5d5e4]  transition cursor-pointer"
+                    title={`Connect with ${prettyName} Mobile`}
+                  >
+                    <img src={getRealLogo('/sms')} alt="mobile" className="w-5 h-5" />
+                  </div>
+                )}
               </button>
             </div>
           ))}
@@ -147,20 +116,6 @@ export const WalletList = ({
 
       {/* Mobile Wallets Section - shown on mobile/tablet, hidden on desktop */}
       <div className={`${isMobile ? 'block' : 'hidden'}`}>
-        {!isLeapDappBrowser && (
-          <button
-            onClick={() => window.open(env.leapDeeplink, '_blank')}
-            className="flex items-center w-full mb-3 p-3 rounded-lg dark:bg-[#ffffff0c] bg-[#f0f0ff5c] text-md hover:opacity-90 transition"
-          >
-            <img
-              src={getRealLogo(leapLogo?.toString() ?? '', isDarkMode)}
-              alt="leap"
-              className="w-10 h-10 rounded-xl mr-3"
-            />
-            <span>Leap Mobile</span>
-          </button>
-        )}
-
         <div className="space-y-2">
           {mobile.map(({ walletInfo: { name, prettyName, logo } }) => (
             <button

@@ -53,7 +53,7 @@ Feature-based directories under `components/`:
 ### Blockchain Integration
 
 - **@manifest-network/manifestjs** — proto-generated types, registries, amino converters
-- **cosmos-kit** — wallet management (Keplr, Cosmostation, Leap, Web3Auth social login)
+- **cosmos-kit** — wallet management (Keplr, Ledger, Web3Auth social login)
 - **@cosmjs** — signing, stargate client, proto-signing
 - Multi-chain: Manifest (primary) + Osmosis (IBC/swaps)
 
