@@ -111,11 +111,6 @@ describe('TailwindModal', () => {
             { onClick: () => onWalletClicked('keplr-extension') },
             'Keplr'
           ),
-          React.createElement(
-            'button',
-            { onClick: () => onWalletClicked('leap-cosmos-metamask-snap') },
-            'Metamask'
-          ),
           React.createElement('button', { onClick: () => onWalletClicked('Email') }, 'Email'),
           React.createElement('button', { onClick: () => onWalletClicked('SMS') }, 'SMS'),
           React.createElement('button', { onClick: onClose }, 'Close')
