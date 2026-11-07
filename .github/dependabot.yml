@@ -39,10 +39,6 @@ updates:
       # cosmjs 0.32 is built on cosmjs-types 0.9; the app's direct imports move with it.
       - dependency-name: 'cosmjs-types'
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
-      # manifestjs 4 needs the stargate fork moved from ll.3 to ll.5 in package.json and
-      # resolutions too, or it installs a second signing client. That upgrade is ENG-1100.
-      - dependency-name: '@manifest-network/manifestjs'
-        update-types: ['version-update:semver-major']
       # chain-registry 2 is built for interchain-kit (@chain-registry/types 2), while cosmos-kit 2
       # uses the 0.x types. It moves with a cosmos-kit to interchain-kit migration.
       - dependency-name: 'chain-registry'
