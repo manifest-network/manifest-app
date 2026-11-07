@@ -28,7 +28,7 @@
   },
   "resolutions": {
     "**/@chain-registry/types": "0.25.0",
-    "**/@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
+    "**/@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.5",
     "**/@cosmjs/proto-signing": "0.32.4",
     "**/@cosmjs/amino": "0.32.4",
     "**/@cosmjs/encoding": "0.32.4",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "0.32.4",
-    "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.3",
+    "@cosmjs/stargate": "npm:@manifest-network/stargate@0.32.4-ll.5",
     "@cosmos-kit/ledger": "2.16.1",
     "@cosmos-kit/react": "2.24.1",
     "@cosmos-kit/web3auth": "2.18.1",
@@ -57,7 +57,7 @@
     "@headlessui/tailwindcss": "0.2.2",
     "@heroicons/react": "2.2.0",
     "@interchain-ui/react": "1.26.3",
-    "@manifest-network/manifestjs": "2.4.1",
+    "@manifest-network/manifestjs": "4.0.0",
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.2",
     "@sinonjs/fake-timers": "15.4.0",
