@@ -11,7 +11,7 @@ import { NumberInput } from '@/components/react/inputs';
 import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
-import { parseNumberToBigInt, shiftDigits } from '@/utils';
+import { getDisplayExponent, parseNumberToBigInt, shiftDigits } from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 //TODO: find max mint amount from team for mfx. Find tx size limit for max payout pairs
@@ -70,7 +70,7 @@ export function MultiMintModal({ isOpen, onClose, admin, address, denom }: Multi
 
   const handleMultiMint = async (values: { payoutPairs: PayoutPair[] }) => {
     try {
-      const exponent = denom?.denom_units?.[1]?.exponent ?? 6;
+      const exponent = getDisplayExponent(denom);
       const payoutMsg = payout({
         authority: admin,
         payoutPairs: values.payoutPairs.map(pair => ({

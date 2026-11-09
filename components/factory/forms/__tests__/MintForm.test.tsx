@@ -3,8 +3,14 @@ import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import MintForm from '@/components/factory/forms/MintForm';
-import { clearAllMocks, mockRouter } from '@/tests';
-import { mockDenomMeta1, mockFakeMfxDenom, mockMfxDenom } from '@/tests/data';
+import { clearAllMocks, mockModule, mockRouter } from '@/tests';
+import {
+  manifestAddr2,
+  mockDenomMeta1,
+  mockFakeMfxDenom,
+  mockMfxDenom,
+  mockOneUnitDenomMeta,
+} from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
 const mockProps = {
@@ -108,5 +114,81 @@ describe('MintForm Component', () => {
     await waitFor(() => {
       expect(mintButton).toBeEnabled();
     });
+  });
+});
+
+describe('MintForm amounts', () => {
+  // The form shows the amount's validation error in a tooltip once the field is touched.
+  const amountError = (message: string) => document.querySelector(`[data-tip="${message}"]`);
+
+  const tx = jest.fn().mockResolvedValue({});
+
+  beforeEach(() => {
+    mockRouter();
+    mockModule('@/hooks', () => ({
+      useTx: () => ({ isSigning: false, tx }),
+      useFeeEstimation: () => ({ estimateFee: jest.fn() }),
+    }));
+  });
+  afterEach(() => {
+    cleanup();
+    clearAllMocks();
+    tx.mockClear();
+  });
+
+  test('shows and mints a one-unit token in display units, like MFX', async () => {
+    const supply = '5000000000000';
+    const denom = { ...mockOneUnitDenomMeta, balance: supply, totalSupply: supply };
+    renderWithProps({ denom, totalSupply: supply });
+
+    // The supply is shown in the unit the amount is typed in: 5,000,000 tokens.
+    expect(screen.getAllByText('5,000,000').length).toBeGreaterThan(0);
+
+    fireEvent.change(screen.getByLabelText('AMOUNT'), { target: { value: '1' } });
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    fireEvent.click(mintButton);
+
+    await waitFor(() => expect(tx).toHaveBeenCalledTimes(1));
+    const [msgs] = tx.mock.calls[0];
+    expect(msgs[0].value.amount).toEqual({ denom: denom.base, amount: '1000000' });
+  });
+
+  test('rejects more decimals than the display unit has', async () => {
+    const denom = { ...mockOneUnitDenomMeta, balance: '5000000', totalSupply: '5000000' };
+    renderWithProps({ denom, totalSupply: '5000000' });
+    const amountInput = screen.getByLabelText('AMOUNT');
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+
+    fireEvent.change(amountInput, { target: { value: '0.000001' } });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    fireEvent.change(amountInput, { target: { value: '0.0000005' } });
+    fireEvent.blur(amountInput);
+    await waitFor(() =>
+      expect(amountError('Amount can have at most 6 decimal places')).not.toBeNull()
+    );
+    expect(mintButton).toBeDisabled();
+  });
+
+  test('checks the typed amount, not its rounded double', async () => {
+    const supply = '5000000000000000';
+    const denom = { ...mockOneUnitDenomMeta, balance: supply, totalSupply: supply };
+    renderWithProps({ denom, totalSupply: supply });
+    const amountInput = screen.getByLabelText('AMOUNT');
+    fireEvent.change(screen.getByLabelText('RECIPIENT'), { target: { value: manifestAddr2 } });
+    const mintButton = screen.getByLabelText(`mint-btn-${denom.display}`);
+
+    fireEvent.change(amountInput, { target: { value: '100000000000' } });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+    // As a double this is 100000000000 (no decimals), but it has 7 and would be signed
+    // rounded up, as 100000000000000001 base units.
+    fireEvent.change(amountInput, { target: { value: '100000000000.0000005' } });
+    fireEvent.blur(amountInput);
+    await waitFor(() =>
+      expect(amountError('Amount can have at most 6 decimal places')).not.toBeNull()
+    );
+    expect(mintButton).toBeDisabled();
   });
 });

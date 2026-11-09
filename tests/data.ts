@@ -73,6 +73,26 @@ export const mockBalances: CombinedBalanceInfo[] = [
   },
 ];
 
+// The metadata tokenfactory gives a new denom: one unit, the base denom itself (exponent 0).
+const oneUnitDenom = `factory/${manifestAddr1}/uone`;
+export const mockOneUnitDenomMeta: MetadataSDKType = {
+  description: '',
+  name: oneUnitDenom,
+  symbol: oneUnitDenom,
+  uri: '',
+  uri_hash: '',
+  display: oneUnitDenom,
+  base: oneUnitDenom,
+  denom_units: [{ denom: oneUnitDenom, exponent: 0, aliases: [] }],
+};
+
+export const mockOneUnitBalance: CombinedBalanceInfo = {
+  display: oneUnitDenom,
+  base: unsafeConvertTokenBase(oneUnitDenom),
+  amount: '5000000',
+  metadata: mockOneUnitDenomMeta,
+};
+
 export const mockActiveValidators: ExtendedValidatorSDKType[] = [
   {
     operator_address: 'validator1',

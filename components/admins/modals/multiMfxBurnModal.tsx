@@ -9,7 +9,7 @@ import { MinusIcon } from '@/components/icons';
 import { NumberInput, TextInput } from '@/components/react/inputs';
 import env from '@/config/env';
 import { useFeeEstimation, useTx } from '@/hooks';
-import { parseNumberToBigInt } from '@/utils';
+import { getDisplayExponent, parseNumberToBigInt } from '@/utils';
 import Yup from '@/utils/yupExtensions';
 
 interface BurnPair {
@@ -61,7 +61,7 @@ export function MultiBurnModal({ isOpen, onClose, admin, address, denom }: Multi
           burnCoins: [
             {
               denom: denom?.base ?? '',
-              amount: parseNumberToBigInt(pair.amount, denom?.denom_units?.[1].exponent).toString(),
+              amount: parseNumberToBigInt(pair.amount, getDisplayExponent(denom)).toString(),
             },
           ],
         })

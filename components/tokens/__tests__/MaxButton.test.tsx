@@ -4,7 +4,7 @@ import React from 'react';
 
 import { MaxButton } from '@/components';
 import { formatComponent } from '@/tests';
-import { mockBalances, mockMfxBalance } from '@/tests/data';
+import { mockBalances, mockMfxBalance, mockOneUnitBalance } from '@/tests/data';
 
 describe('MaxButton', () => {
   afterEach(cleanup);
@@ -39,5 +39,19 @@ describe('MaxButton', () => {
     screen.getByText('MAX').click();
     expect(amount).toBe(1.9);
     expect(document.querySelector('.tooltip')).toBeInTheDocument();
+  });
+
+  test('gives a one-unit token in display units, keeping the zeros of whole amounts', () => {
+    let amount = '';
+    render(
+      <MaxButton
+        token={{ ...mockOneUnitBalance, amount: '5000000000000' }}
+        setTokenAmount={a => (amount = a)}
+      />
+    );
+
+    screen.getByText('MAX').click();
+    // 5,000,000,000,000 base units at 6 decimals.
+    expect(amount).toBe('5000000');
   });
 });

@@ -49,7 +49,7 @@ export const denomToAsset = (chainName: string, denom: string) => {
 export const denomToExponent = (chainName: string, denom: string) => {
   const asset = denomToAsset(chainName, denom);
   const unit = asset?.denom_units.find(({ denom }) => denom === asset.display);
-  return unit?.exponent || 6;
+  return unit?.exponent ?? 6;
 };
 
 export const prettyBalance = (chainName: string, balance: Coin) => {
