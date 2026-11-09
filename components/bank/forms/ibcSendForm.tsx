@@ -214,6 +214,10 @@ function IbcSendForm({ token }: { token: string }) {
           }}
           brandColor={'#a087ff'}
           onlyTestnet={env.chainTier !== 'mainnet'}
+          // The widget's default API (go.skip.build) only allows the mainnet wallet's origin, so
+          // on QA and testnet it gets no data and asks to connect a wallet. Skip's public API
+          // allows any origin. Mainnet keeps the default.
+          apiUrl={env.chainTier !== 'mainnet' ? 'https://api.skip.build' : undefined}
           getCosmosSigner={getCosmosSigner}
           connectedAddresses={{
             [env.chainId]: address,
