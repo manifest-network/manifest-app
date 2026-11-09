@@ -16,7 +16,7 @@
         "@headlessui/react": "2.2.0",
         "@headlessui/tailwindcss": "0.2.2",
         "@heroicons/react": "2.2.0",
-        "@interchain-ui/react": "1.26.2",
+        "@interchain-ui/react": "1.26.3",
         "@manifest-network/manifestjs": "2.1.0",
         "@react-three/drei": "10.7.9",
         "@react-three/fiber": "9.8.2",
@@ -561,7 +561,7 @@
 
     "@initia/initia-registry-types": ["@initia/initia-registry-types@0.0.20", "", { "dependencies": { "zod": "^3.22.4" } }, "sha512-tzHtJoFaltpFAQv3/c/vd49/RBxa1DS2gHN448U8FY3jZ20np4TXciCHDieNO0xIVW7oWfXk/kyW7l7OMLzK9w=="],
 
-    "@interchain-ui/react": ["@interchain-ui/react@1.26.2", "", { "dependencies": { "@floating-ui/core": "^1.6.7", "@floating-ui/dom": "^1.6.10", "@floating-ui/react": "^0.26.23", "@floating-ui/react-dom": "^2.1.1", "@floating-ui/utils": "^0.2.7", "@formkit/auto-animate": "^0.8.2", "@react-aria/listbox": "^3.13.3", "@react-aria/overlays": "^3.23.2", "@react-aria/utils": "^3.25.2", "@tanstack/react-virtual": "^3.10.5", "@vanilla-extract/css": "^1.15.5", "@vanilla-extract/css-utils": "^0.1.4", "@vanilla-extract/dynamic": "^2.1.2", "@vanilla-extract/private": "^1.0.6", "@vanilla-extract/recipes": "^0.5.5", "animejs": "^3.2.2", "bignumber.js": "^9.1.2", "client-only": "^0.0.1", "clsx": "^2.1.1", "copy-to-clipboard": "^3.3.3", "immer": "^10.1.1", "lodash": "^4.17.21", "rainbow-sprinkles": "^0.17.3", "react-aria": "^3.34.3", "react-stately": "^3.32.2", "zustand": "^4.5.5" }, "peerDependencies": { "react": "^16.14.0 || ^17.0.0 || ^18.0.0", "react-dom": "^16.14.0 || ^17.0.0 || ^18.0.0" } }, "sha512-AstIeKU+CvZwXR1LOeeiepCIK5QWpScTZKPpR6JCSfJCYuXox5qmim/dv57t3mlJReLiPX1R+Cy+0zGrxhX14Q=="],
+    "@interchain-ui/react": ["@interchain-ui/react@1.26.3", "", { "dependencies": { "@floating-ui/core": "^1.6.7", "@floating-ui/dom": "^1.6.10", "@floating-ui/react": "^0.26.23", "@floating-ui/react-dom": "^2.1.1", "@floating-ui/utils": "^0.2.7", "@formkit/auto-animate": "^0.8.2", "@react-aria/listbox": "^3.13.3", "@react-aria/overlays": "^3.23.2", "@react-aria/utils": "^3.25.2", "@tanstack/react-virtual": "^3.10.5", "@vanilla-extract/css": "^1.15.5", "@vanilla-extract/css-utils": "^0.1.4", "@vanilla-extract/dynamic": "^2.1.2", "@vanilla-extract/private": "^1.0.6", "@vanilla-extract/recipes": "^0.5.5", "animejs": "^3.2.2", "bignumber.js": "^9.1.2", "client-only": "^0.0.1", "clsx": "^2.1.1", "copy-to-clipboard": "^3.3.3", "immer": "^10.1.1", "lodash": "^4.17.21", "rainbow-sprinkles": "^0.17.3", "react-aria": "^3.34.3", "react-stately": "^3.32.2", "zustand": "^4.5.5" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-kvGOZaSDJLNxtxieiyPMHOzxBGkpHR/BCpg/UEMDl2l7nLoPrygB/Oux1QEv/cwkw8GvepOBM7pzfJf8xk1IbQ=="],
 
     "@internationalized/date": ["@internationalized/date@3.10.0", "", { "dependencies": { "@swc/helpers": "^0.5.0" } }, "sha512-oxDR/NTEJ1k+UFVQElaNIk65E/Z83HK1z1WI3lQyhTtnNg4R5oVXaPzK3jcpKG8UHKDVuDQHzn+wsxSz8RP3aw=="],
 
