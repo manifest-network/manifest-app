@@ -39,10 +39,6 @@ describe('Web3AuthContext', () => {
       },
     }));
 
-    mockModule('@cosmos-kit/leap-metamask-cosmos-snap', () => ({
-      wallets: [],
-    }));
-
     // Mock environment config
     mockModule('@/config/env', () => ({
       default: {
