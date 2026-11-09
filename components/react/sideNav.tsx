@@ -30,6 +30,67 @@ interface SideNavProps {
   setDrawerVisible: (visible: boolean) => void;
 }
 
+// The nav items are module-level components: defined inside SideNav, each render would create new
+// component types and React would rebuild the whole sidebar, logos and wallet card included.
+const NavItem: React.FC<{
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  href: string;
+  tooltip?: string;
+}> = ({ Icon, href, tooltip }) => {
+  const { pathname } = useRouter();
+  const isActive = pathname === href;
+
+  return (
+    <li
+      className="relative w-full flex justify-center mb-5 tooltip tooltip-primary tooltip-bottom hover:after:delay-1000 hover:before:delay-1000"
+      data-tip={tooltip}
+    >
+      <Link href={href} passHref legacyBehavior>
+        <a
+          className={`group active:scale-95 hover:ring-2  hover:ring-primary flex justify-center p-3 items-center rounded-lg transition-all duration-300 ease-in-out w-18
+          ${isActive ? 'text-white bg-primary' : 'text-gray-500 hover:text-primary'}`}
+        >
+          <div
+            className={`w-8 h-8 duration-300  ${isActive ? 'text-white bg-primary' : 'text-[#00000066] dark:text-[#FFFFFF66] group-hover:text-primary'}`}
+          >
+            <Icon className="w-full h-full " />
+          </div>
+        </a>
+      </Link>
+    </li>
+  );
+};
+
+const NavDrawer: React.FC<{
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  href: string;
+  label: string;
+  tooltip?: string;
+}> = ({ Icon, href, label, tooltip }) => {
+  const { pathname } = useRouter();
+  const isActive = pathname === href;
+
+  return (
+    <li
+      className="w-full mb-5 group tooltip tooltip-primary tooltip-bottom hover:after:delay-1000 hover:before:delay-1000"
+      data-tip={tooltip}
+    >
+      <Link href={href} legacyBehavior>
+        <a
+          className={`flex items-center p-2 text-base font-normal rounded-lg transition duration-300 ease-in-out ${
+            isActive
+              ? 'bg-primary text-white'
+              : 'text-[#00000066] dark:text-[#FFFFFF66]  hover:bg-[#0000000A] hover:text-primary dark:hover:text-primary dark:hover:bg-base-300'
+          }`}
+        >
+          <Icon className="w-8 h-8 mr-6" />
+          <span className="text-xl">{label}</span>
+        </a>
+      </Link>
+    </li>
+  );
+};
+
 export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavProps) {
   const { toggleTheme, theme } = useTheme();
   const [isContactsOpen, setContactsOpen] = useState(false);
@@ -47,36 +108,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
 
   const toggleDrawer = () => setDrawerVisible(!isDrawerVisible);
   const version = packageInfo.version;
-  const NavItem: React.FC<{
-    Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    href: string;
-    tooltip?: string;
-  }> = ({ Icon, href, tooltip }) => {
-    const { pathname } = useRouter();
-    const isActive = pathname === href;
-
-    return (
-      <li
-        className="relative w-full flex justify-center mb-5 tooltip tooltip-primary tooltip-bottom hover:after:delay-1000 hover:before:delay-1000"
-        data-tip={tooltip}
-      >
-        <Link href={href} passHref legacyBehavior>
-          <a
-            className={`group active:scale-95 hover:ring-2  hover:ring-primary flex justify-center p-3 items-center rounded-lg transition-all duration-300 ease-in-out w-18
-            ${isActive ? 'text-white bg-primary' : 'text-gray-500 hover:text-primary'}`}
-          >
-            <div
-              className={`w-8 h-8 duration-300  ${isActive ? 'text-white bg-primary' : 'text-[#00000066] dark:text-[#FFFFFF66] group-hover:text-primary'}`}
-            >
-              <Icon className="w-full h-full " />
-            </div>
-          </a>
-        </Link>
-      </li>
-    );
-  };
-
-  const SideNav: React.FC = () => (
+  const sideNav = (
     <div className="overflow-y-auto z-30 py-5 px-3 w-32 bg-[#FFFFFF3D] dark:bg-[#FFFFFF0F] flex flex-col items-center h-full transition-transform duration-300 ease-in-out">
       <Link href={'/#'} passHref legacyBehavior>
         <a href="#" className="mb-12">
@@ -147,37 +179,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
     </div>
   );
 
-  const NavDrawer: React.FC<{
-    Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    href: string;
-    label: string;
-    tooltip?: string;
-  }> = ({ Icon, href, label, tooltip }) => {
-    const { pathname } = useRouter();
-    const isActive = pathname === href;
-
-    return (
-      <li
-        className="w-full mb-5 group tooltip tooltip-primary tooltip-bottom hover:after:delay-1000 hover:before:delay-1000"
-        data-tip={tooltip}
-      >
-        <Link href={href} legacyBehavior>
-          <a
-            className={`flex items-center p-2 text-base font-normal rounded-lg transition duration-300 ease-in-out ${
-              isActive
-                ? 'bg-primary text-white'
-                : 'text-[#00000066] dark:text-[#FFFFFF66]  hover:bg-[#0000000A] hover:text-primary dark:hover:text-primary dark:hover:bg-base-300'
-            }`}
-          >
-            <Icon className="w-8 h-8 mr-6" />
-            <span className="text-xl">{label}</span>
-          </a>
-        </Link>
-      </li>
-    );
-  };
-
-  const SideDrawer: React.FC = () => (
+  const sideDrawer = (
     <div className="overflow-y-auto flex flex-col h-full bg-[#F4F4FF] dark:bg-[#1D192D]  w-64 p-4">
       <div className="gap-2 justify-start ml-2 mt-2 items-center mb-12 space-x-2">
         <Link href={'/#'} passHref legacyBehavior>
@@ -332,7 +334,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
         className="fixed top-0 left-0 h-full hidden lg:flex transition-all duration-300 ease-in-out"
         aria-label="Sidebar"
       >
-        <SideNav />
+        {sideNav}
       </aside>
       <aside
         id="sidebar-double"
@@ -341,7 +343,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
         } transition-transform duration-500 ease-in-out`}
         aria-label="Sidebar"
       >
-        <SideDrawer />
+        {sideDrawer}
       </aside>
       <button
         onClick={toggleDrawer}
