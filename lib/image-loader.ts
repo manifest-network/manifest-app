@@ -77,8 +77,14 @@ function containsNsfwContent(url: string): boolean {
   }
 
   // Check URL for profanity/NSFW keywords using obscenity package
-  // Only check if URL is a string and not empty
-  if (typeof url === 'string' && url.length > 0 && profanityFilter.hasMatch(url)) {
+  // Only check if URL is a string and not empty. Separators become spaces first: obscenity's
+  // leetspeak transformer reads "/" as "l", which turns path segments into false matches
+  // (since 0.4.5 it blocked every chain-registry Solana logo URL).
+  if (
+    typeof url === 'string' &&
+    url.length > 0 &&
+    profanityFilter.hasMatch(url.replace(/[/\\._\-?=&#:]+/g, ' '))
+  ) {
     console.warn(`Blocked NSFW content - Profanity detected in URL: ${url}`);
     return true;
   }
