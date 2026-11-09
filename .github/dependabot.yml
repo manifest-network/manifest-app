@@ -11,12 +11,15 @@ updates:
     # At the default limit of 5, a handful of PRs left open stops all new version updates.
     open-pull-requests-limit: 10
     # Packages that must move in lockstep: the devtools peer-depend on the same react-query
-    # version, and eslint-config-next tracks next.
+    # version, eslint-config-next tracks next, and react and react-dom must be the exact same
+    # version.
     groups:
       tanstack-query:
         patterns: ['@tanstack/react-query', '@tanstack/react-query-devtools']
       next:
         patterns: ['next', 'eslint-config-next']
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
     # next 16 is a deliberate hold: it fails the build and needs its own migration.
     ignore:
       - dependency-name: 'next'
@@ -35,6 +38,16 @@ updates:
       # uses the 0.x types. It moves with a cosmos-kit to interchain-kit migration.
       - dependency-name: 'chain-registry'
         update-types: ['version-update:semver-major']
+      # Next 15 type-checks through the TypeScript JavaScript compiler API, which TypeScript 7's
+      # native compiler doesn't provide. TypeScript 6 is still fine.
+      - dependency-name: 'typescript'
+        versions: ['>= 7.0.0']
+      # happy-dom 21 slows three form tests past Bun's 5 s timeout, but only after
+      # sendBox.test.tsx has run: state it leaves in the shared test document (Web3Auth's modal
+      # stylesheet, interchain-ui's overlay root) costs far more under 21. Needs test isolation
+      # first.
+      - dependency-name: '@happy-dom/global-registrator'
+        versions: ['>= 21.0.0']
 
   - package-ecosystem: 'docker'
     directory: '/'
