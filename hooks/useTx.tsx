@@ -7,13 +7,14 @@ import env from '@/config/env';
 import { useToast } from '@/contexts/toastContext';
 import { Web3AuthContext } from '@/contexts/web3AuthContext';
 
+import { MaxQuote, useFeeEstimation } from './useFeeEstimation';
+
 interface Msg {
   typeUrl: string;
   value: any;
 }
 
-export interface TxOptions {
-  fee?: StdFee | (() => Promise<StdFee | undefined | null>) | null;
+interface BaseTxOptions {
   memo?: string;
   onSuccess?: () => void;
   returnError?: boolean;
@@ -23,6 +24,17 @@ export interface TxOptions {
    */
   showToastOnErrors?: boolean;
 }
+
+/**
+ * Without `fee`, the fee is estimated for exactly the messages and memo being signed. A
+ * `maxQuote` from MAX is paid in that estimate when it applies (see checkMaxQuote), so it
+ * can't be combined with a `fee` worked out separately.
+ */
+export type TxOptions = BaseTxOptions &
+  (
+    | { fee?: StdFee | (() => Promise<StdFee | undefined | null>) | null; maxQuote?: never }
+    | { fee?: never; maxQuote?: MaxQuote | null }
+  );
 
 const extractSimulationErrorMessage = (fullErrorMessage: string): string => {
   // Common error patterns to clean up
@@ -50,8 +62,8 @@ const extractSimulationErrorMessage = (fullErrorMessage: string): string => {
 
 export const useTx = (chainName: string, promptId?: string) => {
   const { isSigning, setIsSigning, setPromptId } = useContext(Web3AuthContext);
-  const { address, getSigningStargateClient, estimateFee, disconnect, connect } =
-    useChain(chainName);
+  const { address, getSigningStargateClient } = useChain(chainName);
+  const { estimateFee } = useFeeEstimation(chainName);
   const { setToastMessage } = useToast();
   const explorerUrl = chainName === env.osmosisChain ? env.osmosisExplorerUrl : env.explorerUrl;
   const lastUsedAddress = useRef<string | null>(null);
@@ -112,7 +124,10 @@ export const useTx = (chainName: string, promptId?: string) => {
       if (options.fee) {
         fee = typeof options.fee === 'function' ? await options.fee() : options.fee;
       } else {
-        fee = await estimateFee(msgs);
+        fee = await estimateFee(address, msgs, {
+          memo: options.memo,
+          maxQuote: options.maxQuote,
+        });
       }
 
       if (!fee) {
