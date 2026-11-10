@@ -1,10 +1,12 @@
+import { GasPrice } from '@cosmjs/stargate';
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import ConvertForm from '@/components/bank/forms/convertForm';
+import { quoteMax } from '@/hooks/useFeeEstimation';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
-import { mockBalances } from '@/tests/data';
+import { mockBalances, spendable } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
 // Mock the hooks used by ConvertForm
@@ -57,6 +59,8 @@ describe('ConvertForm Component', () => {
       }),
       useFeeEstimation: () => ({
         estimateFee: jest.fn().mockResolvedValue({ amount: [{ denom: 'umfx', amount: '1000' }] }),
+        estimateMax: jest.fn().mockResolvedValue(null),
+        isFeeDenom: () => false,
       }),
       useTx: () => ({
         isSigning: false,
@@ -122,6 +126,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -157,6 +163,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -203,6 +211,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -254,6 +264,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: false,
@@ -340,6 +352,8 @@ describe('ConvertForm Component', () => {
         }),
         useFeeEstimation: () => ({
           estimateFee: jest.fn(),
+          estimateMax: jest.fn().mockResolvedValue(null),
+          isFeeDenom: () => false,
         }),
         useTx: () => ({
           isSigning: true,
@@ -388,5 +402,60 @@ describe('ConvertForm Component', () => {
     await waitFor(() => {
       expect(maxButton).toBeInTheDocument();
     });
+  });
+
+  test('checks the amount against the balance after it refreshes', async () => {
+    // TOKEN 1 goes from 1000 to 3000 base units while the form is open.
+    function Harness() {
+      const [balances, setBalances] = React.useState(mockBalances[0]);
+      return (
+        <>
+          <button onClick={() => setBalances({ ...mockBalances[0], amount: '3000' })}>
+            refresh
+          </button>
+          <ConvertForm address="manifest1address" balances={balances} isBalancesLoading={false} />
+        </>
+      );
+    }
+    renderWithChainProvider(<Harness />);
+
+    fireEvent.change(screen.getByPlaceholderText('1.00'), { target: { value: '0.002' } });
+    await screen.findByText('Amount exceeds balance');
+
+    fireEvent.click(screen.getByText('refresh'));
+    await waitFor(() =>
+      expect(screen.queryByText('Amount exceeds balance')).not.toBeInTheDocument()
+    );
+  });
+
+  test('MAX hands its quote to tx, which estimates the fee itself', async () => {
+    // TOKEN 1's 1000 base units less a 100 fee, paid in TOKEN 1.
+    const quote = quoteMax(
+      'manifest1address',
+      spendable(mockBalances[0].base, mockBalances[0].amount),
+      100,
+      {
+        denom: mockBalances[0].base,
+        gasPrice: GasPrice.fromString(`1${mockBalances[0].base}`),
+      }
+    )!;
+    const estimateMax = jest.fn().mockResolvedValue(quote);
+    const tx = jest.fn().mockResolvedValue(undefined);
+    mockModule.force('@/hooks', () => ({
+      useFeeEstimation: () => ({ estimateMax, isFeeDenom: () => true }),
+      useTx: () => ({ isSigning: false, tx }),
+    }));
+    renderWithProps();
+
+    fireEvent.click(screen.getByRole('button', { name: /max/i }));
+    await waitFor(() => expect(screen.getByPlaceholderText('1.00')).toHaveValue('0.0009'));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'convert-btn' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'convert-btn' }));
+
+    await waitFor(() => expect(tx).toHaveBeenCalled());
+    const [[msg], options] = tx.mock.calls[0];
+    expect(msg.value.funds).toEqual([{ denom: quote.denom, amount: quote.amount }]);
+    expect(options.maxQuote).toBe(quote);
+    expect(options).not.toHaveProperty('fee');
   });
 });
