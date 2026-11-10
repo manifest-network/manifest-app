@@ -6,8 +6,11 @@ import { MsgExecuteContract } from '@manifest-network/manifestjs/dist/codegen/co
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
+import env from '@/config/env';
 import { useToast } from '@/contexts/toastContext';
 import { MFX_TOKEN_BASE, formatDenom } from '@/utils';
+
+import { useLcdQueryClient, useOsmosisLcdQueryClient } from './useLcdQueryClient';
 
 export interface FeeToken {
   denom: string;
@@ -21,8 +24,17 @@ const DEFAULT_GAS_MODIFIER = 1.5;
 export const MIN_GAS_MODIFIER = 1.3;
 
 /**
+ * A balance that can be spent now: the bank balance less anything still locked, such as
+ * unvested tokens. Fee selection and MAX take only these, so a total balance (what
+ * StargateClient.getBalance returns) can't be passed in by mistake. useFeeEstimation
+ * fetches them.
+ */
+export type SpendableCoin = Readonly<Coin> & { readonly __spendable: never };
+
+/**
  * What MAX worked out for a fee token: the largest amount `address` can spend when the fee
- * is paid in that same token, and that fee. amount + fee was the whole balance when quoted.
+ * is paid in that same token, and that fee. amount + fee was the whole spendable balance
+ * when quoted.
  *
  * Only quoteMax makes one, so an amount and a fee that don't belong together can't be
  * passed off as a quote. Hand it to useTx (or estimateFee) with the transaction: the fee
@@ -74,7 +86,7 @@ export function messageSpends(address: string, messages: EncodeObject[]): Map<st
 export function selectFee(
   gasLimit: number,
   feeTokens: FeeToken[],
-  balances: readonly Coin[],
+  balances: readonly SpendableCoin[],
   spends: ReadonlyMap<string, BigNumber> = new Map()
 ): StdFee | null {
   for (const token of feeTokens) {
@@ -89,18 +101,21 @@ export function selectFee(
 }
 
 /**
- * Quote MAX for `address`'s `balance` (base units) of a fee token: the balance minus the
- * fee for `gasLimit`, with the fee paid in that token. Null if the balance doesn't cover
- * the fee.
+ * Quote MAX for `address`'s spendable `balance` of a fee token: the balance minus the fee
+ * for `gasLimit`, with the fee paid in that token. Null if the balance doesn't cover the
+ * fee.
  */
 export function quoteMax(
   address: string,
-  balance: string,
+  balance: SpendableCoin,
   gasLimit: number,
   feeToken: FeeToken
 ): MaxQuote | null {
+  if (balance.denom !== feeToken.denom) {
+    throw new Error(`Cannot quote MAX for ${balance.denom} with a ${feeToken.denom} fee`);
+  }
   const fee = calculateFee(gasLimit, feeToken.gasPrice);
-  const amount = new BigNumber(balance).minus(fee.amount[0].amount);
+  const amount = new BigNumber(balance.amount).minus(fee.amount[0].amount);
   if (!amount.gt(0)) {
     return null;
   }
@@ -118,7 +133,7 @@ export function checkMaxQuote(
   address: string,
   spends: ReadonlyMap<string, BigNumber>,
   gasEstimation: number,
-  balances: readonly Coin[]
+  balances: readonly SpendableCoin[]
 ): MaxQuoteCheck {
   if (quote.address !== address || !spends.get(quote.denom)?.eq(quote.amount)) {
     return { kind: 'unrelated' };
@@ -140,6 +155,9 @@ export interface FeeOptions {
 export const useFeeEstimation = (chainName: string) => {
   const { getSigningStargateClient, chain } = useChain(chainName);
   const { setToastMessage } = useToast();
+  const { lcdQueryClient: manifestLcd } = useLcdQueryClient();
+  const { lcdQueryClient: osmosisLcd } = useOsmosisLcdQueryClient();
+  const lcdQueryClient = chainName === env.osmosisChain ? osmosisLcd : manifestLcd;
 
   const feeTokens = useMemo<FeeToken[]>(() => {
     const tokens = (chain.fees?.fee_tokens ?? []).flatMap(t => {
@@ -171,6 +189,18 @@ export const useFeeEstimation = (chainName: string) => {
     return stargateClient ?? null;
   };
 
+  // The only source of SpendableCoin. Like the bank page, it leaves out locked funds.
+  const getSpendable = async (address: string, denom: string): Promise<SpendableCoin> => {
+    if (!lcdQueryClient) {
+      throw new Error('Unable to connect to the network. Please try again.');
+    }
+    const { balance } = await lcdQueryClient.cosmos.bank.v1beta1.spendableBalanceByDenom({
+      address,
+      denom,
+    });
+    return { denom, amount: balance?.amount ?? '0' } as SpendableCoin;
+  };
+
   /**
    * Simulate the transaction and return its fee: the MAX quote's fee if checkMaxQuote
    * accepts it, otherwise the first fee token that covers it (see selectFee). Null, with
@@ -199,9 +229,7 @@ export const useFeeEstimation = (chainName: string) => {
 
       const [gasEstimation, balances] = await Promise.all([
         stargateClient.simulate(address, messages, memo),
-        Promise.all(feeTokens.map(t => stargateClient.getBalance(address, t.denom))).catch(
-          () => null
-        ),
+        Promise.all(feeTokens.map(t => getSpendable(address, t.denom))).catch(() => null),
       ]);
       if (!gasEstimation) {
         showError('Fee Estimation Error', 'Failed to estimate transaction fees. Please try again.');
@@ -250,8 +278,8 @@ export const useFeeEstimation = (chainName: string) => {
   };
 
   /**
-   * Quote MAX for fee token `denom`: simulate `buildMsg` spending the whole balance and
-   * take the fee, paid in that same token, out of it (see quoteMax). Null, with an error
+   * Quote MAX for fee token `denom`: simulate `buildMsg` spending the whole spendable
+   * balance and take the fee, paid in that same token, out of it (see quoteMax). Null, with an error
    * toast, if that fails or the balance doesn't cover the fee. Only for fee tokens (see
    * isFeeDenom); other tokens max out at the whole balance.
    */
@@ -270,10 +298,10 @@ export const useFeeEstimation = (chainName: string) => {
       if (!stargateClient) {
         return null;
       }
-      const { amount: balance } = await stargateClient.getBalance(address, denom);
-      const gasEstimation = new BigNumber(balance).isZero()
+      const balance = await getSpendable(address, denom);
+      const gasEstimation = new BigNumber(balance.amount).isZero()
         ? 0
-        : await stargateClient.simulate(address, [buildMsg(balance)], memo);
+        : await stargateClient.simulate(address, [buildMsg(balance.amount)], memo);
       const quote = quoteMax(
         address,
         balance,

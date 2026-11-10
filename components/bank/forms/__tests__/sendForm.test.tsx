@@ -6,7 +6,7 @@ import React from 'react';
 import SendForm from '@/components/bank/forms/sendForm';
 import { quoteMax } from '@/hooks/useFeeEstimation';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
-import { mockBalances } from '@/tests/data';
+import { mockBalances, spendable } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
 
 function renderWithProps(props = {}) {
@@ -96,7 +96,7 @@ describe('SendForm MAX', () => {
   const SENDER = 'manifest1address';
   const RECIPIENT = 'manifest1hj5fveer5cjtn4wd6wstzugjfdxzl0xp8ws9ct';
   // TOKEN 1's 1000 base units less a 100 fee, paid in TOKEN 1.
-  const quote = quoteMax(SENDER, mockBalances[0].amount, 100, {
+  const quote = quoteMax(SENDER, spendable(mockBalances[0].base, mockBalances[0].amount), 100, {
     denom: mockBalances[0].base,
     gasPrice: GasPrice.fromString(`1${mockBalances[0].base}`),
   })!;
@@ -164,5 +164,38 @@ describe('SendForm MAX', () => {
     });
     expect(options.maxQuote).toBe(quote);
     expect(options).not.toHaveProperty('fee');
+  });
+
+  test('checks MAX against the balance after it refreshes', async () => {
+    // TOKEN 1 goes from 1000 to 3000 base units while the form is open.
+    const refreshed = [{ ...mockBalances[0], amount: '3000' }, ...mockBalances.slice(1)];
+    estimateMax.mockResolvedValue(
+      quoteMax(SENDER, spendable(mockBalances[0].base, '3000'), 100, {
+        denom: mockBalances[0].base,
+        gasPrice: GasPrice.fromString(`1${mockBalances[0].base}`),
+      })
+    );
+    function Harness() {
+      const [balances, setBalances] = React.useState(mockBalances);
+      return (
+        <>
+          <button onClick={() => setBalances(refreshed)}>refresh</button>
+          <SendForm address={SENDER} balances={balances} isBalancesLoading={false} />
+        </>
+      );
+    }
+    renderWithChainProvider(<Harness />);
+    const amountInput = screen.getByPlaceholderText('0.00');
+
+    // More than the opening balance of 0.001 is refused.
+    fireEvent.change(amountInput, { target: { value: '0.002' } });
+    await screen.findByText('Amount exceeds balance');
+
+    fireEvent.click(screen.getByText('refresh'));
+    fireEvent.click(screen.getByRole('button', { name: /max/i }));
+    await waitFor(() => expect(amountInput).toHaveValue('0.0029'));
+    await waitFor(() =>
+      expect(screen.queryByText('Amount exceeds balance')).not.toBeInTheDocument()
+    );
   });
 });

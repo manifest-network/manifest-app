@@ -1,5 +1,6 @@
 import { GasPrice } from '@cosmjs/stargate';
 import { cleanup, renderHook } from '@testing-library/react';
+import BigNumber from 'bignumber.js';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 
 import env from '@/config/env';
@@ -13,6 +14,7 @@ import {
   useFeeEstimation,
 } from '@/hooks';
 import { clearAllMocks, mockModule } from '@/tests';
+import { spendable } from '@/tests/data';
 
 const ADDRESS = 'manifest1sender';
 const PWR = env.pwrTokenDenom;
@@ -39,28 +41,28 @@ const convertMsg = (amount: string, sender = ADDRESS) => ({
 describe('selectFee', () => {
   test('prefers MFX when the MFX balance covers the fee', () => {
     const fee = selectFee(100_000, feeTokens, [
-      { denom: 'umfx', amount: '1000000' },
-      { denom: PWR, amount: '1000000' },
+      spendable('umfx', '1000000'),
+      spendable(PWR, '1000000'),
     ]);
     expect(fee?.amount).toEqual([{ denom: 'umfx', amount: '110000' }]);
     expect(fee?.gas).toBe('100000');
   });
 
   test('pays in PWR when the wallet holds only PWR', () => {
-    const fee = selectFee(100_000, feeTokens, [{ denom: PWR, amount: '1000000' }]);
+    const fee = selectFee(100_000, feeTokens, [spendable(PWR, '1000000')]);
     expect(fee?.amount).toEqual([{ denom: PWR, amount: '50000' }]);
   });
 
   test('pays in PWR when MFX is too low for the fee', () => {
     const fee = selectFee(100_000, feeTokens, [
-      { denom: 'umfx', amount: '109999' },
-      { denom: PWR, amount: '50000' },
+      spendable('umfx', '109999'),
+      spendable(PWR, '50000'),
     ]);
     expect(fee?.amount[0].denom).toBe(PWR);
   });
 
   test('counts what is being sent in the fee denom', () => {
-    const balances = [{ denom: PWR, amount: '1000000' }];
+    const balances = [spendable(PWR, '1000000')];
     expect(
       selectFee(100_000, feeTokens, balances, messageSpends(ADDRESS, [sendMsg(PWR, '950000')]))
     ).not.toBeNull();
@@ -73,17 +75,14 @@ describe('selectFee', () => {
     const fee = selectFee(
       100_000,
       feeTokens,
-      [
-        { denom: 'umfx', amount: '1000000' },
-        { denom: PWR, amount: '1000000' },
-      ],
+      [spendable('umfx', '1000000'), spendable(PWR, '1000000')],
       messageSpends(ADDRESS, [convertMsg('950000')])
     );
     expect(fee?.amount[0].denom).toBe(PWR);
   });
 
   test('returns null when no fee token is affordable', () => {
-    expect(selectFee(100_000, feeTokens, [{ denom: 'utoken', amount: '999999999' }])).toBeNull();
+    expect(selectFee(100_000, feeTokens, [spendable('utoken', '999999999')])).toBeNull();
   });
 });
 
@@ -112,7 +111,7 @@ describe('messageSpends', () => {
 
 describe('quoteMax', () => {
   test('leaves exactly the fee, so amount + fee is the balance', () => {
-    const quote = quoteMax(ADDRESS, '1000000', 100_000, pwrFee);
+    const quote = quoteMax(ADDRESS, spendable(PWR, '1000000'), 100_000, pwrFee);
     expect(quote).toMatchObject({
       address: ADDRESS,
       denom: PWR,
@@ -124,22 +123,26 @@ describe('quoteMax', () => {
       selectFee(
         100_000,
         [pwrFee],
-        [{ denom: PWR, amount: '1000000' }],
+        [spendable(PWR, '1000000')],
         messageSpends(ADDRESS, [sendMsg(PWR, quote!.amount)])
       )
     ).toEqual(quote!.fee);
   });
 
   test('returns null when the balance does not cover the fee', () => {
-    expect(quoteMax(ADDRESS, '50000', 100_000, pwrFee)).toBeNull();
-    expect(quoteMax(ADDRESS, '49999', 100_000, pwrFee)).toBeNull();
+    expect(quoteMax(ADDRESS, spendable(PWR, '50000'), 100_000, pwrFee)).toBeNull();
+    expect(quoteMax(ADDRESS, spendable(PWR, '49999'), 100_000, pwrFee)).toBeNull();
+  });
+
+  test('refuses a balance of another token than the fee', () => {
+    expect(() => quoteMax(ADDRESS, spendable('umfx', '1000000'), 100_000, pwrFee)).toThrow();
   });
 });
 
 describe('checkMaxQuote', () => {
   // 150_000 gas at 0.5 upwr is a 75_000 upwr fee, leaving 925_000 of 1_000_000 upwr.
-  const quote = quoteMax(ADDRESS, '1000000', 150_000, pwrFee)!;
-  const balances = [{ denom: PWR, amount: '1000000' }];
+  const quote = quoteMax(ADDRESS, spendable(PWR, '1000000'), 150_000, pwrFee)!;
+  const balances = [spendable(PWR, '1000000')];
   const sending = (amount: string) => messageSpends(ADDRESS, [sendMsg(PWR, amount)]);
 
   test('pays the quote for a send of exactly the quoted amount', () => {
@@ -171,7 +174,7 @@ describe('checkMaxQuote', () => {
 
   test('is stale once the balance no longer covers amount + fee', () => {
     const withBalance = (amount: string) =>
-      checkMaxQuote(quote, ADDRESS, sending('925000'), 100_000, [{ denom: PWR, amount }]).kind;
+      checkMaxQuote(quote, ADDRESS, sending('925000'), 100_000, [spendable(PWR, amount)]).kind;
 
     expect(withBalance('999999')).toBe('stale');
     expect(withBalance('2000000')).toBe('pay');
@@ -179,22 +182,41 @@ describe('checkMaxQuote', () => {
 });
 
 describe('useFeeEstimation', () => {
+  // What can be spent, from the LCD, and what is still locked (vesting) on top of it.
   let balances: Record<string, string>;
+  let locked: Record<string, string>;
   let client: any;
   const setToastMessage = jest.fn();
   const toastTitles = () => setToastMessage.mock.calls.map(([toast]) => toast.title);
+  const total = (denom: string) =>
+    new BigNumber(balances[denom] ?? 0).plus(locked[denom] ?? 0).toFixed();
 
   beforeEach(() => {
+    // Spendable PWR only, but 10 MFX still vesting: fees and MAX must not count it.
     balances = { umfx: '0', [PWR]: '1000000' };
+    locked = { umfx: '10000000' };
     setToastMessage.mockClear();
     client = {
       getAccount: jest.fn().mockResolvedValue({ address: ADDRESS }),
-      getBalance: jest.fn(async (_: string, denom: string) => ({
-        denom,
-        amount: balances[denom] ?? '0',
-      })),
+      // The total bank balance, locked funds included.
+      getBalance: jest.fn(async (_: string, denom: string) => ({ denom, amount: total(denom) })),
       simulate: jest.fn().mockResolvedValue(100_000),
     };
+    const lcdQueryClient = {
+      cosmos: {
+        bank: {
+          v1beta1: {
+            spendableBalanceByDenom: jest.fn(async ({ denom }: { denom: string }) => ({
+              balance: { denom, amount: balances[denom] ?? '0' },
+            })),
+          },
+        },
+      },
+    };
+    mockModule('@/hooks/useLcdQueryClient', () => ({
+      useLcdQueryClient: () => ({ lcdQueryClient }),
+      useOsmosisLcdQueryClient: () => ({ lcdQueryClient: undefined }),
+    }));
     mockModule('@cosmos-kit/react', () => ({
       useChain: () => ({
         getSigningStargateClient: async () => client,
@@ -296,6 +318,25 @@ describe('useFeeEstimation', () => {
 
     const fee = await estimateFee(ADDRESS, [sendMsg(PWR, '900000')], { maxQuote: quote });
     expect(fee).toEqual({ amount: [{ denom: PWR, amount: '60000' }], gas: '120000' });
+  });
+
+  test('MAX leaves out locked funds', async () => {
+    // 10 MFX, of which 8 are still vesting.
+    balances.umfx = '2000000';
+    locked.umfx = '8000000';
+    const { result } = renderHook(() => useFeeEstimation('manifest'));
+
+    const quote = await result.current.estimateMax(ADDRESS, 'umfx', a => sendMsg('umfx', a));
+    // A 100_000 * 1.5 * 1.1 = 165_000 umfx fee out of the 2 MFX that can be spent.
+    expect(quote?.amount).toBe('1835000');
+    expect(client.simulate).toHaveBeenCalledWith(ADDRESS, [sendMsg('umfx', '2000000')], undefined);
+  });
+
+  test('pays the fee in PWR when all the MFX is locked', async () => {
+    const { result } = renderHook(() => useFeeEstimation('manifest'));
+
+    const fee = await result.current.estimateFee(ADDRESS, [sendMsg('utoken', '1')]);
+    expect(fee?.amount).toEqual([{ denom: PWR, amount: '75000' }]);
   });
 
   test('MAX gives nothing when the balance cannot cover the fee', async () => {

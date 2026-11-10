@@ -6,10 +6,10 @@ import React from 'react';
 import { MaxButton } from '@/components';
 import { MaxQuote, quoteMax } from '@/hooks/useFeeEstimation';
 import { formatComponent } from '@/tests';
-import { mockBalances, mockMfxBalance } from '@/tests/data';
+import { mockBalances, mockMfxBalance, spendable } from '@/tests/data';
 
 // 2 MFX less a 55_000 umfx fee.
-const mfxQuote = quoteMax('manifest1sender', mockMfxBalance.amount, 55_000, {
+const mfxQuote = quoteMax('manifest1sender', spendable('umfx', mockMfxBalance.amount), 55_000, {
   denom: 'umfx',
   gasPrice: GasPrice.fromString('1umfx'),
 })!;

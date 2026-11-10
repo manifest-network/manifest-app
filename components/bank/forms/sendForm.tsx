@@ -17,6 +17,8 @@ import { sendForm } from '@/schemas';
 import { parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
 
+import { SyncSelectedToken } from './SyncSelectedToken';
+
 export default function SendForm({
   address,
   balances,
@@ -140,6 +142,7 @@ export default function SendForm({
 
           return (
             <Form className="space-y-8 flex flex-col items-center max-w-md mx-auto">
+              <SyncSelectedToken latest={selectedTokenBalance} />
               <div className="w-full space-y-8">
                 <div className="w-full">
                   <label className="label">

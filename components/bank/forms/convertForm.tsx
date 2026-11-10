@@ -29,6 +29,8 @@ import { convertForm } from '@/schemas';
 import { parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
 
+import { SyncSelectedToken } from './SyncSelectedToken';
+
 function toDenomUnitSDKType(du: DenomUnit): DenomUnitSDKType {
   return {
     denom: du.denom ?? '',
@@ -199,6 +201,7 @@ export default function ConvertForm({
         {({ isValid, dirty, setFieldValue, values, errors, handleChange }) => {
           return (
             <Form className="space-y-8 flex flex-col items-center max-w-md mx-auto">
+              <SyncSelectedToken latest={balances} />
               <div className="w-full space-y-8">
                 <div className="w-full">
                   <label className="label">

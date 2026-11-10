@@ -6,6 +6,7 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import env from '@/config/env';
 import { quoteMax, useTx } from '@/hooks';
 import { clearAllMocks, mockModule } from '@/tests';
+import { spendable } from '@/tests/data';
 
 const ADDRESS = 'manifest1sender';
 const PWR = env.pwrTokenDenom;
@@ -25,14 +26,10 @@ describe('useTx fees', () => {
 
   beforeEach(() => {
     setToastMessage.mockClear();
-    // A PWR-only wallet.
+    // A wallet that can spend only PWR.
     const balances: Record<string, string> = { umfx: '0', [PWR]: '1000000' };
     client = {
       getAccount: jest.fn().mockResolvedValue({ address: ADDRESS }),
-      getBalance: jest.fn(async (_: string, denom: string) => ({
-        denom,
-        amount: balances[denom] ?? '0',
-      })),
       simulate: jest.fn().mockResolvedValue(100_000),
       sign: jest.fn().mockResolvedValue(TxRaw.fromPartial({})),
       broadcastTx: jest.fn().mockResolvedValue({ code: 0, transactionHash: 'HASH', events: [] }),
@@ -54,6 +51,21 @@ describe('useTx fees', () => {
     mockModule('@/contexts/toastContext', () => ({
       useToast: () => ({ setToastMessage }),
     }));
+    const lcdQueryClient = {
+      cosmos: {
+        bank: {
+          v1beta1: {
+            spendableBalanceByDenom: async ({ denom }: { denom: string }) => ({
+              balance: { denom, amount: balances[denom] ?? '0' },
+            }),
+          },
+        },
+      },
+    };
+    mockModule('@/hooks/useLcdQueryClient', () => ({
+      useLcdQueryClient: () => ({ lcdQueryClient }),
+      useOsmosisLcdQueryClient: () => ({ lcdQueryClient: undefined }),
+    }));
   });
 
   afterEach(() => {
@@ -62,7 +74,7 @@ describe('useTx fees', () => {
   });
 
   // 150_000 gas at 0.5 upwr is a 75_000 upwr fee, leaving 925_000 of 1_000_000 upwr.
-  const quote = quoteMax(ADDRESS, '1000000', 150_000, {
+  const quote = quoteMax(ADDRESS, spendable(PWR, '1000000'), 150_000, {
     denom: PWR,
     gasPrice: GasPrice.fromString(`0.5${PWR}`),
   })!;
