@@ -32,7 +32,7 @@
         "axios": "1.21.0",
         "babel-plugin-glsl": "1.0.0",
         "bech32": "2.0.0",
-        "chain-registry": "1.69.724",
+        "chain-registry": "1.69.725",
         "cosmjs-types": "0.9.0",
         "cosmos-kit": "2.29.1",
         "country-flag-icons": "1.6.20",
@@ -2034,7 +2034,7 @@
 
     "cbw-sdk": ["@coinbase/wallet-sdk@3.9.3", "", { "dependencies": { "bn.js": "^5.2.1", "buffer": "^6.0.3", "clsx": "^1.2.1", "eth-block-tracker": "^7.1.0", "eth-json-rpc-filters": "^6.0.0", "eventemitter3": "^5.0.1", "keccak": "^3.0.3", "preact": "^10.16.0", "sha.js": "^2.4.11" } }, "sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw=="],
 
-    "chain-registry": ["chain-registry@1.69.724", "", { "dependencies": { "@chain-registry/types": "^0.50.445" } }, "sha512-LBd8q+mtzG7HwwxWn31lUD2E4ZxcaQm1G8ar5fAUDE4UvuPsbq/W3iHddQihpOdpaAH2YiFPjlCaAkYNlEbjYw=="],
+    "chain-registry": ["chain-registry@1.69.725", "", { "dependencies": { "@chain-registry/types": "^0.50.446" } }, "sha512-Q1Ym2Zg4LtCYqTqP7X3nEynLQK+p+N4ZETYMczfaknQFTJACP9+5rMufyx9+cc2c1RQgd7wQffnrbuSPaD9uwg=="],
 
     "chalk": ["chalk@4.1.2", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="],
 
