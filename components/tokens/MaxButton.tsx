@@ -1,22 +1,45 @@
 import BigNumber from 'bignumber.js';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { HelpIcon } from '@/components';
+import type { MaxQuote } from '@/hooks/useFeeEstimation';
 import { CombinedBalanceInfo } from '@/utils';
 
 export interface MaxButtonProps {
   token: CombinedBalanceInfo | null;
-  setTokenAmount: (amount: string) => void;
+  /**
+   * The amount field's current value. Changing it, or the token, while an estimate is
+   * running drops that estimate, so it can't overwrite what the user did in the meantime.
+   */
+  amount: string;
+  /** Sets the amount field, in display units, along with the MAX quote it came from. */
+  setTokenAmount: (amount: string, quote: MaxQuote | null) => void;
   disabled?: boolean;
   /**
-   * Returns the max amount in base units after taking out the network fee, or null to
-   * leave the amount unchanged. Without it, MAX is the whole balance.
+   * Quotes MAX with the network fee taken out, or returns null to leave the amount
+   * unchanged. Without it, MAX is the whole balance and there is no quote.
    */
-  estimateMax?: (token: CombinedBalanceInfo) => Promise<string | null>;
+  estimateMax?: (token: CombinedBalanceInfo) => Promise<MaxQuote | null>;
 }
 
-export const MaxButton = ({ token, setTokenAmount, disabled, estimateMax }: MaxButtonProps) => {
+export const MaxButton = ({
+  token,
+  amount,
+  setTokenAmount,
+  disabled,
+  estimateMax,
+}: MaxButtonProps) => {
   const [isEstimating, setIsEstimating] = useState(false);
+
+  // A new controller for each token and amount. Changing either, or unmounting, aborts the
+  // previous one, and an estimate started under an aborted controller is dropped.
+  const tokenBase = token?.base;
+  const controller = useRef<AbortController | null>(null);
+  useEffect(() => {
+    const current = new AbortController();
+    controller.current = current;
+    return () => current.abort();
+  }, [tokenBase, amount]);
 
   return (
     <button
@@ -25,19 +48,19 @@ export const MaxButton = ({ token, setTokenAmount, disabled, estimateMax }: MaxB
       type="button"
       onClick={async () => {
         if (!token) return;
+        const signal = controller.current?.signal;
 
         setIsEstimating(true);
         try {
-          const amount = estimateMax ? await estimateMax(token) : token.amount;
-          if (amount === null) return;
+          let quote: MaxQuote | null = null;
+          if (estimateMax) {
+            quote = await estimateMax(token);
+            if (!quote || quote.denom !== token.base || signal?.aborted) return;
+          }
 
           const decimals = token.metadata?.denom_units[1]?.exponent ?? 6;
-          const formattedAmount = new BigNumber(amount)
-            .div(Math.pow(10, decimals))
-            .toFixed(decimals)
-            .replace(/\.?0+$/, '');
-
-          setTokenAmount(formattedAmount);
+          const max = new BigNumber(quote?.amount ?? token.amount).shiftedBy(-decimals);
+          setTokenAmount(max.toFixed(), quote);
         } finally {
           setIsEstimating(false);
         }

@@ -4,7 +4,7 @@ import { useChain } from '@cosmos-kit/react';
 import { MsgSend } from '@manifest-network/manifestjs/dist/codegen/cosmos/bank/v1beta1/tx';
 import { MsgExecuteContract } from '@manifest-network/manifestjs/dist/codegen/cosmwasm/wasm/v1/tx';
 import BigNumber from 'bignumber.js';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { useToast } from '@/contexts/toastContext';
 import { MFX_TOKEN_BASE, formatDenom } from '@/utils';
@@ -15,6 +15,34 @@ export interface FeeToken {
 }
 
 const DEFAULT_GAS_MODIFIER = 1.5;
+// Smallest margin over the simulated gas that a MAX quote's gas limit must still leave for
+// its fee to be paid. MAX prices its fee at DEFAULT_GAS_MODIFIER, so the send may need up
+// to ~15% more gas than the MAX simulation (a longer memo, say) and still pay that fee.
+export const MIN_GAS_MODIFIER = 1.3;
+
+/**
+ * What MAX worked out for a fee token: the largest amount `address` can spend when the fee
+ * is paid in that same token, and that fee. amount + fee was the whole balance when quoted.
+ *
+ * Only quoteMax makes one, so an amount and a fee that don't belong together can't be
+ * passed off as a quote. Hand it to useTx (or estimateFee) with the transaction: the fee
+ * is paid only if checkMaxQuote accepts it for that transaction.
+ */
+export type MaxQuote = Readonly<{
+  address: string;
+  denom: string;
+  /** Base units. */
+  amount: string;
+  fee: StdFee;
+}> & { readonly __maxQuote: never };
+
+/** Whether a transaction pays a MAX quote's fee. See checkMaxQuote. */
+export type MaxQuoteCheck =
+  | { readonly kind: 'pay'; readonly fee: StdFee }
+  // The transaction doesn't spend exactly the quoted amount, so the quote doesn't apply.
+  | { readonly kind: 'unrelated' }
+  // It does, but the fee no longer fits: it needs more gas, or the balance went down.
+  | { readonly kind: 'stale' };
 
 /**
  * Sum, by denom, what `address` itself spends in the messages (bank sends and contract
@@ -47,7 +75,7 @@ export function selectFee(
   gasLimit: number,
   feeTokens: FeeToken[],
   balances: readonly Coin[],
-  spends: Map<string, BigNumber> = new Map()
+  spends: ReadonlyMap<string, BigNumber> = new Map()
 ): StdFee | null {
   for (const token of feeTokens) {
     const fee = calculateFee(gasLimit, token.gasPrice);
@@ -61,27 +89,57 @@ export function selectFee(
 }
 
 /**
- * Largest amount of a fee token's balance that can be spent when the fee is paid in that
- * same token, and the fee to send it with. Null if the balance doesn't cover the fee.
+ * Quote MAX for `address`'s `balance` (base units) of a fee token: the balance minus the
+ * fee for `gasLimit`, with the fee paid in that token. Null if the balance doesn't cover
+ * the fee.
  */
-export function maxAfterFee(
+export function quoteMax(
+  address: string,
   balance: string,
   gasLimit: number,
   feeToken: FeeToken
-): { amount: string; fee: StdFee } | null {
+): MaxQuote | null {
   const fee = calculateFee(gasLimit, feeToken.gasPrice);
   const amount = new BigNumber(balance).minus(fee.amount[0].amount);
-  return amount.gt(0) ? { amount: amount.toFixed(), fee } : null;
+  if (!amount.gt(0)) {
+    return null;
+  }
+  return { address, denom: feeToken.denom, amount: amount.toFixed(), fee } as MaxQuote;
+}
+
+/**
+ * Decide whether a transaction pays a MAX quote's fee. It must spend exactly the quoted
+ * amount of the quoted token from the quoted address (see messageSpends). Its simulation
+ * must have succeeded at `gasEstimation`, and the quote's gas limit must still be at
+ * least MIN_GAS_MODIFIER times that. The balance must also still cover amount + fee.
+ */
+export function checkMaxQuote(
+  quote: MaxQuote,
+  address: string,
+  spends: ReadonlyMap<string, BigNumber>,
+  gasEstimation: number,
+  balances: readonly Coin[]
+): MaxQuoteCheck {
+  if (quote.address !== address || !spends.get(quote.denom)?.eq(quote.amount)) {
+    return { kind: 'unrelated' };
+  }
+  const balance = new BigNumber(balances.find(b => b.denom === quote.denom)?.amount ?? 0);
+  const gasFits = gasEstimation * MIN_GAS_MODIFIER <= Number(quote.fee.gas);
+  const balanceCovers = balance.gte(new BigNumber(quote.amount).plus(quote.fee.amount[0].amount));
+  return gasFits && balanceCovers ? { kind: 'pay', fee: quote.fee } : { kind: 'stale' };
+}
+
+export interface FeeOptions {
+  /** Gas limit as a multiple of the simulated gas. Defaults to DEFAULT_GAS_MODIFIER. */
+  modifier?: number;
+  memo?: string;
+  /** Pay this MAX quote's fee if checkMaxQuote accepts it for the transaction. */
+  maxQuote?: MaxQuote | null;
 }
 
 export const useFeeEstimation = (chainName: string) => {
   const { getSigningStargateClient, chain } = useChain(chainName);
   const { setToastMessage } = useToast();
-  // The fee estimateMax worked out, reused by estimateFee for a transaction that spends
-  // exactly that max amount, so amount + fee matches the balance.
-  const maxFee = useRef<{ address: string; denom: string; amount: string; fee: StdFee } | null>(
-    null
-  );
 
   const feeTokens = useMemo<FeeToken[]>(() => {
     const tokens = (chain.fees?.fee_tokens ?? []).flatMap(t => {
@@ -113,20 +171,16 @@ export const useFeeEstimation = (chainName: string) => {
     return stargateClient ?? null;
   };
 
+  /**
+   * Simulate the transaction and return its fee: the MAX quote's fee if checkMaxQuote
+   * accepts it, otherwise the first fee token that covers it (see selectFee). Null, with
+   * an error toast, if the simulation fails or no fee token covers the fee.
+   */
   const estimateFee = async (
     address: string,
     messages: EncodeObject[],
-    modifier?: number,
-    memo?: string
-  ) => {
-    const max = maxFee.current;
-    if (
-      max?.address === address &&
-      messageSpends(address, messages).get(max.denom)?.eq(max.amount)
-    ) {
-      return max.fee;
-    }
-
+    { modifier, memo, maxQuote }: FeeOptions = {}
+  ): Promise<StdFee | null> => {
     try {
       const stargateClient = await getClient();
       if (!stargateClient) {
@@ -161,13 +215,28 @@ export const useFeeEstimation = (chainName: string) => {
         return null;
       }
 
+      const spends = messageSpends(address, messages);
+      const quote: MaxQuoteCheck = maxQuote
+        ? checkMaxQuote(maxQuote, address, spends, gasEstimation, balances)
+        : { kind: 'unrelated' };
+      if (quote.kind === 'pay') {
+        return quote.fee;
+      }
+
       const gasLimit = Math.round(gasEstimation * (modifier || DEFAULT_GAS_MODIFIER));
-      const fee = selectFee(gasLimit, feeTokens, balances, messageSpends(address, messages));
+      const fee = selectFee(gasLimit, feeTokens, balances, spends);
       if (!fee) {
-        showError(
-          'Insufficient Funds for Fees',
-          `Not enough ${feeTokens.map(t => formatDenom(t.denom)).join(' or ')} to pay the transaction fee.`
-        );
+        if (quote.kind === 'stale') {
+          showError(
+            'Fee Changed',
+            'The network fee or your balance changed since you clicked MAX. Click MAX again to update the amount.'
+          );
+        } else {
+          showError(
+            'Insufficient Funds for Fees',
+            `Not enough ${feeTokens.map(t => formatDenom(t.denom)).join(' or ')} to pay the transaction fee.`
+          );
+        }
         return null;
       }
       return fee;
@@ -181,19 +250,17 @@ export const useFeeEstimation = (chainName: string) => {
   };
 
   /**
-   * Max amount (base units) of fee token `denom` that `buildMsg(amount)` can spend, with
-   * the fee paid in that same token and taken out of the amount, so amount + fee is
-   * exactly the balance. estimateFee then returns that fee for a transaction spending
-   * exactly this amount. Only for fee tokens (see isFeeDenom); other tokens max out at
-   * the whole balance.
+   * Quote MAX for fee token `denom`: simulate `buildMsg` spending the whole balance and
+   * take the fee, paid in that same token, out of it (see quoteMax). Null, with an error
+   * toast, if that fails or the balance doesn't cover the fee. Only for fee tokens (see
+   * isFeeDenom); other tokens max out at the whole balance.
    */
   const estimateMax = async (
     address: string,
     denom: string,
     buildMsg: (amount: string) => EncodeObject,
     memo?: string
-  ): Promise<string | null> => {
-    maxFee.current = null;
+  ): Promise<MaxQuote | null> => {
     const feeToken = feeTokens.find(t => t.denom === denom);
     if (!feeToken) {
       return null;
@@ -207,16 +274,19 @@ export const useFeeEstimation = (chainName: string) => {
       const gasEstimation = new BigNumber(balance).isZero()
         ? 0
         : await stargateClient.simulate(address, [buildMsg(balance)], memo);
-      const max = maxAfterFee(balance, Math.round(gasEstimation * DEFAULT_GAS_MODIFIER), feeToken);
-      if (!max) {
+      const quote = quoteMax(
+        address,
+        balance,
+        Math.round(gasEstimation * DEFAULT_GAS_MODIFIER),
+        feeToken
+      );
+      if (!quote) {
         showError(
           'Insufficient Funds for Fees',
           `Your ${formatDenom(denom)} balance is too low to cover the transaction fee.`
         );
-        return null;
       }
-      maxFee.current = { address, denom, ...max };
-      return max.amount;
+      return quote;
     } catch (error: any) {
       showError(
         'Fee Estimation Error',

@@ -12,7 +12,7 @@ import { SearchIcon } from '@/components/icons';
 import { TextInput } from '@/components/react/inputs';
 import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
-import { useFeeEstimation, useTx } from '@/hooks';
+import { MaxQuote, useFeeEstimation, useTx } from '@/hooks';
 import { sendForm } from '@/schemas';
 import { parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
@@ -33,11 +33,13 @@ export default function SendForm({
   admin?: string;
 }>) {
   const [searchTerm, setSearchTerm] = useState('');
+  // The quote behind the last MAX. useTx pays its fee only while the amount still matches.
+  const [maxQuote, setMaxQuote] = useState<MaxQuote | null>(null);
 
   const queryClient = useQueryClient();
 
   const { isSigning, tx } = useTx(env.chain);
-  const { estimateFee, estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
+  const { estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
   const { send } = cosmos.bank.v1beta1.MessageComposer.withTypeUrl;
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
@@ -100,7 +102,7 @@ export default function SendForm({
 
       await tx([msg], {
         memo: values.memo,
-        fee: () => estimateFee(address, [msg]),
+        maxQuote,
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
@@ -222,18 +224,30 @@ export default function SendForm({
                       Balance: <TokenBalance token={selectedTokenBalance ?? values.selectedToken} />
                       <MaxButton
                         token={values.selectedToken}
-                        setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
+                        amount={values.amount}
+                        setTokenAmount={(amount, quote) => {
+                          setFieldValue('amount', amount);
+                          setMaxQuote(quote);
+                        }}
                         disabled={isSigning}
                         // A group send is paid from the policy while the proposer pays the fee, so
-                        // MAX is the whole balance there. Simulated as a send to self, since the
-                        // recipient may not be filled in yet.
+                        // MAX is the whole balance there. Simulated against the recipient once it
+                        // is valid (creating a new account costs gas), and as a send to self until
+                        // then.
                         estimateMax={
                           !isGroup && isFeeDenom(values.selectedToken.base)
                             ? token =>
                                 estimateMax(
                                   address,
                                   token.base,
-                                  amount => buildSendMsg(address, token.base, amount),
+                                  amount =>
+                                    buildSendMsg(
+                                      sendForm.recipientSchema.isValidSync(values.recipient)
+                                        ? values.recipient
+                                        : address,
+                                      token.base,
+                                      amount
+                                    ),
                                   values.memo
                                 )
                             : undefined

@@ -1,8 +1,10 @@
+import { GasPrice } from '@cosmjs/stargate';
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import ConvertForm from '@/components/bank/forms/convertForm';
+import { quoteMax } from '@/hooks/useFeeEstimation';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
 import { mockBalances } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
@@ -400,5 +402,31 @@ describe('ConvertForm Component', () => {
     await waitFor(() => {
       expect(maxButton).toBeInTheDocument();
     });
+  });
+
+  test('MAX hands its quote to tx, which estimates the fee itself', async () => {
+    // TOKEN 1's 1000 base units less a 100 fee, paid in TOKEN 1.
+    const quote = quoteMax('manifest1address', mockBalances[0].amount, 100, {
+      denom: mockBalances[0].base,
+      gasPrice: GasPrice.fromString(`1${mockBalances[0].base}`),
+    })!;
+    const estimateMax = jest.fn().mockResolvedValue(quote);
+    const tx = jest.fn().mockResolvedValue(undefined);
+    mockModule.force('@/hooks', () => ({
+      useFeeEstimation: () => ({ estimateMax, isFeeDenom: () => true }),
+      useTx: () => ({ isSigning: false, tx }),
+    }));
+    renderWithProps();
+
+    fireEvent.click(screen.getByRole('button', { name: /max/i }));
+    await waitFor(() => expect(screen.getByPlaceholderText('1.00')).toHaveValue('0.0009'));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'convert-btn' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'convert-btn' }));
+
+    await waitFor(() => expect(tx).toHaveBeenCalled());
+    const [[msg], options] = tx.mock.calls[0];
+    expect(msg.value.funds).toEqual([{ denom: quote.denom, amount: quote.amount }]);
+    expect(options.maxQuote).toBe(quote);
+    expect(options).not.toHaveProperty('fee');
   });
 });

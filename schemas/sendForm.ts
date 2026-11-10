@@ -7,14 +7,16 @@ function amountToBN(amount: string, selectedToken: any) {
   return new BigNumber(amount).div(Math.pow(10, exponent));
 }
 
+export const recipientSchema = Yup.string()
+  .required('Recipient is required')
+  .manifestAddress()
+  .test('recipient-has-prefix', 'Recipient prefix must match recipient chain', function (value) {
+    if (!value) return true;
+    return value.startsWith('manifest');
+  });
+
 export const schema = Yup.object().shape({
-  recipient: Yup.string()
-    .required('Recipient is required')
-    .manifestAddress()
-    .test('recipient-has-prefix', 'Recipient prefix must match recipient chain', function (value) {
-      if (!value) return true;
-      return value.startsWith('manifest');
-    }),
+  recipient: recipientSchema,
   amount: Yup.string()
     .matches(/^\d*(\.\d*)?$/, 'Amount must be a number')
     .required('Amount is required')

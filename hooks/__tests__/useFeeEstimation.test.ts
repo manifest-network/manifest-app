@@ -1,9 +1,17 @@
 import { GasPrice } from '@cosmjs/stargate';
-import { act, cleanup, renderHook } from '@testing-library/react';
+import { cleanup, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 
 import env from '@/config/env';
-import { FeeToken, maxAfterFee, messageSpends, selectFee, useFeeEstimation } from '@/hooks';
+import {
+  FeeToken,
+  MIN_GAS_MODIFIER,
+  checkMaxQuote,
+  messageSpends,
+  quoteMax,
+  selectFee,
+  useFeeEstimation,
+} from '@/hooks';
 import { clearAllMocks, mockModule } from '@/tests';
 
 const ADDRESS = 'manifest1sender';
@@ -13,9 +21,14 @@ const mfxFee: FeeToken = { denom: 'umfx', gasPrice: GasPrice.fromString('1.1umfx
 const pwrFee: FeeToken = { denom: PWR, gasPrice: GasPrice.fromString(`0.5${PWR}`) };
 const feeTokens = [mfxFee, pwrFee];
 
-const sendMsg = (denom: string, amount: string, fromAddress = ADDRESS) => ({
+const sendMsg = (
+  denom: string,
+  amount: string,
+  fromAddress = ADDRESS,
+  toAddress = 'manifest1recipient'
+) => ({
   typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-  value: { fromAddress, toAddress: 'manifest1recipient', amount: [{ denom, amount }] },
+  value: { fromAddress, toAddress, amount: [{ denom, amount }] },
 });
 
 const convertMsg = (amount: string, sender = ADDRESS) => ({
@@ -97,33 +110,83 @@ describe('messageSpends', () => {
   });
 });
 
-describe('maxAfterFee', () => {
+describe('quoteMax', () => {
   test('leaves exactly the fee, so amount + fee is the balance', () => {
-    const max = maxAfterFee('1000000', 100_000, pwrFee);
-    expect(max?.fee.amount).toEqual([{ denom: PWR, amount: '50000' }]);
-    expect(max?.amount).toBe('950000');
+    const quote = quoteMax(ADDRESS, '1000000', 100_000, pwrFee);
+    expect(quote).toMatchObject({
+      address: ADDRESS,
+      denom: PWR,
+      amount: '950000',
+      fee: { amount: [{ denom: PWR, amount: '50000' }], gas: '100000' },
+    });
     // The send then fits exactly: selectFee accepts this amount with this gas.
     expect(
       selectFee(
         100_000,
         [pwrFee],
         [{ denom: PWR, amount: '1000000' }],
-        messageSpends(ADDRESS, [sendMsg(PWR, max!.amount)])
+        messageSpends(ADDRESS, [sendMsg(PWR, quote!.amount)])
       )
-    ).toEqual(max!.fee);
+    ).toEqual(quote!.fee);
   });
 
   test('returns null when the balance does not cover the fee', () => {
-    expect(maxAfterFee('50000', 100_000, pwrFee)).toBeNull();
-    expect(maxAfterFee('49999', 100_000, pwrFee)).toBeNull();
+    expect(quoteMax(ADDRESS, '50000', 100_000, pwrFee)).toBeNull();
+    expect(quoteMax(ADDRESS, '49999', 100_000, pwrFee)).toBeNull();
   });
 });
 
-describe('useFeeEstimation MAX', () => {
-  const balances: Record<string, string> = { umfx: '0', [PWR]: '1000000' };
+describe('checkMaxQuote', () => {
+  // 150_000 gas at 0.5 upwr is a 75_000 upwr fee, leaving 925_000 of 1_000_000 upwr.
+  const quote = quoteMax(ADDRESS, '1000000', 150_000, pwrFee)!;
+  const balances = [{ denom: PWR, amount: '1000000' }];
+  const sending = (amount: string) => messageSpends(ADDRESS, [sendMsg(PWR, amount)]);
+
+  test('pays the quote for a send of exactly the quoted amount', () => {
+    expect(checkMaxQuote(quote, ADDRESS, sending('925000'), 100_000, balances)).toEqual({
+      kind: 'pay',
+      fee: quote.fee,
+    });
+  });
+
+  test('does not apply to another amount, token or account', () => {
+    const check = (address: string, spends: ReturnType<typeof messageSpends>) =>
+      checkMaxQuote(quote, address, spends, 100_000, balances).kind;
+
+    expect(check(ADDRESS, sending('924999'))).toBe('unrelated');
+    expect(check(ADDRESS, messageSpends(ADDRESS, [sendMsg('umfx', '925000')]))).toBe('unrelated');
+    const other = 'manifest1other';
+    expect(check(other, messageSpends(other, [sendMsg(PWR, '925000', other)]))).toBe('unrelated');
+    // A group proposal spends from the policy, not from the proposer.
+    expect(check(ADDRESS, new Map())).toBe('unrelated');
+  });
+
+  test('is stale once the send needs more gas than the quote leaves room for', () => {
+    const mostGas = 150_000 / MIN_GAS_MODIFIER;
+    const check = (gas: number) => checkMaxQuote(quote, ADDRESS, sending('925000'), gas, balances);
+
+    expect(check(Math.floor(mostGas))).toEqual({ kind: 'pay', fee: quote.fee });
+    expect(check(Math.ceil(mostGas)).kind).toBe('stale');
+  });
+
+  test('is stale once the balance no longer covers amount + fee', () => {
+    const withBalance = (amount: string) =>
+      checkMaxQuote(quote, ADDRESS, sending('925000'), 100_000, [{ denom: PWR, amount }]).kind;
+
+    expect(withBalance('999999')).toBe('stale');
+    expect(withBalance('2000000')).toBe('pay');
+  });
+});
+
+describe('useFeeEstimation', () => {
+  let balances: Record<string, string>;
   let client: any;
+  const setToastMessage = jest.fn();
+  const toastTitles = () => setToastMessage.mock.calls.map(([toast]) => toast.title);
 
   beforeEach(() => {
+    balances = { umfx: '0', [PWR]: '1000000' };
+    setToastMessage.mockClear();
     client = {
       getAccount: jest.fn().mockResolvedValue({ address: ADDRESS }),
       getBalance: jest.fn(async (_: string, denom: string) => ({
@@ -146,7 +209,7 @@ describe('useFeeEstimation MAX', () => {
       }),
     }));
     mockModule('@/contexts/toastContext', () => ({
-      useToast: () => ({ setToastMessage: jest.fn() }),
+      useToast: () => ({ setToastMessage }),
     }));
   });
 
@@ -155,34 +218,99 @@ describe('useFeeEstimation MAX', () => {
     clearAllMocks();
   });
 
-  test('a PWR-only wallet sends its whole balance, fee included', async () => {
+  // MAX on a PWR-only wallet: 100_000 gas * 1.5 * 0.5 upwr is a 75_000 upwr fee.
+  async function maxPwr() {
     const { result } = renderHook(() => useFeeEstimation('manifest'));
-    const build = (amount: string) => sendMsg(PWR, amount);
+    const quote = await result.current.estimateMax(ADDRESS, PWR, a => sendMsg(PWR, a));
+    expect(quote?.amount).toBe('925000');
+    return { estimateFee: result.current.estimateFee, quote: quote! };
+  }
 
-    let max: string | null = null;
-    await act(async () => {
-      max = await result.current.estimateMax(ADDRESS, PWR, build);
-    });
-    // 100_000 gas * 1.5 * 0.5 upwr = 75_000 upwr fee.
-    expect(max).toBe('925000');
+  test('a PWR-only wallet sends its whole balance, fee included', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    const msg = sendMsg(PWR, quote.amount);
+    // The real send takes a bit more gas than the MAX simulation. Priced afresh, its fee
+    // (105_000 * 1.5 * 0.5 = 78_750 upwr) would no longer fit next to the amount.
+    client.simulate.mockResolvedValueOnce(105_000);
 
-    // Sending exactly the max reuses that fee without simulating again.
-    client.simulate.mockClear();
-    const fee = await result.current.estimateFee(ADDRESS, [build(max!)]);
+    const fee = await estimateFee(ADDRESS, [msg], { memo: 'thanks', maxQuote: quote });
     expect(fee).toEqual({ amount: [{ denom: PWR, amount: '75000' }], gas: '150000' });
-    expect(client.simulate).not.toHaveBeenCalled();
+    // The transaction itself is still simulated, memo included.
+    expect(client.simulate).toHaveBeenLastCalledWith(ADDRESS, [msg], 'thanks');
+    expect(setToastMessage).not.toHaveBeenCalled();
+  });
 
-    // Any other amount is estimated afresh.
-    const other = await result.current.estimateFee(ADDRESS, [build('900000')]);
-    expect(client.simulate).toHaveBeenCalledTimes(1);
-    expect(other?.amount[0].denom).toBe(PWR);
+  test('never pays the quote for a transaction that fails simulation', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    // For example the fee collector, which the chain blocks from receiving funds.
+    const blocked = 'manifest17xpfvakm2amg962yls6f84z3kell8c5l3mphl4';
+    client.simulate.mockRejectedValueOnce(new Error(`${blocked} is not allowed to receive funds`));
+
+    const fee = await estimateFee(ADDRESS, [sendMsg(PWR, quote.amount, ADDRESS, blocked)], {
+      maxQuote: quote,
+    });
+    expect(fee).toBeNull();
+    expect(toastTitles()).toEqual(['Fee Estimation Error']);
+  });
+
+  test('asks for MAX again once the balance went down', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    balances[PWR] = '990000';
+
+    const fee = await estimateFee(ADDRESS, [sendMsg(PWR, quote.amount)], { maxQuote: quote });
+    expect(fee).toBeNull();
+    expect(toastTitles()).toEqual(['Fee Changed']);
+  });
+
+  test('asks for MAX again once the send needs more gas than the quote allows', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    // 120_000 * 1.3 = 156_000, over the quote's 150_000 gas limit.
+    client.simulate.mockResolvedValueOnce(120_000);
+
+    const fee = await estimateFee(ADDRESS, [sendMsg(PWR, quote.amount)], { maxQuote: quote });
+    expect(fee).toBeNull();
+    expect(toastTitles()).toEqual(['Fee Changed']);
+  });
+
+  test('pays in MFX instead when the quote is stale and MFX covers the fee', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    balances.umfx = '1000000';
+    client.simulate.mockResolvedValueOnce(120_000);
+
+    const fee = await estimateFee(ADDRESS, [sendMsg(PWR, quote.amount)], { maxQuote: quote });
+    // 120_000 * 1.5 = 180_000 gas at 1.1 umfx.
+    expect(fee).toEqual({ amount: [{ denom: 'umfx', amount: '198000' }], gas: '180000' });
+  });
+
+  test('without the quote, the same send does not fit', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    client.simulate.mockResolvedValueOnce(105_000);
+
+    expect(await estimateFee(ADDRESS, [sendMsg(PWR, quote.amount)])).toBeNull();
+    expect(toastTitles()).toEqual(['Insufficient Funds for Fees']);
+  });
+
+  test('estimates any other amount afresh', async () => {
+    const { estimateFee, quote } = await maxPwr();
+    client.simulate.mockResolvedValueOnce(80_000);
+
+    const fee = await estimateFee(ADDRESS, [sendMsg(PWR, '900000')], { maxQuote: quote });
+    expect(fee).toEqual({ amount: [{ denom: PWR, amount: '60000' }], gas: '120000' });
   });
 
   test('MAX gives nothing when the balance cannot cover the fee', async () => {
     balances[PWR] = '75000';
     const { result } = renderHook(() => useFeeEstimation('manifest'));
-    const max = await result.current.estimateMax(ADDRESS, PWR, a => sendMsg(PWR, a));
-    expect(max).toBeNull();
-    balances[PWR] = '1000000';
+
+    expect(await result.current.estimateMax(ADDRESS, PWR, a => sendMsg(PWR, a))).toBeNull();
+    expect(toastTitles()).toEqual(['Insufficient Funds for Fees']);
+  });
+
+  test('MAX gives nothing for a token that cannot pay fees', async () => {
+    const { result } = renderHook(() => useFeeEstimation('manifest'));
+
+    const quote = await result.current.estimateMax(ADDRESS, 'utoken', a => sendMsg('utoken', a));
+    expect(quote).toBeNull();
+    expect(client.simulate).not.toHaveBeenCalled();
   });
 });

@@ -11,14 +11,20 @@ import { useQueryClient } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Any } from 'cosmjs-types/google/protobuf/any';
 import { Form, Formik } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { AmountInput, MaxButton, TokenBalance } from '@/components';
 import { DenomDisplay } from '@/components/factory';
 import { TextInput } from '@/components/react/inputs';
 import env from '@/config/env';
 import { useToast } from '@/contexts';
-import { useFeeEstimation, useMfxPwrConversionConfig, useTokenMetadata, useTx } from '@/hooks';
+import {
+  MaxQuote,
+  useFeeEstimation,
+  useMfxPwrConversionConfig,
+  useTokenMetadata,
+  useTx,
+} from '@/hooks';
 import { convertForm } from '@/schemas';
 import { parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
@@ -74,7 +80,9 @@ export default function ConvertForm({
   const { setToastMessage } = useToast();
 
   const { isSigning, tx } = useTx(env.chain);
-  const { estimateFee, estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
+  const { estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
+  // The quote behind the last MAX. useTx pays its fee only while the amount still matches.
+  const [maxQuote, setMaxQuote] = useState<MaxQuote | null>(null);
   const { executeContract } = cosmwasm.wasm.v1.MessageComposer.withTypeUrl;
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
@@ -157,7 +165,7 @@ export default function ConvertForm({
 
       await tx([msg], {
         memo: values.memo,
-        fee: () => estimateFee(address, [msg]),
+        maxQuote,
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
@@ -227,7 +235,11 @@ export default function ConvertForm({
                         Balance: <TokenBalance token={balances ?? values.selectedToken} />
                         <MaxButton
                           token={values.selectedToken}
-                          setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
+                          amount={values.amount}
+                          setTokenAmount={(amount, quote) => {
+                            setFieldValue('amount', amount);
+                            setMaxQuote(quote);
+                          }}
                           disabled={isSigning}
                           // A group conversion is paid from the policy while the proposer pays the
                           // fee, so MAX is the whole balance there.

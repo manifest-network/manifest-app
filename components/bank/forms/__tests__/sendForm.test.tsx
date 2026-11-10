@@ -1,8 +1,10 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { GasPrice } from '@cosmjs/stargate';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, jest, test } from 'bun:test';
 import React from 'react';
 
 import SendForm from '@/components/bank/forms/sendForm';
+import { quoteMax } from '@/hooks/useFeeEstimation';
 import { clearAllMocks, mockModule, mockRouter } from '@/tests';
 import { mockBalances } from '@/tests/data';
 import { renderWithChainProvider } from '@/tests/render';
@@ -87,5 +89,80 @@ describe('SendForm Component', () => {
     fireEvent.click(dropdownItems[dropdownItems.length - 1]);
     const sendButton = screen.getByRole('button', { name: 'send-btn' });
     expect(sendButton).not.toBeDisabled();
+  });
+});
+
+describe('SendForm MAX', () => {
+  const SENDER = 'manifest1address';
+  const RECIPIENT = 'manifest1hj5fveer5cjtn4wd6wstzugjfdxzl0xp8ws9ct';
+  // TOKEN 1's 1000 base units less a 100 fee, paid in TOKEN 1.
+  const quote = quoteMax(SENDER, mockBalances[0].amount, 100, {
+    denom: mockBalances[0].base,
+    gasPrice: GasPrice.fromString(`1${mockBalances[0].base}`),
+  })!;
+  let estimateMax: jest.Mock;
+  let tx: jest.Mock;
+
+  beforeEach(() => {
+    mockRouter();
+    estimateMax = jest.fn().mockResolvedValue(quote);
+    tx = jest.fn().mockResolvedValue(undefined);
+    mockModule('@/hooks', () => ({
+      useFeeEstimation: () => ({ estimateMax, isFeeDenom: () => true }),
+      useTx: () => ({ isSigning: false, tx }),
+    }));
+  });
+  afterEach(() => {
+    cleanup();
+    clearAllMocks();
+  });
+
+  const clickMax = async () => {
+    fireEvent.click(screen.getByRole('button', { name: /max/i }));
+    await waitFor(() => expect(screen.getByPlaceholderText('0.00')).toHaveValue('0.0009'));
+  };
+  // The recipient of the message MAX simulated.
+  const simulatedRecipient = () => {
+    const [, , buildMsg] = estimateMax.mock.calls[0];
+    return buildMsg('1').value.toAddress;
+  };
+
+  test('simulates a send to self until the recipient is valid', async () => {
+    renderWithProps();
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: 'manifest1notyet' },
+    });
+    await clickMax();
+    expect(simulatedRecipient()).toBe(SENDER);
+  });
+
+  test('simulates the send to the recipient once it is valid', async () => {
+    renderWithProps();
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: RECIPIENT },
+    });
+    await clickMax();
+    expect(simulatedRecipient()).toBe(RECIPIENT);
+  });
+
+  test('hands the quote to tx, which estimates the fee itself', async () => {
+    renderWithProps();
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: RECIPIENT },
+    });
+    await clickMax();
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'send-btn' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'send-btn' }));
+
+    await waitFor(() => expect(tx).toHaveBeenCalled());
+    const [[msg], options] = tx.mock.calls[0];
+    expect(msg.value).toMatchObject({
+      fromAddress: SENDER,
+      toAddress: RECIPIENT,
+      amount: [{ denom: quote.denom, amount: quote.amount }],
+    });
+    expect(options.maxQuote).toBe(quote);
+    expect(options).not.toHaveProperty('fee');
   });
 });
