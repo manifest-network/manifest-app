@@ -104,7 +104,7 @@
     "tailwind-scrollbar-hide": "4.0.0",
     "tailwindcss": "4.3.3",
     "three": "0.187.0",
-    "timeago.js": "4.0.2",
+    "timeago.js": "4.3.0",
     "yup": "1.7.1"
   },
   "devDependencies": {
