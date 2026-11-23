@@ -24,6 +24,7 @@ import { ExtendedValidatorSDKType } from '@/components';
 import { TxMessage } from '@/components/bank/types';
 import { FormData, ProposalFormData } from '@/helpers';
 import { ExtendedGroupType } from '@/hooks';
+import type { SpendableCoin } from '@/hooks/useFeeEstimation';
 import { MFX_TOKEN_BASE, unsafeConvertTokenBase } from '@/utils';
 import { CombinedBalanceInfo, ExtendedMetadataSDKType } from '@/utils/types';
 
@@ -833,3 +834,6 @@ export const mockProposalFormData: ProposalFormData = {
     },
   ],
 };
+
+/** A spendable balance for tests. In the app, only useFeeEstimation fetches these. */
+export const spendable = (denom: string, amount: string) => ({ denom, amount }) as SpendableCoin;
