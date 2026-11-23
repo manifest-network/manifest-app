@@ -18,7 +18,7 @@
         "@manifest-network/manifestjs": "4.0.0",
         "@react-three/drei": "10.7.9",
         "@react-three/fiber": "9.8.2",
-        "@sinonjs/fake-timers": "15.4.0",
+        "@sinonjs/fake-timers": "15.5.0",
         "@skip-go/client": "1.7.0",
         "@skip-go/widget": "3.19.0",
         "@tailwindcss/postcss": "4.3.5",
@@ -1164,7 +1164,7 @@
 
     "@sinonjs/commons": ["@sinonjs/commons@3.0.1", "", { "dependencies": { "type-detect": "4.0.8" } }, "sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ=="],
 
-    "@sinonjs/fake-timers": ["@sinonjs/fake-timers@15.4.0", "", { "dependencies": { "@sinonjs/commons": "^3.0.1" } }, "sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA=="],
+    "@sinonjs/fake-timers": ["@sinonjs/fake-timers@15.5.0", "", { "dependencies": { "@sinonjs/commons": "^3.0.1" } }, "sha512-i7HpIYIsUmdSTQbtBjs2b3VqMgDsVDWfzVPV3MuUrXVqJNZmzFB8YJeM9SPms2bGg5zg7HvKH31sPS1WoLLRFg=="],
 
     "@skip-go/client": ["@skip-go/client@1.7.0", "", { "dependencies": { "@cosmjs/amino": "0.39.0", "@cosmjs/cosmwasm": "0.39.0", "@cosmjs/encoding": "0.39.0", "@cosmjs/math": "0.39.0", "@cosmjs/proto-signing": "0.39.0", "@cosmjs/stargate": "0.39.0", "@keplr-wallet/unit": "^0.12.143", "@solana/wallet-adapter-base": "^0.9.23", "bech32": "^2.0.0", "bignumber.js": "^9.1.2", "cosmjs-types": "^0.11.0", "keccak": "3.0.4", "uuid": "^11.1.0" }, "peerDependencies": { "@solana/web3.js": "^1.95.8", "viem": ">=2.39.0" } }, "sha512-RZ4UFWuxPsHjSVVdlKLPMVfv15QSW5YYtg2mqN7eoZvOmWUBf7/zL1HDAqxQaNRsurWkSnZiQgR1zTNTN3wEeg=="],
 

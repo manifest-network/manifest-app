@@ -60,7 +60,7 @@
     "@manifest-network/manifestjs": "4.0.0",
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.2",
-    "@sinonjs/fake-timers": "15.4.0",
+    "@sinonjs/fake-timers": "15.5.0",
     "@skip-go/client": "1.7.0",
     "@skip-go/widget": "3.19.0",
     "@tailwindcss/postcss": "4.3.5",
