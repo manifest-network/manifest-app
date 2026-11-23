@@ -12,10 +12,12 @@ import { SearchIcon } from '@/components/icons';
 import { TextInput } from '@/components/react/inputs';
 import { AddressInput } from '@/components/react/inputs/AddressInput';
 import env from '@/config/env';
-import { useFeeEstimation, useTx } from '@/hooks';
+import { MaxQuote, useFeeEstimation, useTx } from '@/hooks';
 import { sendForm } from '@/schemas';
 import { parseNumberToBigInt } from '@/utils';
 import { CombinedBalanceInfo } from '@/utils/types';
+
+import { SyncSelectedToken } from './SyncSelectedToken';
 
 export default function SendForm({
   address,
@@ -33,11 +35,13 @@ export default function SendForm({
   admin?: string;
 }>) {
   const [searchTerm, setSearchTerm] = useState('');
+  // The quote behind the last MAX. useTx pays its fee only while the amount still matches.
+  const [maxQuote, setMaxQuote] = useState<MaxQuote | null>(null);
 
   const queryClient = useQueryClient();
 
   const { isSigning, tx } = useTx(env.chain);
-  const { estimateFee } = useFeeEstimation(env.chain);
+  const { estimateMax, isFeeDenom } = useFeeEstimation(env.chain);
   const { send } = cosmos.bank.v1beta1.MessageComposer.withTypeUrl;
   const { submitProposal } = cosmos.group.v1.MessageComposer.withTypeUrl;
 
@@ -57,41 +61,50 @@ export default function SendForm({
 
   const validationSchema = sendForm.schema;
 
+  const buildSendMsg = (recipient: string, denom: string, amount: string, display?: string) =>
+    isGroup
+      ? submitProposal({
+          groupPolicyAddress: admin!,
+          messages: [
+            Any.fromPartial({
+              typeUrl: MsgSend.typeUrl,
+              value: MsgSend.encode(
+                send({
+                  fromAddress: admin!,
+                  toAddress: recipient,
+                  amount: [{ denom, amount }],
+                }).value
+              ).finish(),
+            }),
+          ],
+          metadata: '',
+          proposers: [address],
+          title: `Send Tokens`,
+          summary: `This proposal will send ${display} to ${recipient}`,
+          exec: 0,
+        })
+      : send({
+          fromAddress: address,
+          toAddress: recipient,
+          amount: [{ denom, amount }],
+        });
+
   const handleSend = async (values: sendForm.SendForm) => {
     try {
       const exponent = values.selectedToken.metadata?.denom_units[1]?.exponent ?? 6;
       const amountInBaseUnits = parseNumberToBigInt(values.amount.toString(), exponent).toString();
+      const denom = values.selectedToken.base;
 
-      const msg = isGroup
-        ? submitProposal({
-            groupPolicyAddress: admin!,
-            messages: [
-              Any.fromPartial({
-                typeUrl: MsgSend.typeUrl,
-                value: MsgSend.encode(
-                  send({
-                    fromAddress: admin!,
-                    toAddress: values.recipient,
-                    amount: [{ denom: values.selectedToken.base, amount: amountInBaseUnits }],
-                  }).value
-                ).finish(),
-              }),
-            ],
-            metadata: '',
-            proposers: [address],
-            title: `Send Tokens`,
-            summary: `This proposal will send ${values.amount} ${values.selectedToken.metadata?.display} to ${values.recipient}`,
-            exec: 0,
-          })
-        : send({
-            fromAddress: address,
-            toAddress: values.recipient,
-            amount: [{ denom: values.selectedToken.base, amount: amountInBaseUnits }],
-          });
+      const msg = buildSendMsg(
+        values.recipient,
+        denom,
+        amountInBaseUnits,
+        `${values.amount} ${values.selectedToken.metadata?.display}`
+      );
 
       await tx([msg], {
         memo: values.memo,
-        fee: () => estimateFee(address, [msg]),
+        maxQuote,
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['balances'] });
           queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
@@ -129,6 +142,7 @@ export default function SendForm({
 
           return (
             <Form className="space-y-8 flex flex-col items-center max-w-md mx-auto">
+              <SyncSelectedToken latest={selectedTokenBalance} />
               <div className="w-full space-y-8">
                 <div className="w-full">
                   <label className="label">
@@ -213,15 +227,38 @@ export default function SendForm({
                       Balance: <TokenBalance token={selectedTokenBalance ?? values.selectedToken} />
                       <MaxButton
                         token={values.selectedToken}
-                        setTokenAmount={(amount: string) => setFieldValue('amount', amount)}
+                        amount={values.amount}
+                        setTokenAmount={(amount, quote) => {
+                          setFieldValue('amount', amount);
+                          setMaxQuote(quote);
+                        }}
                         disabled={isSigning}
+                        // A group send is paid from the policy while the proposer pays the fee, so
+                        // MAX is the whole balance there. Simulated against the recipient once it
+                        // is valid (creating a new account costs gas), and as a send to self until
+                        // then.
+                        estimateMax={
+                          !isGroup && isFeeDenom(values.selectedToken.base)
+                            ? token =>
+                                estimateMax(
+                                  address,
+                                  token.base,
+                                  amount =>
+                                    buildSendMsg(
+                                      sendForm.recipientSchema.isValidSync(values.recipient)
+                                        ? values.recipient
+                                        : address,
+                                      token.base,
+                                      amount
+                                    ),
+                                  values.memo
+                                )
+                            : undefined
+                        }
                       />
                     </div>
                     {errors.amount && (
                       <div className="text-red-500 text-xs text-right">{errors.amount}</div>
-                    )}
-                    {errors.feeWarning && !errors.amount && (
-                      <div className="text-yellow-500 text-xs">{errors.feeWarning}</div>
                     )}
                   </div>
                 </div>
