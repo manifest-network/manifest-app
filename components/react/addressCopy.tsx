@@ -102,7 +102,7 @@ export const TruncatedAddressWithCopy = ({
 
   return (
     <span
-      className="flex items-center hover:text-primary dark:hover:text-primary space-x-2 text-[#00000099] dark:text-[#FFFFFF99]"
+      className="flex items-center hover:text-primary space-x-2 text-content-muted"
       onClick={handleCopy}
       style={{ cursor: 'pointer' }}
     >

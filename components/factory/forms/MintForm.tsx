@@ -110,20 +110,18 @@ export default function MintForm({
           <>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400 mb-2">NAME</p>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-4 rounded-md">
-                  <p className="font-semibold text-md  truncate text-black dark:text-white">
-                    {denom.name}
-                  </p>
+                <p className="text-sm font-light text-content-muted mb-2">NAME</p>
+                <div className="bg-surface-inset p-4 rounded-md">
+                  <p className="font-semibold text-md  truncate text-base-content">{denom.name}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-sm font-light text-gray-500 truncate dark:text-gray-400 mb-2">
+                <p className="text-sm font-light text-content-muted truncate mb-2">
                   CIRCULATING SUPPLY
                 </p>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-4 rounded-md">
-                  <p className="font-semibold text-md truncate text-black dark:text-white">
+                <div className="bg-surface-inset p-4 rounded-md">
+                  <p className="font-semibold text-md truncate text-base-content">
                     {Number(shiftDigits(totalSupply, -6)).toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}{' '}

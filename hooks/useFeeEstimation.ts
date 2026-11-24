@@ -179,7 +179,7 @@ export const useFeeEstimation = (chainName: string) => {
   const isFeeDenom = (denom: string) => feeTokens.some(t => t.denom === denom);
 
   const showError = (title: string, description: string) =>
-    setToastMessage({ type: 'alert-error', title, description, bgColor: '#e74c3c' });
+    setToastMessage({ type: 'alert-error', title, description });
 
   const getClient = async (): Promise<SigningStargateClient | null> => {
     const stargateClient = await getSigningStargateClient();

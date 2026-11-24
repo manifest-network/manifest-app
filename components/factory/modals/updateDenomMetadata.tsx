@@ -166,7 +166,6 @@ export default function UpdateDenomMetadataModal({
                 title: 'Image Removed',
                 description:
                   'The image URL was removed due to inappropriate content. The token will be updated without an image.',
-                bgColor: '#f39c12',
               });
             }
 
@@ -193,7 +192,7 @@ export default function UpdateDenomMetadataModal({
       >
         {({ isValid, dirty, values, handleChange, handleSubmit, setFieldValue, isSubmitting }) => (
           <>
-            <h3 className="text-xl font-semibold text-[#161616] dark:text-white mb-6">
+            <h3 className="text-xl font-semibold text-base-content mb-6">
               Update Metadata for{' '}
               <span className="font-light text-primary">
                 {denom?.display?.startsWith('factory')
@@ -251,7 +250,7 @@ export default function UpdateDenomMetadataModal({
             <div className="mt-4 flex flex-row justify-center gap-2 w-full">
               <button
                 type="button"
-                className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A]"
+                className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden bg-surface-inset"
                 disabled={isSigning}
                 onClick={() => onClose()}
               >

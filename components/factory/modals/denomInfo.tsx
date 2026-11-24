@@ -73,9 +73,7 @@ export const DenomInfoModal: React.FC<DenomInfoModalProps> = ({
           />
         )}
       </div>
-      <h4 className="text-lg font-semibold text-[#161616] dark:text-white mt-6  mb-4">
-        Additional Information
-      </h4>
+      <h4 className="text-lg font-semibold text-base-content mt-6  mb-4">Additional Information</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <InfoItem
           label="BASE"
@@ -129,14 +127,14 @@ function InfoItem({
 }) {
   return (
     <div className={`mb-4 flex flex-col ${className}`}>
-      <p className="text-sm font-semibold text-[#00000099] dark:text-[#FFFFFF99] mb-2">{label}</p>
-      <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[16px] p-4 grow h-full">
+      <p className="text-sm font-semibold text-content-muted mb-2">{label}</p>
+      <div className="bg-surface-inset rounded-2xl p-4 grow h-full">
         {isAddress ? (
           <div className="flex items-center">
             <TruncatedAddressWithCopy address={value} />
           </div>
         ) : (
-          <p className="text-[#161616] dark:text-white break-words" title={value}>
+          <p className="text-base-content break-words" title={value}>
             {value}
           </p>
         )}

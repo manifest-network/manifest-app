@@ -49,10 +49,10 @@ function NoGroupsFound() {
     <section className="transition-opacity duration-300 h-[80vh] ease-in-out animate-fadeIn w-full flex items-center justify-center">
       <div className="grid max-w-4xl bg-base-300 p-12 rounded-md w-full mx-auto gap-8 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-7">
-          <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl dark:text-white text-black">
+          <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl text-base-content">
             No Groups Found
           </h1>
-          <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl">
+          <p className="max-w-2xl mb-6 font-light text-content-muted lg:mb-8 md:text-lg lg:text-xl">
             You are not a member of any groups yet. Create a new group to get started!
           </p>
           <Link href="/groups/create" passHref>
