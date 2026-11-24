@@ -478,9 +478,7 @@ export const TailwindModal: React.FC<
           // A fallback if we are syncing or re-connecting
           return (
             <div className="flex flex-col items-center justify-center p-6 gap-3">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Reconnecting your wallet...
-              </p>
+              <p className="text-sm text-content-muted">Reconnecting your wallet...</p>
               <div className="loading loading-ring w-8 h-8 text-primary" />
             </div>
           );
@@ -539,7 +537,7 @@ export const TailwindModal: React.FC<
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                   <Dialog.Panel
-                    className={`relative transform overflow-hidden rounded-xl dark:bg-[#1D192D] bg-[#FFFF] px-4 pt-2.5 pb-4 [min-height:18rem] text-left shadow-xl transition-all sm:my-8 sm:w-full ${
+                    className={`relative transform overflow-hidden rounded-xl bg-neutral px-4 pt-2.5 pb-4 [min-height:18rem] text-left shadow-xl transition-all sm:my-8 sm:w-full ${
                       currentView === ModalView.WalletList ? 'sm:max-w-sm' : 'sm:max-w-2xl'
                     } sm:p-4`}
                   >

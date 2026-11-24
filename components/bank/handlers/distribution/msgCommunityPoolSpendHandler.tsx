@@ -13,7 +13,7 @@ export const MsgCommunityPoolSpendHandler = createSenderReceiverHandler({
       'You sent {0} from the community pool to {1}',
       tx.metadata?.amount,
       tx.metadata?.recipient,
-      'yellow',
+      'caution',
       metadata
     );
   },
@@ -22,7 +22,7 @@ export const MsgCommunityPoolSpendHandler = createSenderReceiverHandler({
       'You failed to send {0} from the community pool to {1}',
       tx.metadata?.amount,
       tx.metadata?.recipient,
-      'red',
+      'negative',
       metadata
     );
   },
@@ -31,7 +31,7 @@ export const MsgCommunityPoolSpendHandler = createSenderReceiverHandler({
       'You received {0} from the community pool',
       tx.metadata?.amount,
       tx.sender,
-      'green',
+      'positive',
       metadata
     );
   },

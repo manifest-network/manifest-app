@@ -245,7 +245,7 @@ export const UpdateGroupForm: React.FC<UpdateGroupFormProps> = ({
           <div className="mt-4 gap-6 flex justify-center w-full">
             <button
               type="button"
-              className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A]"
+              className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden bg-surface-inset"
               disabled={isSigning}
               onClick={() => setShowUpdateModal(false)}
             >
@@ -273,9 +273,7 @@ function GroupPolicyFormFields() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label className="block text-sm mb-1 font-medium dark:text-[#FFFFFF99]">
-          Voting Period
-        </label>
+        <label className="block text-sm mb-1 font-medium text-content-muted">Voting Period</label>
         <div className="grid grid-cols-4 gap-2">
           {['days', 'hours', 'minutes', 'seconds'].map(unit => (
             <NumberInput
@@ -298,7 +296,7 @@ function GroupPolicyFormFields() {
       </div>
 
       <div>
-        <label className="block mb-1 text-sm font-medium dark:text-[#FFFFFF99]">
+        <label className="block mb-1 text-sm font-medium text-content-muted">
           Qualified Majority
         </label>
         <NumberInput
@@ -354,7 +352,7 @@ function GroupDetailsFormFields() {
                         <button
                           type="button"
                           onClick={() => arrayHelpers.remove(index)}
-                          className="btn btn-error btn-sm text-white"
+                          className="btn btn-error btn-sm"
                           data-testid={`remove-author-btn-${index}`}
                         >
                           <TrashIcon className="w-5 h-5" />

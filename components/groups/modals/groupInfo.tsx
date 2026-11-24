@@ -171,7 +171,7 @@ export function GroupInfo({
         <div className="flex items-center space-x-4">
           <button
             aria-label={'leave-btn'}
-            className="btn btn-error text-white disabled:bg-red-900 rounded-[12px] h-[52px] w-[140px]"
+            className="btn btn-error h-[52px] w-[140px]"
             onClick={handleLeave}
             disabled={isSigning}
           >
@@ -180,7 +180,7 @@ export function GroupInfo({
 
           <button
             aria-label={'upgrade-btn'}
-            className="btn btn-gradient text-white rounded-[12px] h-[52px] w-[140px]"
+            className="btn btn-gradient text-white h-[52px] w-[140px]"
             onClick={() => setShowUpdateModal(true)}
           >
             Update
@@ -189,7 +189,7 @@ export function GroupInfo({
       </div>
 
       <div className="space-y-4">
-        <h4 className="font-semibold dark:text-[#FFFFFF99] text-[#00000099]">Group Information</h4>
+        <h4 className="font-semibold text-content-muted">Group Information</h4>
         <InfoItem label="Voting period" value={votingPeriodDisplay} />
         <InfoItem label="Qualified Majority" value={threshold} />
 
@@ -226,26 +226,20 @@ function InfoItem({
 }) {
   return (
     <div
-      className={`dark:bg-[#FFFFFF0F] bg-[#0000000A] p-3 rounded-lg ${
+      className={`bg-surface-inset p-3 rounded-lg ${
         isProposal || isAddress ? 'flex flex-col' : 'flex flex-row justify-between items-center'
       }`}
     >
-      <span className="text-sm dark:text-[#FFFFFF66] text-[#00000066]">
-        {isAddress ? '' : label}
-      </span>
+      <span className="text-sm text-content-subtle">{isAddress ? '' : label}</span>
       {value && (
-        <div
-          className={`text-sm dark:text-[#FFFFFF99] text-[#00000099] ${isProposal ? 'mt-2' : ''}`}
-        >
+        <div className={`text-sm text-content-muted ${isProposal ? 'mt-2' : ''}`}>
           {isAddress ? (
             <div>
-              <span className="text-sm dark:text-[#FFFFFF66] text-[#00000066] block mb-1">
-                Address
-              </span>
-              <p className="text-sm text-[#00000099] dark:text-[#FFFFFF99] xs:block hidden">
+              <span className="text-sm text-content-subtle block mb-1">Address</span>
+              <p className="text-sm text-content-muted xs:block hidden">
                 <TruncatedAddressWithCopy address={value} />
               </p>
-              <p className="text-sm text-[#00000099] dark:text-[#FFFFFF99] xs:hidden block">
+              <p className="text-sm text-content-muted xs:hidden block">
                 <TruncatedAddressWithCopy address={value} />
               </p>
             </div>

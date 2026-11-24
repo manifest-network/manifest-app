@@ -23,7 +23,7 @@ const ScrollableFade: React.FC<{ children: React.ReactNode }> = ({ children }) =
         {children}
       </div>
       {showFade && (
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-[#FFFFFF] dark:from-[#1D192D] to-transparent pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-neutral to-transparent pointer-events-none"></div>
       )}
     </div>
   );
