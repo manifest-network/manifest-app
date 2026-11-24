@@ -49,7 +49,7 @@ export const ProfileAvatar = ({
     <img
       src={avatarSrc}
       alt="Profile Avatar"
-      className={`rounded-md ${withBackground ? 'dark:bg-[#FFFFFF0F] bg-[#0000000A]' : ''}`}
+      className={`rounded-md ${withBackground ? 'bg-surface-inset' : ''}`}
       style={{ height: imageSize, width: imageSize }}
     />
   );

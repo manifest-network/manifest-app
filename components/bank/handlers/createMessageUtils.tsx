@@ -3,6 +3,7 @@ import { CoinSDKType } from '@manifest-network/manifestjs/dist/codegen/cosmos/ba
 import React from 'react';
 import { format } from 'react-string-format';
 
+import { AMOUNT_TONE_CLASS, AmountTone } from '@/components/bank/handlers/amountTone';
 import { TruncatedAddressWithCopy } from '@/components/react/addressCopy';
 import { formatAmount, formatDenomWithBadge, formatLargeNumber } from '@/utils';
 
@@ -10,7 +11,7 @@ export const createTokenMessage = (
   template: string,
   amounts: CoinSDKType[],
   address: string,
-  color: string,
+  tone: AmountTone,
   metadata?: MetadataSDKType[]
 ) => {
   let allAmountDenom: React.ReactNode[] = [];
@@ -43,7 +44,7 @@ export const createTokenMessage = (
     ));
   }
 
-  const coloredAmountDenom = <span className={`text-${color}-500`}>{displayAmountDenom}</span>;
+  const coloredAmountDenom = <span className={AMOUNT_TONE_CLASS[tone]}>{displayAmountDenom}</span>;
   const message = format(
     template,
     coloredAmountDenom,

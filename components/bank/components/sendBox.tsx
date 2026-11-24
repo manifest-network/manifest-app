@@ -38,9 +38,9 @@ export default React.memo(function SendBox({
 
   return (
     <Tab.Group as="div" defaultIndex={activeTab} onChange={setActiveTab}>
-      <Tab.List className="relative flex p-3 h-[3.5rem] w-full space-x-1 mb-4 md:mb-6 rounded-2xl bg-[#0000000A] dark:bg-[#FFFFFF0F]">
+      <Tab.List className="relative flex p-3 h-[3.5rem] w-full space-x-1 mb-4 md:mb-6 rounded-2xl bg-surface-inset">
         <div
-          className={`absolute transition-all duration-200 ease-in-out h-[calc(100%-8px)] w-[calc(50%-4px)] top-1 rounded-xl bg-white dark:bg-[#FFFFFF1F] ${
+          className={`absolute transition-all duration-200 ease-in-out h-[calc(100%-8px)] w-[calc(50%-4px)] top-1 rounded-xl bg-surface-raised ${
             activeTab === 0 ? 'left-1' : 'left-[calc(50%+1px)]'
           }`}
         />
@@ -50,9 +50,9 @@ export default React.memo(function SendBox({
           disabled={isSigning}
           className="absolute flex-1 top-1 left-1 text-sm font-medium rounded-xl z-10
                 h-[calc(100%-8px)] w-[calc(50%-4px)]
-                transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                ui-not-selected:text-[#808080]
-                disabled:text-[#404040] disabled:cursor-not-allowed"
+                transition-colors ui-selected:text-base-content
+                ui-not-selected:text-content-muted
+                disabled:text-content-subtle disabled:cursor-not-allowed"
         >
           Send
         </Tab>
@@ -61,9 +61,9 @@ export default React.memo(function SendBox({
           disabled={!allowCrossChainTransfer || isSigning}
           className="absolute flex-1 top-1 right-1 text-sm font-medium rounded-xl z-10
                 h-[calc(100%-8px)] w-[calc(50%-4px)]
-                transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                ui-not-selected:text-[#808080]
-                disabled:text-[#404040] disabled:cursor-not-allowed"
+                transition-colors ui-selected:text-base-content
+                ui-not-selected:text-content-muted
+                disabled:text-content-subtle disabled:cursor-not-allowed"
         >
           Cross-Chain Transfer
         </Tab>

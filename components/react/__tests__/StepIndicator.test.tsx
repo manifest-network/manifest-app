@@ -31,7 +31,7 @@ describe('StepIndicator Component', () => {
   test('highlights the current step correctly', () => {
     const { container } = render(<StepIndicator currentStep={2} steps={steps} />);
 
-    const currentStepElement = container.querySelector('.dark\\:bg-\\[\\#FFFFFF1F\\] .px-6');
+    const currentStepElement = container.querySelector('.bg-surface-raised .px-6');
     expect(currentStepElement).toBeTruthy();
     expect(currentStepElement?.textContent?.replace(/\s+/g, ' ').trim()).toBe('2. Step 2');
   });

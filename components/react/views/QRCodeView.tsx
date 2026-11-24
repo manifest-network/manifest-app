@@ -26,7 +26,7 @@ const QRCodeLoader = ({
       </div>
     </div>
 
-    {message && <p className="text-sm text-gray-600 dark:text-gray-400">{message}</p>}
+    {message && <p className="text-sm text-content-muted">{message}</p>}
   </div>
 );
 
@@ -89,7 +89,7 @@ export const QRCodeView = ({
         <div className="flex justify-between items-center mb-6">
           <button
             type="button"
-            className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+            className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
             onClick={onReturn}
           >
             <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -99,7 +99,7 @@ export const QRCodeView = ({
           </Dialog.Title>
           <button
             type="button"
-            className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+            className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
             onClick={onClose}
           >
             <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -122,7 +122,7 @@ export const QRCodeView = ({
       <div className="flex justify-between items-center mb-6">
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onReturn}
         >
           <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -132,7 +132,7 @@ export const QRCodeView = ({
         </Dialog.Title>
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onClose}
         >
           <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -154,7 +154,7 @@ export const QRCodeView = ({
             {/* Error overlay */}
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
               <h3 className="text-lg font-semibold">{errorTitle}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{errorMessage}</p>
+              <p className="text-sm text-content-muted">{errorMessage}</p>
               <div className="flex gap-2">
                 <button onClick={handleRetry} className="btn btn-primary">
                   Retry Connection

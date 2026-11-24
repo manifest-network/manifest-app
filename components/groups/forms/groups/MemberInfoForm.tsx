@@ -126,7 +126,7 @@ function MemberInfoFormFields({
                   {index > 0 && (
                     <button
                       type="button"
-                      className="absolute top-3 right-5 btn btn-error text-white btn-sm"
+                      className="absolute top-3 right-5 btn btn-error btn-sm"
                       onClick={() => {
                         remove(index);
                         dispatch({ type: 'REMOVE_MEMBER', index });
@@ -193,9 +193,9 @@ export default function MemberInfoForm({
           return (
             <>
               <div className="lg:flex mx-auto">
-                <div className="flex items-center mx-auto w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
+                <div className="flex items-center mx-auto w-full bg-surface-card p-[24px] rounded-3xl">
                   <div className="w-full">
-                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] text-gray-500 dark:text-gray-400 dark:border-gray-400 pb-4">
+                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] border-line pb-4">
                       Member Info
                     </h1>
 
@@ -213,7 +213,7 @@ export default function MemberInfoForm({
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="btn btn-neutral text-black dark:text-white py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
+                  className="btn btn-neutral text-base-content py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
                 >
                   Back: Group Details
                 </button>
