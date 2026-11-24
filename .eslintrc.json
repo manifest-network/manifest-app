@@ -24,6 +24,10 @@
         "message": "Hardcoded border radius. Use the radius scale (rounded-lg, rounded-xl, …) or the theme radii (rounded-field, rounded-box)."
       },
       {
+        "selector": "TemplateElement[value.raw=/(^|[\\s:])(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent|rounded)-$/]",
+        "message": "Class name assembled at runtime. Tailwind only generates classes that are written out in full, so map the value to complete class names instead (see components/bank/handlers/amountTone.ts)."
+      },
+      {
         "selector": "Literal[value=/^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/]",
         "message": "Hardcoded color. Use a theme class, or read the color from useTheme().colors when a string is required."
       }

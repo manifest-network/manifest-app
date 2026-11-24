@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import postcss, { Root } from 'postcss';
 
+import { AMOUNT_TONE_CLASS } from '@/components/bank/handlers/amountTone';
 import { THEME_COLOR_TOKENS } from '@/contexts/themeColors';
 
 const STYLESHEET = path.resolve(import.meta.dir, '../globals.css');
@@ -158,6 +159,7 @@ describe('theme tokens in styles/globals.css', () => {
         'rounded-field',
         'rounded-box',
         'btn-gradient',
+        ...Object.values(AMOUNT_TONE_CLASS),
       ];
       const css = source
         .replace("@import 'tailwindcss';", "@import 'tailwindcss' source(none);")
@@ -185,6 +187,14 @@ describe('theme tokens in styles/globals.css', () => {
       expect(variablesFor('[data-theme="dark"]')).toMatchObject(dark);
       // The dark theme is also the default for visitors whose system prefers dark.
       expect(variablesFor(':root:not([data-theme])')).toMatchObject(dark);
+    });
+
+    test('transaction amount tones have styles behind them', () => {
+      // These classes are looked up at runtime, so nothing else notices if one stops existing.
+      for (const className of Object.values(AMOUNT_TONE_CLASS)) {
+        const color = className.replace(/^text-/, '');
+        expect(rule(`.${className}`)).toEqual({ color: `var(--color-${color})` });
+      }
     });
 
     test('radii and gradients come from theme variables', () => {

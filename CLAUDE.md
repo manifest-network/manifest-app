@@ -84,6 +84,8 @@ Tailwind CSS v4 + DaisyUI v5, configured entirely in `styles/globals.css` (there
 
 `public/theme-init.js` is loaded synchronously by `pages/_document.tsx` and applies the saved theme (or the system preference) to `<html>` before first paint. It must pick the same theme as `ThemeProvider` (`contexts/useTheme.tsx`); `contexts/__tests__/themeInit.test.tsx` compares them.
 
+Write class names out in full. Tailwind does not generate a class assembled at runtime (`text-${color}-500`); map the value to complete class names instead, as `components/bank/handlers/amountTone.ts` does for transaction amounts.
+
 To add a color token, register it in `@theme` and give it a value in both theme blocks. Code that needs a color as a string (third-party widgets) reads it from `useTheme().colors` (`contexts/themeColors.ts`). ESLint (`no-restricted-syntax` in `.eslintrc.json`) rejects hardcoded colors, palette classes, `dark:` color variants and arbitrary radii; `styles/__tests__/themeTokens.test.ts` and `tests/themeLint.test.ts` guard the setup.
 
 ## Code Conventions

@@ -63,6 +63,29 @@ describe('lint rules against hardcoded colors and radii', () => {
     expect(messages.some(message => /Hardcoded border radius/.test(message))).toBe(true);
   });
 
+  test('class names assembled at runtime are rejected', async () => {
+    const assembled = (expression: string) =>
+      'export const Example = ({ color }: { color: string }) => (\n' +
+      `  <span className={${expression}} />\n` +
+      ');\n';
+
+    for (const expression of [
+      '`text-${color}-500`',
+      '`p-2 hover:bg-${color} flex`',
+      '`rounded-${color}`',
+    ]) {
+      const messages = await lint(assembled(expression));
+      expect(messages).toHaveLength(1);
+      expect(messages[0]).toMatch(/assembled at runtime/);
+    }
+
+    // Choosing between complete class names is fine.
+    expect(await lint(assembled("`p-2 ${color === 'a' ? 'text-error' : 'text-success'}`"))).toEqual(
+      []
+    );
+    expect(await lint(assembled('`text-error ${color}`'))).toEqual([]);
+  });
+
   test('color strings are rejected outside the 3D scenes', async () => {
     const code = "export const color = '#a087ff';\n";
     expect(await lint(code, 'components/example.tsx')).toHaveLength(1);
