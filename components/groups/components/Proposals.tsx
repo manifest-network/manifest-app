@@ -118,7 +118,7 @@ export const GroupProposals = ({ group, pageSize = 7 }: GroupProposalsProps) => 
     );
   } else if (proposalWithTallies.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500" role="status">
+      <div className="text-center py-8 text-content-muted" role="status">
         No proposal was found.
       </div>
     );
@@ -268,13 +268,13 @@ const ProposalRow = ({
             }
           );
         }}
-        className="group text-black dark:text-white rounded-lg cursor-pointer"
+        className="group text-base-content rounded-lg cursor-pointer"
       >
-        <td className="bg-secondary group-hover:bg-base-300 rounded-l-[12px] px-4 py-4 w-[25%]">
+        <td className="bg-secondary group-hover:bg-base-300 rounded-l-xl px-4 py-4 w-[25%]">
           {proposal.id.toString()}
         </td>
         <td
-          className={`bg-secondary group-hover:bg-base-300 px-4 py-4 w-[25%] sm:rounded-none xxs:rounded-r-[12px] xs:rounded-r-[12px] xl:rounded-r-none`}
+          className={`bg-secondary group-hover:bg-base-300 px-4 py-4 w-[25%] sm:rounded-none xxs:rounded-r-xl xs:rounded-r-xl xl:rounded-r-none`}
         >
           {proposal.title}
         </td>
@@ -286,7 +286,7 @@ const ProposalRow = ({
             ? getHumanReadableType((proposal.messages[0] as any)['@type'])
             : 'No messages'}
         </td>
-        <td className="bg-secondary group-hover:bg-base-300 rounded-r-[12px] sm:table-cell xxs:hidden hidden 2xl:table-cell">
+        <td className="bg-secondary group-hover:bg-base-300 rounded-r-xl sm:table-cell xxs:hidden hidden 2xl:table-cell">
           {!tally ? <span className="loading loading-spinner loading-xs"></span> : status}
 
           {

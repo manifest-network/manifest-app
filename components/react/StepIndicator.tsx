@@ -30,7 +30,7 @@ export default function StepIndicator({
   };
 
   return (
-    <div className="flex items-stretch h-[52px] dark:bg-[#FFFFFF0F] bg-[#0000000A] w-full rounded-[10000px] p-1">
+    <div className="flex items-stretch h-[52px] bg-surface-inset w-full rounded-full p-1">
       {/* Desktop view - show all steps */}
       <div className="hidden sm:flex w-full">
         {steps.map(({ label, step }) => (
@@ -38,8 +38,8 @@ export default function StepIndicator({
             key={step}
             className={`flex items-center justify-center flex-1 text-center transition-all ${
               step === currentStep
-                ? 'dark:bg-[#FFFFFF1F] bg-[#FFFFFF] dark:text-white text-black rounded-[80px]'
-                : 'text-gray-400 text-[#00000099]'
+                ? 'bg-surface-raised text-base-content rounded-full'
+                : 'text-content-muted'
             }`}
           >
             <span className="px-6">
@@ -56,8 +56,8 @@ export default function StepIndicator({
             key={step}
             className={`flex items-center justify-center flex-1 text-center transition-all ${
               step === currentStep
-                ? 'dark:bg-[#FFFFFF1F] bg-[#FFFFFF] dark:text-white text-black rounded-[80px]'
-                : 'text-gray-400 text-[#00000099]'
+                ? 'bg-surface-raised text-base-content rounded-full'
+                : 'text-content-muted'
             }`}
           >
             <span className="px-6">

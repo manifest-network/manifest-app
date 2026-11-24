@@ -73,7 +73,20 @@ CI still bakes per-environment build-time defaults (`.github/workflows/_docker-b
 
 ### Styling
 
-Tailwind CSS v4 + DaisyUI v5. Dark/light theme via `data-theme` attribute. Custom breakpoints (`xxs: 320px`, `3xl: 2560px`).
+Tailwind CSS v4 + DaisyUI v5, configured entirely in `styles/globals.css` (there is no `tailwind.config.js`). Dark/light theme via the `data-theme` attribute. Custom breakpoints (`xxs: 320px`, `xs: 375px`, `3xl: 2560px`).
+
+**Theme tokens**: every color, radius and gradient is defined once in `styles/globals.css`, in the two `@plugin "daisyui/theme"` blocks (light and dark). Components use the token names and never a literal value or a `dark:` color override:
+
+- daisyUI colors: `primary`, `base-100/200/300`, `base-content`, `neutral`, `info`, `success`, `warning`, `error`, …
+- app colors: `content-muted`, `content-subtle` (text); `surface-panel`, `surface-card`, `surface-card-hover`, `surface-inset`, `surface-field`, `surface-raised`, `surface-hover`, `surface-handle` (backgrounds); `line` (borders); `background-color` (page)
+- radii: `rounded-field` (buttons, inputs) and `rounded-box` (cards, alerts) from the theme, plus Tailwind's scale (`rounded-lg`, `rounded-xl`, …). daisyUI's `btn` and `input` already use the field radius.
+- Tailwind's default palette (`gray-500`, `red-600`, …) is removed, so those classes generate no CSS.
+
+`public/theme-init.js` is loaded synchronously by `pages/_document.tsx` and applies the saved theme (or the system preference) to `<html>` before first paint. It must pick the same theme as `ThemeProvider` (`contexts/useTheme.tsx`); `contexts/__tests__/themeInit.test.tsx` compares them.
+
+Write class names out in full. Tailwind does not generate a class assembled at runtime (`text-${color}-500`); map the value to complete class names instead, as `components/bank/handlers/amountTone.ts` does for transaction amounts.
+
+To add a color token, register it in `@theme` and give it a value in both theme blocks. Code that needs a color as a string (third-party widgets) reads it from `useTheme().colors` (`contexts/themeColors.ts`). ESLint (`no-restricted-syntax` in `.eslintrc.json`) rejects hardcoded colors, palette classes, `dark:` color variants and arbitrary radii; `styles/__tests__/themeTokens.test.ts` and `tests/themeLint.test.ts` guard the setup.
 
 ## Code Conventions
 

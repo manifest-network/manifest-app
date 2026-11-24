@@ -29,15 +29,13 @@ export const DenomImage = ({
   // Check for MFX token first
   if (denom?.base === 'umfx' || denom?.base?.includes('uosmo')) {
     return (
-      <div
-        className={`w-11 h-11 p-2 rounded-md ${withBackground ? 'dark:bg-[#ffffff0f] bg-[#0000000a]' : ''}`}
-      >
+      <div className={`w-11 h-11 p-2 rounded-md ${withBackground ? 'bg-surface-inset' : ''}`}>
         <Image
           width={44}
           height={44}
           src={denom?.base === 'umfx' ? '/logo.svg' : '/osmosis.svg'}
           alt="MFX Token Icon"
-          className="w-full h-full data-[loaded=false]:animate-pulse data-[loaded=false]:skeleton data-[loaded=false]:bg-gray-300"
+          className="w-full h-full data-[loaded=false]:animate-pulse data-[loaded=false]:skeleton data-[loaded=false]:bg-base-300"
         />
       </div>
     );
@@ -46,16 +44,14 @@ export const DenomImage = ({
   // Use sanitized URI instead of checking supported domains/patterns
   if (sanitizedUri && !imageError) {
     return (
-      <div
-        className={`w-11 h-11 p-2 rounded-md ${withBackground ? 'dark:bg-[#ffffff0f] bg-[#0000000A]' : ''}`}
-      >
+      <div className={`w-11 h-11 p-2 rounded-md ${withBackground ? 'bg-surface-inset' : ''}`}>
         <Image
           width={44}
           height={44}
           src={sanitizedUri}
           alt="Token Icon"
           onError={() => setImageError(true)}
-          className="rounded-md w-full h-full data-[loaded=false]:animate-pulse data-[loaded=false]:skeleton data-[loaded=false]:bg-gray-300"
+          className="rounded-md w-full h-full data-[loaded=false]:animate-pulse data-[loaded=false]:skeleton data-[loaded=false]:bg-base-300"
         />
       </div>
     );

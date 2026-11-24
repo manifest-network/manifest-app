@@ -3,6 +3,21 @@ const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@cosmos-kit/web3auth', 'react-syntax-highlighter', 'troika-three-text'],
   reactStrictMode: true,
+  eslint: {
+    // Lint every directory that holds class names or colors, not just Next's default
+    // (pages, components, lib), so the theme rules in .eslintrc.json apply everywhere.
+    dirs: [
+      'pages',
+      'components',
+      'lib',
+      'hooks',
+      'utils',
+      'contexts',
+      'config',
+      'helpers',
+      'schemas',
+    ],
+  },
   images: {
     // Use a custom loader to validate and block malicious patterns
     loader: 'custom',

@@ -49,7 +49,7 @@ export function MessagesModal({
             customStyle={{
               backgroundColor: 'transparent',
               padding: '1rem',
-              borderRadius: '0.5rem',
+              borderRadius: 'var(--radius-box)',
             }}
           >
             {(() => {

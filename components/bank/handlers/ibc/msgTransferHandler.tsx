@@ -13,7 +13,7 @@ export const MsgTransferHandler = createSenderReceiverHandler({
       'You sent {0} to {1} via IBC',
       tx.metadata?.token ? [tx.metadata?.token] : [],
       tx.metadata?.receiver,
-      'red',
+      'negative',
       metadata
     ),
   failSender: (tx, _, metadata) =>
@@ -21,7 +21,7 @@ export const MsgTransferHandler = createSenderReceiverHandler({
       'You failed to send {0} to {1} via IBC',
       tx.metadata?.token ? [tx.metadata?.token] : [],
       tx.metadata?.receiver,
-      'red',
+      'negative',
       metadata
     ),
   successReceiver: (tx, _, metadata) =>
@@ -29,7 +29,7 @@ export const MsgTransferHandler = createSenderReceiverHandler({
       'You received {0} from {1} via IBC',
       tx.metadata?.token ? [tx.metadata?.token] : [],
       tx.sender,
-      'green',
+      'positive',
       metadata
     ),
 });

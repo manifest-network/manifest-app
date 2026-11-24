@@ -18,7 +18,7 @@ import { Web3AuthContext } from '@/contexts/web3AuthContext';
 import { getIbcDenom } from '@/utils/ibc';
 
 function IbcSendForm({ token }: { token: string }) {
-  const { theme } = useTheme();
+  const { colors } = useTheme();
   const { address, getSigningStargateClient } = useChain(env.chain);
   const ibcDenom = getIbcDenom(env.chainId, token);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,9 +64,6 @@ function IbcSendForm({ token }: { token: string }) {
       throw new Error('Invalid signer from stargate client.');
     }
   }
-
-  // Determine if dark mode is active
-  const isDark = theme === 'dark';
 
   // Add effect to handle overlay click events
   useEffect(() => {
@@ -139,37 +136,39 @@ function IbcSendForm({ token }: { token: string }) {
     };
   }, []);
 
-  const themeColors = {
-    brandColor: '#a087ff',
+  // The widget takes its colors as strings, so they are read from the theme rather than repeated
+  // here. Until they are available the widget uses its own default theme.
+  const widgetTheme = colors && {
+    brandColor: colors.primary,
     primary: {
       background: {
-        normal: isDark ? '#302E41' : '#FCFCFF',
+        normal: colors.secondary,
       },
       text: {
-        normal: isDark ? '#FFFFFF' : '#161616',
-        lowContrast: isDark ? '#f0f0ff' : '#1d192d',
-        ultraLowContrast: isDark ? '#e0e0ff' : '#f0f0ff',
+        normal: colors['base-content'],
+        lowContrast: colors['content-muted'],
+        ultraLowContrast: colors['content-subtle'],
       },
-      ghostButtonHover: '#b19aff',
+      ghostButtonHover: colors.primary,
     },
     secondary: {
       background: {
-        normal: '#a087ff',
+        normal: colors.primary,
         transparent: 'transparent',
-        hover: isDark ? '#a087ff' : '#a087ff',
+        hover: colors.primary,
       },
     },
     success: {
-      text: '#4caf50',
-      background: '#161616',
+      text: colors.success,
+      background: colors['base-100'],
     },
     warning: {
-      background: '#ffb300',
-      text: '#161616',
+      background: colors.warning,
+      text: colors['warning-content'],
     },
     error: {
-      background: '#e53935',
-      text: '#ffffff',
+      background: colors.error,
+      text: colors['error-content'],
     },
   };
 
@@ -212,7 +211,7 @@ function IbcSendForm({ token }: { token: string }) {
             allowUnsafe: true,
             allowSwaps: true,
           }}
-          brandColor={'#a087ff'}
+          brandColor={colors?.primary}
           onlyTestnet={env.chainTier !== 'mainnet'}
           // The widget's default API (go.skip.build) only allows the mainnet wallet's origin, so
           // on QA and testnet it gets no data and asks to connect a wallet. Skip's public API
@@ -227,7 +226,7 @@ function IbcSendForm({ token }: { token: string }) {
             queryClient.invalidateQueries({ queryKey: ['balances-resolved'] });
             queryClient.invalidateQueries({ queryKey: ['getMessagesForAddress'] });
           }}
-          theme={themeColors}
+          theme={widgetTheme}
         />
       </ShadowScopeConfigProvider>
     </div>

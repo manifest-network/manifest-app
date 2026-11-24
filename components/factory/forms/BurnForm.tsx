@@ -116,17 +116,17 @@ export default function BurnForm({
           <>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400 mb-2">NAME</p>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-4 rounded-md">
-                  <p className="font-semibold text-md max-w-[20ch] truncate text-black dark:text-white">
+                <p className="text-sm font-light text-content-muted mb-2">NAME</p>
+                <div className="bg-surface-inset p-4 rounded-md">
+                  <p className="font-semibold text-md max-w-[20ch] truncate text-base-content">
                     {denom.name}
                   </p>
                 </div>
               </div>
               <div>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400 mb-2">BALANCE</p>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-4 rounded-md">
-                  <p className="font-semibold text-md text-black truncate dark:text-white">
+                <p className="text-sm font-light text-content-muted mb-2">BALANCE</p>
+                <div className="bg-surface-inset p-4 rounded-md">
+                  <p className="font-semibold text-md text-base-content truncate">
                     {Number(shiftDigits(balance, -exponent)).toLocaleString(undefined, {
                       maximumFractionDigits: exponent,
                     })}{' '}
@@ -203,7 +203,7 @@ export default function BurnForm({
                       <button
                         type="submit"
                         aria-label={`burn-btn-${denom.base}`}
-                        className="btn btn-error disabled:bg-error/40 disabled:text-white/40 btn-md grow text-white"
+                        className="btn btn-error btn-md grow"
                         disabled={isSigning || !isValid || !dirty}
                       >
                         {isSigning ? (
