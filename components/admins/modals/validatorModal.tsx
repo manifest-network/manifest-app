@@ -130,9 +130,9 @@ export function ValidatorDetailsModal({
         {({ isValid }) => (
           <>
             <div className="flex flex-col grow w-full space-y-6">
-              <h3 className="text-2xl font-bold text-black dark:text-white">Validator Details</h3>
+              <h3 className="text-2xl font-bold text-base-content">Validator Details</h3>
               <div className="flex flex-col justify-start items-start gap-4">
-                <span className="text-sm text-gray-500 dark:text-gray-400">VALIDATOR</span>
+                <span className="text-sm text-content-muted">VALIDATOR</span>
                 <div className="flex flex-row justify-start items-center gap-4">
                   {validator?.logo_url && (
                     <Image
@@ -147,24 +147,24 @@ export function ValidatorDetailsModal({
                     <ProfileAvatar walletAddress={validator?.operator_address} size={64} />
                   )}
 
-                  <span className="text-2xl font-bold text-black dark:text-white">
+                  <span className="text-2xl font-bold text-base-content">
                     {validator?.description.moniker}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-6">
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">SECURITY CONTACT</span>
-                  <p className="text-md text-black dark:text-white mt-2">
+                <div className="bg-surface-inset rounded-xl p-4">
+                  <span className="text-sm text-content-muted">SECURITY CONTACT</span>
+                  <p className="text-md text-base-content mt-2">
                     {isEmail(validator?.description.security_contact)
                       ? validator?.description.security_contact
                       : 'No Security Contact'}
                   </p>
                 </div>
                 {!unbondingTimeDate && (
-                  <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">POWER</span>
+                  <div className="bg-surface-inset rounded-xl p-4">
+                    <span className="text-sm text-content-muted">POWER</span>
                     <div className="flex flex-col gap-2 mt-2">
                       <div className="flex flex-row gap-2 justify-between items-center">
                         <div className="relative w-2/3">
@@ -227,22 +227,20 @@ export function ValidatorDetailsModal({
                   </div>
                 )}
                 {unbondingTimeDate && (
-                  <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      UNBONDING TIME (UTC)
-                    </span>
-                    <p className="text-md text-black dark:text-white mt-2">{unbondingTimeText}</p>
+                  <div className="bg-surface-inset rounded-xl p-4">
+                    <span className="text-sm text-content-muted">UNBONDING TIME (UTC)</span>
+                    <p className="text-md text-base-content mt-2">{unbondingTimeText}</p>
                   </div>
                 )}
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">OPERATOR ADDRESS</span>
+                <div className="bg-surface-inset rounded-xl p-4">
+                  <span className="text-sm text-content-muted">OPERATOR ADDRESS</span>
                   <div className="text-md mt-2">
                     <TruncatedAddressWithCopy address={validator?.operator_address} />
                   </div>
                 </div>
-                <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-[12px] p-4">
+                <div className="bg-surface-inset rounded-xl p-4">
                   <div className="flex flex-row justify-between items-center relative">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">DETAILS</span>
+                    <span className="text-sm text-content-muted">DETAILS</span>
                     {validator?.description.details.length > 50 && (
                       <button
                         className="btn btn-sm btn-ghost hover:bg-transparent absolute -right-2 -top-2"
@@ -254,7 +252,7 @@ export function ValidatorDetailsModal({
                       </button>
                     )}
                   </div>
-                  <p className="text-md mt-2 text-black dark:text-white" aria-label="details">
+                  <p className="text-md mt-2 text-base-content" aria-label="details">
                     {validator?.description.details
                       ? validator.description.details.substring(0, 50) +
                         (validator.description.details.length > 50 ? '...' : '')

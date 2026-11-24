@@ -57,7 +57,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <input
-      className={`input input-md border border-[#00000033] dark:border-[#FFFFFF33] bg-[#E0E0FF0A] dark:bg-[#E0E0FF0A] w-full pr-24 dark:text-[#FFFFFF] text-[#161616] rounded-xl ${className}`}
+      className={`input input-md border border-line bg-surface-field w-full pr-24 text-base-content ${className}`}
       type="text"
       placeholder="0.00"
       min={0}

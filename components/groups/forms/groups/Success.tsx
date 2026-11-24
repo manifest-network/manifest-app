@@ -41,18 +41,18 @@ export default function Success({
 
   return (
     <section>
-      <div className="w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
-        <div className="flex justify-center p-4 rounded-[8px] mb-6 w-full dark:bg-[#FAFAFA1F] bg-[#A087FF1F] items-center">
+      <div className="w-full bg-surface-card p-[24px] rounded-3xl">
+        <div className="flex justify-center p-4 rounded-lg mb-6 w-full bg-primary/10 items-center">
           <h1 className="text-xl text-primary font-bold">Success!</h1>
         </div>
 
         <div className="space-y-6">
           <p className="text-lg mb-2">Your transaction was successfully signed and broadcasted.</p>
-          <p className="text-md text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-md text-content-muted mb-6">
             You may now interact with your group by adding members, submitting or voting on
             proposals, and changing group parameters.
           </p>
-          <div className="text-md text-gray-500 dark:text-gray-400 mb-6 flex-col flex gap-2 ">
+          <div className="text-md text-content-muted mb-6 flex-col flex gap-2 ">
             <span>Remember to fund your group by sending tokens to the policy address </span>
             <TruncatedAddressWithCopy address={recentGroup?.policies[0].address} />
           </div>
@@ -62,13 +62,11 @@ export default function Success({
             <h2 className="text-xl font-semibold mb-4">Group Information</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-base-300 p-4 rounded-lg">
-                <label className="text-sm text-gray-500 dark:text-gray-400">Voting period</label>
+                <label className="text-sm text-content-muted">Voting period</label>
                 <div>{secondsToHumanReadable(Number(formData.votingPeriod.seconds))}</div>
               </div>
               <div className="bg-base-300 p-4 rounded-lg">
-                <label className="text-sm text-gray-500 dark:text-gray-400">
-                  Qualified Majority
-                </label>
+                <label className="text-sm text-content-muted">Qualified Majority</label>
                 <div>
                   {formData.votingThreshold} / {formData.members.length}
                 </div>
@@ -88,9 +86,9 @@ export default function Success({
             <div className="grid grid-cols-3 gap-4">
               {formData.members.map((member, index) => (
                 <div key={index} className="bg-base-300 p-4 rounded-lg">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Address</div>
+                  <div className="text-sm text-content-muted">Address</div>
                   <TruncatedAddressWithCopy address={member.address} />
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Name</div>
+                  <div className="text-sm text-content-muted mt-2">Name</div>
                   <div>{member.name}</div>
                 </div>
               ))}
@@ -100,9 +98,7 @@ export default function Success({
       </div>
       <div className="flex gap-6 mt-6 mx-auto w-full">
         <Link href="/groups" className="w-[calc(50%-12px)]">
-          <button className="btn btn-neutral text-black dark:text-white w-full">
-            Back to Groups Page
-          </button>
+          <button className="btn btn-neutral text-base-content w-full">Back to Groups Page</button>
         </Link>
         <Link
           href={`/groups${recentGroup?.policies[0]?.address ? `?policyAddress=${recentGroup.policies[0].address}` : ''}`}

@@ -35,10 +35,10 @@ export function Tally({ tallies }: TallyProps) {
   const tallyAbstainPercentage = getPercentage(tallyAbstain);
 
   const bars = [
-    { id: 'yes', color: '#4CAF50', percentage: tallyYesPercentage },
-    { id: 'no', color: '#E53935', percentage: tallyNoPercentage },
-    { id: 'veto', color: '#FFB300', percentage: tallyVetoPercentage },
-    { id: 'abstain', color: '#3F51B5', percentage: tallyAbstainPercentage },
+    { id: 'yes', className: 'bg-success', percentage: tallyYesPercentage },
+    { id: 'no', className: 'bg-error', percentage: tallyNoPercentage },
+    { id: 'veto', className: 'bg-warning', percentage: tallyVetoPercentage },
+    { id: 'abstain', className: 'bg-info', percentage: tallyAbstainPercentage },
   ];
 
   const visibleBars = bars.filter(bar => bar.percentage.gt(0));
@@ -46,7 +46,7 @@ export function Tally({ tallies }: TallyProps) {
   return (
     <>
       <div
-        className="w-full bg-gray-700 rounded-lg h-6 relative mt-2 flex"
+        className="w-full bg-surface-inset rounded-lg h-6 relative mt-2 flex"
         aria-label="chart-tally"
       >
         {visibleBars.map((bar, index) => {
@@ -60,27 +60,27 @@ export function Tally({ tallies }: TallyProps) {
           return (
             <div
               key={bar.id}
-              className={`h-6 ${borderClasses}`}
-              style={{ backgroundColor: bar.color, width: `${bar.percentage}%` }}
+              className={`h-6 ${bar.className} ${borderClasses}`}
+              style={{ width: `${bar.percentage}%` }}
             />
           );
         })}
       </div>
-      <div className="flex justify-between text-xs text-gray-400 mt-1">
+      <div className="flex justify-between text-xs text-content-muted mt-1">
         <span className="flex items-center">
-          <span className="inline-block w-3 h-3 bg-[#4CAF50] mr-1"></span>
+          <span className="inline-block w-3 h-3 bg-success mr-1"></span>
           Yes ({tallyYesPercentage.toFixed(2)}%)
         </span>
         <span className="flex items-center">
-          <span className="inline-block w-3 h-3 bg-[#E53935] mr-1"></span>
+          <span className="inline-block w-3 h-3 bg-error mr-1"></span>
           No ({tallyNoPercentage.toFixed(2)}%)
         </span>
         <span className="flex items-center">
-          <span className="inline-block w-3 h-3 bg-[#FFB300] mr-1"></span>
+          <span className="inline-block w-3 h-3 bg-warning mr-1"></span>
           No with Veto ({tallyVetoPercentage.toFixed(2)}%)
         </span>
         <span className="flex items-center">
-          <span className="inline-block w-3 h-3 bg-[#3F51B5] mr-1"></span>
+          <span className="inline-block w-3 h-3 bg-info mr-1"></span>
           Abstain ({tallyAbstainPercentage.toFixed(2)}%)
         </span>
       </div>

@@ -43,8 +43,8 @@ const TokenListContent = ({
 
   if (filteredBalances.length === 0) {
     return (
-      <div className="flex items-center justify-center h-[200px] w-full bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] rounded-[16px]">
-        <p className="text-center text-[#00000099] dark:text-[#FFFFFF99]">No tokens found!</p>
+      <div className="flex items-center justify-center h-[200px] w-full bg-surface-card rounded-2xl">
+        <p className="text-center text-content-muted">No tokens found!</p>
       </div>
     );
   }
@@ -57,7 +57,7 @@ const TokenListContent = ({
             <div
               key={balance.base}
               aria-label={balance.base}
-              className="flex flex-row justify-between gap-4 items-center p-4 bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] rounded-[16px] cursor-pointer hover:bg-[#FFFFFF66] dark:hover:bg-[#FFFFFF1A] transition-colors"
+              className="flex flex-row justify-between gap-4 items-center p-4 bg-surface-card rounded-2xl cursor-pointer hover:bg-surface-card-hover transition-colors"
               onClick={() => {
                 setSelectedDenomBase(balance?.base);
                 setOpenDenomInfoModal(true);
@@ -177,7 +177,7 @@ export const TokenList = ({
       [...Array(pageSize)].map((_, i) => (
         <div
           key={i}
-          className="flex flex-row justify-between gap-4 items-center p-4 bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] rounded-[16px]"
+          className="flex flex-row justify-between gap-4 items-center p-4 bg-surface-card rounded-2xl"
         >
           <div className="flex flex-row gap-4 items-center justify-start">
             <div className="skeleton w-11 h-11 rounded-md" />
@@ -207,7 +207,7 @@ export const TokenList = ({
   }
 
   return (
-    <div className="w-full mx-auto rounded-[24px] h-full flex flex-col" data-testid="tokenList">
+    <div className="w-full mx-auto rounded-3xl h-full flex flex-col" data-testid="tokenList">
       <div className="flex-1 overflow-y-auto">
         <TokenListContent
           balances={balances}

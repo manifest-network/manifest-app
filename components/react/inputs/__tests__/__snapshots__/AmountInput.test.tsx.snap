@@ -6,7 +6,7 @@ exports[`AmountInput renders correctly 1`] = `
     action="#"
   >
     <input
-      class="input input-md border border-[#00000033] dark:border-[#FFFFFF33] bg-[#E0E0FF0A] dark:bg-[#E0E0FF0A] w-full pr-24 dark:text-[#FFFFFF] text-[#161616] rounded-xl undefined"
+      class="input input-md border border-line bg-surface-field w-full pr-24 text-base-content undefined"
       min="0"
       name="test"
       placeholder="0.00"

@@ -209,7 +209,7 @@ const DisplayDataToSign = ({
           customStyle={{
             backgroundColor: 'transparent',
             padding: '1rem',
-            borderRadius: '0.5rem',
+            borderRadius: 'var(--radius-box)',
           }}
         >
           {JSON.stringify(v, (_, v) => (typeof v === 'bigint' ? v.toString() : v), 2)}
@@ -386,10 +386,10 @@ export const LedgerSignModalInner: React.FC<LedgerSignModalInnerProps> = ({ onCl
     <Dialog open onClose={onClose} className="modal modal-open top-0 right-0 z-9999">
       <div className="fixed inset-0  bg-black/30" aria-hidden="true" />
 
-      <Dialog.Panel className="modal-box max-w-lg w-full dark:bg-[#1D192D] bg-[#FFFFFF] rounded-lg shadow-xl">
-        <h3 className="text-xl font-semibold text-[#161616] dark:text-white mb-6">Ledger HSM</h3>
+      <Dialog.Panel className="modal-box max-w-lg w-full bg-neutral rounded-lg shadow-xl">
+        <h3 className="text-xl font-semibold text-base-content mb-6">Ledger HSM</h3>
 
-        <p className="mt-2 text-sm leading-6 font-light dark:text-gray-400 text-gray-600 ">
+        <p className="mt-2 text-sm leading-6 font-light text-content-muted ">
           It seems you are using a Ledger hardware wallet. Please approve or reject the transaction
           on your device.
         </p>
@@ -462,14 +462,14 @@ export const PromptSignModalInner: React.FC<SignModalInnerProps> = ({
         address={address ?? ''}
         theme={theme}
         className="space-y-4"
-        txInfoClassName="p-3 rounded-md text-sm overflow-auto h-[32rem] dark:bg-[#E0E0FF0A] bg-[#E0E0FF0A] dark:border-[#FFFFFF33] border-[#00000033] border"
+        txInfoClassName="p-3 rounded-md text-sm overflow-auto h-[32rem] bg-surface-field border-line border"
       />
 
       <div className="modal-action mt-6 flex justify-between gap-4">
         <button
           role="button"
           aria-label="Reject"
-          className="btn btn-error flex-1 rounded-[12px] outline-white"
+          className="btn btn-error flex-1 outline-white"
           onClick={handleReject}
         >
           Reject
@@ -477,7 +477,7 @@ export const PromptSignModalInner: React.FC<SignModalInnerProps> = ({
         <button
           role="button"
           aria-label="Approve"
-          className="btn btn-gradient flex-1 rounded-[12px]"
+          className="btn btn-gradient flex-1 "
           onClick={handleApprove}
         >
           Approve

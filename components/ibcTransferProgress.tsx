@@ -68,7 +68,7 @@ export const IbcTransferProgress: React.FC<IbcTransferProgressProps> = ({
         )}
         {/* Green checkmark indicator for completed state */}
         {sourceState === 'completed' && (
-          <div className="absolute right-1 bottom-[1.5px] bg-green-500 rounded-full p-1">
+          <div className="absolute right-1 bottom-[1.5px] bg-success rounded-full p-1">
             <svg
               className="w-3 h-3 text-white"
               fill="none"
@@ -86,7 +86,7 @@ export const IbcTransferProgress: React.FC<IbcTransferProgressProps> = ({
         )}
         {/* Red X indicator for error state */}
         {sourceState === 'error' && (
-          <div className="absolute -right-1 bottom-1 bg-red-500 rounded-full p-1">
+          <div className="absolute -right-1 bottom-1 bg-error rounded-full p-1">
             <svg
               className="w-3 h-3 text-white"
               fill="none"
@@ -110,10 +110,10 @@ export const IbcTransferProgress: React.FC<IbcTransferProgressProps> = ({
           className={`w-5 h-5 ${
             // Arrow color changes based on transfer status
             status === 'STATE_COMPLETED_SUCCESS'
-              ? 'text-green-500'
+              ? 'text-success'
               : status === 'STATE_COMPLETED_ERROR' || status === 'STATE_ABANDONED'
-                ? 'text-red-500'
-                : 'text-gray-400'
+                ? 'text-error'
+                : 'text-content-muted'
           }`}
           fill="none"
           viewBox="0 0 24 24"
@@ -151,7 +151,7 @@ export const IbcTransferProgress: React.FC<IbcTransferProgressProps> = ({
         )}
         {/* Green checkmark indicator for completed state */}
         {targetState === 'completed' && (
-          <div className="absolute -right-1 -bottom-1 bg-green-500 rounded-full p-1">
+          <div className="absolute -right-1 -bottom-1 bg-success rounded-full p-1">
             <svg
               className="w-3 h-3 text-white"
               fill="none"
@@ -169,7 +169,7 @@ export const IbcTransferProgress: React.FC<IbcTransferProgressProps> = ({
         )}
         {/* Red X indicator for error state */}
         {targetState === 'error' && (
-          <div className="absolute -right-1 -bottom-1 bg-red-500 rounded-full p-1">
+          <div className="absolute -right-1 -bottom-1 bg-error rounded-full p-1">
             <svg
               className="w-3 h-3 text-white"
               fill="none"
