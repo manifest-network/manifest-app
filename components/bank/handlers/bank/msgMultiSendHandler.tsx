@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import React from 'react';
 import { format } from 'react-string-format';
 
+import { AMOUNT_TONE_CLASS, AmountTone } from '@/components/bank/handlers/amountTone';
 import { createSenderReceiverHandler } from '@/components/bank/handlers/createSenderReceiverHandler';
 import { registerHandler } from '@/components/bank/handlers/handlerRegistry';
 import { BankIcon } from '@/components/icons/BankIcon';
@@ -18,7 +19,7 @@ const createSendMessage = (
   template: string,
   inputs: Input[],
   numReceiver: number,
-  color: string,
+  tone: AmountTone,
   metadata?: MetadataSDKType[]
 ) => {
   let allAmountDenom: string[] = [];
@@ -39,7 +40,7 @@ const createSendMessage = (
     displayAmountDenom = allAmountDenom.join(', ');
   }
 
-  const coloredAmountDenom = <span className={`text-${color}-500`}>{displayAmountDenom}</span>;
+  const coloredAmountDenom = <span className={AMOUNT_TONE_CLASS[tone]}>{displayAmountDenom}</span>;
   const message = format(template, coloredAmountDenom, numReceiver);
   return <span className="flex flex-wrap gap-1">{message}</span>;
 };
@@ -48,7 +49,7 @@ const createReceiveMessage = (
   template: string,
   outputs: Output[],
   address: string,
-  color: string,
+  tone: AmountTone,
   sender: string,
   metadata?: MetadataSDKType[]
 ) => {
@@ -84,7 +85,7 @@ const createReceiveMessage = (
     displayAmountDenom = allAmountDenom.join(', ');
   }
 
-  const coloredAmountDenom = <span className={`text-${color}-500`}>{displayAmountDenom}</span>;
+  const coloredAmountDenom = <span className={AMOUNT_TONE_CLASS[tone]}>{displayAmountDenom}</span>;
   const message = format(
     template,
     coloredAmountDenom,
@@ -100,7 +101,7 @@ export const MsgMultiSendHandler = createSenderReceiverHandler({
       'You sent {0} equally divided between {1} addresses',
       tx.metadata?.inputs,
       tx.metadata?.outputs?.length,
-      'red',
+      'negative',
       metadata
     );
   },
@@ -109,7 +110,7 @@ export const MsgMultiSendHandler = createSenderReceiverHandler({
       'You failed to send {0} equally divided between {1} addresses',
       tx.metadata?.inputs,
       tx.metadata?.outputs?.length,
-      'red',
+      'negative',
       metadata
     );
   },
@@ -118,7 +119,7 @@ export const MsgMultiSendHandler = createSenderReceiverHandler({
       'You received {0} from {1}',
       tx.metadata?.outputs,
       address,
-      'green',
+      'positive',
       tx.sender,
       metadata
     );

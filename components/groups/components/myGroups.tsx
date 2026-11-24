@@ -391,7 +391,7 @@ export const YourGroups = ({
           </div>
           <div className="flex item-center justify-between">
             <Link href="/groups/create" passHref aria-label="btn-create-new-group">
-              <button className="btn btn-gradient w-[224px] h-[52px] hidden md:block text-white rounded-[12px] focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary">
+              <button className="btn btn-gradient w-[224px] h-[52px] hidden md:block text-white focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary">
                 Create New Group
               </button>
             </Link>
@@ -400,7 +400,7 @@ export const YourGroups = ({
           </div>
           <div className="mt-6 w-full justify-center md:hidden block">
             <Link href="/groups/create" passHref>
-              <button className="btn btn-gradient w-full h-[52px] text-white rounded-[12px]">
+              <button className="btn btn-gradient w-full h-[52px] text-white ">
                 Create New Group
               </button>
             </Link>
@@ -414,7 +414,7 @@ export const YourGroups = ({
 const LoadingGroupRow = () => {
   return (
     <tr data-testid="skeleton-row">
-      <td className="bg-secondary rounded-l-[12px] ">
+      <td className="bg-secondary rounded-l-xl ">
         <div className="flex items-center space-x-3">
           <div className="skeleton w-11 h-11 rounded-md shrink-0"></div>
           <div className="skeleton h-3 w-24"></div>
@@ -432,7 +432,7 @@ const LoadingGroupRow = () => {
       <td className="bg-secondary hidden lg:table-cell">
         <div className="skeleton h-2 w-32"></div>
       </td>
-      <td className="bg-secondary rounded-r-[12px] w-1/6 hidden xs:table-cell">
+      <td className="bg-secondary rounded-r-xl w-1/6 hidden xs:table-cell">
         <div className="flex space-x-2 justify-end">
           <button className="btn btn-md btn-outline btn-square btn-info" disabled>
             <PiInfo className="w-7 h-7 text-current opacity-50" />
@@ -497,13 +497,13 @@ const GroupRow = React.memo(function GroupRow({
   return (
     <>
       <tr
-        className="group text-black dark:text-white rounded-lg cursor-pointer"
+        className="group text-base-content rounded-lg cursor-pointer"
         onClick={() => onSelectGroup(group)}
         tabIndex={0}
         role="button"
         aria-label={`row-${groupName}`}
       >
-        <td className="bg-secondary group-hover:bg-base-300 rounded-l-[12px] w-1/6">
+        <td className="bg-secondary group-hover:bg-base-300 rounded-l-xl w-1/6">
           <div className="items-center space-x-3 hidden xs:flex">
             <ProfileAvatar walletAddress={policyAddress} />
             <span className="font-medium">{truncateString(groupName, 24)}</span>
@@ -532,7 +532,7 @@ const GroupRow = React.memo(function GroupRow({
             <TruncatedAddressWithCopy address={policyAddress} />
           </div>
         </td>
-        <td className="bg-secondary group-hover:bg-base-300 rounded-r-[12px] sm:rounded-l-none w-1/6">
+        <td className="bg-secondary group-hover:bg-base-300 rounded-r-xl sm:rounded-l-none w-1/6">
           <div className="flex space-x-2 justify-end">
             <div
               className="tooltip tooltip-left tooltip-primary hover:after:delay-1000 hover:before:delay-1000"

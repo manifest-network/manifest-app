@@ -54,7 +54,7 @@ export const WalletList = ({
       <h1 className="text-sm font-semibold text-center mb-6">Connect Wallet</h1>
       <button
         type="button"
-        className="p-2 text-primary absolute -top-1 right-0 bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033] cursor-pointer"
+        className="p-2 text-primary absolute -top-1 right-0 bg-neutral rounded-full hover:bg-surface-hover cursor-pointer"
         onClick={onClose}
       >
         <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -67,7 +67,7 @@ export const WalletList = ({
             <div key={name} className="w-full">
               <button
                 onClick={() => onWalletClicked(name)}
-                className="flex items-center w-full p-3 rounded-lg dark:bg-[#ffffff0c] bg-[#f0f0ff5c] dark:hover:bg-[#0000004c] hover:bg-[#a8a8a84c] transition cursor-pointer"
+                className="flex items-center w-full p-3 rounded-lg bg-surface-field hover:bg-surface-hover transition cursor-pointer"
               >
                 <img
                   src={getRealLogo(logo?.toString() ?? '', isDarkMode)}
@@ -81,7 +81,7 @@ export const WalletList = ({
                       e.stopPropagation();
                       onWalletClicked(getMobileWalletName(prettyName) || '', true);
                     }}
-                    className="p-1.5 rounded-lg dark:hover:bg-[#ffffff1a] hover:bg-[#0000000d] dark:bg-[#ffffff37] bg-[#d5d5e4]  transition cursor-pointer"
+                    className="p-1.5 rounded-lg bg-base-content/15 hover:bg-base-content/25 transition cursor-pointer"
                     title={`Connect with ${prettyName} Mobile`}
                   >
                     <img src={getRealLogo('/sms')} alt="mobile" className="w-5 h-5" />
@@ -101,7 +101,7 @@ export const WalletList = ({
             <button
               key={name}
               onClick={() => onWalletClicked(name)}
-              className="flex items-center justify-center p-4 dark:bg-[#ffffff0c] bg-[#f0f0ff5c] dark:hover:bg-[#0000004c] hover:bg-[#a8a8a84c] rounded-lg transition cursor-pointer"
+              className="flex items-center justify-center p-4 bg-surface-field hover:bg-surface-hover rounded-lg transition cursor-pointer"
             >
               <img
                 src={getRealLogo(logo?.toString() ?? '', isDarkMode)}
@@ -121,7 +121,7 @@ export const WalletList = ({
             <button
               key={name}
               onClick={() => onWalletClicked(name)}
-              className="flex items-center w-full p-3 rounded-lg dark:bg-[#ffffff0c] bg-[#f0f0ff5c] dark:hover:bg-[#0000004c] hover:bg-[#a8a8a84c] transition cursor-pointer"
+              className="flex items-center w-full p-3 rounded-lg bg-surface-field hover:bg-surface-hover transition cursor-pointer"
             >
               <img
                 src={getRealLogo(logo?.toString() ?? '', isDarkMode)}
@@ -141,7 +141,7 @@ export const WalletList = ({
             <button
               key={name}
               onClick={() => onWalletClicked(name)}
-              className="flex items-center justify-center p-4 dark:bg-[#ffffff0c] bg-[#f0f0ff5c] dark:hover:bg-[#0000004c] hover:bg-[#a8a8a84c] rounded-lg transition cursor-pointer"
+              className="flex items-center justify-center p-4 bg-surface-field hover:bg-surface-hover rounded-lg transition cursor-pointer"
             >
               <img
                 src={getRealLogo(logo?.toString() ?? '', isDarkMode)}

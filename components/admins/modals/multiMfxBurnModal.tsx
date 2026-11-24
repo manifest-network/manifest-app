@@ -129,7 +129,7 @@ export function MultiBurnModal({ isOpen, onClose, admin, address, denom }: Multi
                       {values.burnPairs.map((_pair, index) => (
                         <div
                           key={index}
-                          className="flex relative flex-row dark:bg-[#FFFFFF0A] bg-[#FFFFFF] p-4 gap-2 rounded-lg items-end"
+                          className="flex relative flex-row bg-surface-card p-4 gap-2 rounded-lg items-end"
                         >
                           {index > 0 && (
                             <div className="absolute -top-2 left-2 text-xs">#{index + 1}</div>
@@ -185,7 +185,7 @@ export function MultiBurnModal({ isOpen, onClose, admin, address, denom }: Multi
                           {index > 0 && (
                             <button
                               type="button"
-                              className="btn btn-error btn-sm text-white absolute top-3 right-5"
+                              className="btn btn-error btn-sm absolute top-3 right-5"
                               onClick={() => {
                                 remove(index);
                                 removeBurnPair(index);
@@ -204,7 +204,7 @@ export function MultiBurnModal({ isOpen, onClose, admin, address, denom }: Multi
               <div className="mt-4 gap-6 flex justify-center w-full p-2">
                 <button
                   type="button"
-                  className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A]"
+                  className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden bg-surface-inset"
                   onClick={onClose}
                   disabled={isSigning}
                 >
@@ -212,7 +212,7 @@ export function MultiBurnModal({ isOpen, onClose, admin, address, denom }: Multi
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-md w-[calc(50%-8px)] btn-error  text-white"
+                  className="btn btn-md w-[calc(50%-8px)] btn-error"
                   disabled={isSigning || !isValid}
                 >
                   {isSigning ? <span className="loading loading-dots loading-md"></span> : 'Burn'}

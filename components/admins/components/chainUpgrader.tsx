@@ -47,7 +47,7 @@ export const ChainUpgrader = ({ admin, address }: { admin: string; address: stri
         <button
           disabled={!plan}
           onClick={() => setIsCancelOpen(true)}
-          className="btn btn-error flex-1 dark:text-white text-white"
+          className="btn btn-error flex-1"
         >
           Cancel Upgrade
         </button>

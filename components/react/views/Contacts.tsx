@@ -130,7 +130,7 @@ export const Contacts = ({
           {onReturn ? (
             <button
               type="button"
-              className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+              className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
               onClick={onReturn}
             >
               <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -154,20 +154,18 @@ export const Contacts = ({
                 name="name"
                 placeholder="Enter name"
                 className="input-md w-full"
-                style={{ borderRadius: '12px' }}
               />
               <TextInput
                 label="Address"
                 name="address"
                 placeholder="Enter address"
                 className="input-md w-full"
-                style={{ borderRadius: '12px' }}
               />
               <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={() => setIsAdding(false)}
-                  className="btn rounded-[12px] focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A] mr-2"
+                  className="btn focus:outline-hidden bg-surface-inset mr-2"
                 >
                   Cancel
                 </button>
@@ -202,7 +200,7 @@ export const Contacts = ({
         </button>
       )}
 
-      <div className="mb-8 p-3 bg-[#0000000A] dark:bg-[#FFFFFF0F] rounded-xl flex items-center text-sm text-[#00000099] dark:text-[#FFFFFF99]">
+      <div className="mb-8 p-3 bg-surface-inset rounded-xl flex items-center text-sm text-content-muted">
         <ExclamationTriangleIcon
           className="h-5 w-5 text-primary flex-shrink-0 mr-2"
           aria-hidden="true"
@@ -218,12 +216,11 @@ export const Contacts = ({
         <input
           type="text"
           placeholder="Search contacts..."
-          className="input input-md w-full pr-8 bg-[#0000000A] dark:bg-[#FFFFFF0F] text-[#161616] dark:text-white placeholder-[#00000099] dark:placeholder-[#FFFFFF99] focus:outline-hidden focus:ring-0"
+          className="input input-md w-full pr-8 bg-surface-inset text-base-content placeholder-content-muted focus:outline-hidden focus:ring-0"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          style={{ borderRadius: '12px' }}
         />
-        <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#00000099] dark:text-[#FFFFFF99]" />
+        <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-content-muted" />
       </div>
 
       {filteredContacts.length > 0 ? (
@@ -239,26 +236,24 @@ export const Contacts = ({
                   onSubmit={values => handleSaveContact(index, values)}
                 >
                   {({ isValid, dirty }) => (
-                    <Form className="space-y-2 p-2 bg-[#0000000A] dark:bg-[#FFFFFF0F] rounded-xl mb-2">
+                    <Form className="space-y-2 p-2 bg-surface-inset rounded-xl mb-2">
                       <TextInput
                         label="Name"
                         name="name"
                         placeholder="Enter name"
                         className="input-sm w-full"
-                        style={{ borderRadius: '12px' }}
                       />
                       <TextInput
                         label="Address"
                         name="address"
                         placeholder="Enter address"
                         className="input-sm w-full"
-                        style={{ borderRadius: '12px' }}
                       />
                       <div className="flex justify-end">
                         <button
                           type="button"
                           onClick={() => setEditingIndex(null)}
-                          className="btn  focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A] btn-xs mr-2"
+                          className="btn  focus:outline-hidden bg-surface-inset btn-xs mr-2"
                         >
                           Cancel
                         </button>
@@ -280,14 +275,13 @@ export const Contacts = ({
                   key={index}
                   className={`
                     flex items-center justify-between p-4 
-                    bg-[#0000000A] dark:bg-[#FFFFFF0F] 
-                    rounded-[16px] 
+                    bg-surface-inset 
+                    rounded-2xl 
                     ${
                       selectionMode
                         ? `
                       cursor-pointer 
-                      hover:bg-primary hover:bg-opacity-10
-                      dark:hover:bg-primary dark:hover:bg-opacity-10
+                      hover:bg-primary/10
                   
                       transform transition-all duration-200 
                       
@@ -311,16 +305,16 @@ export const Contacts = ({
                     <p
                       className={`
                       text-lg font-semibold 
-                      text-[#161616] dark:text-white
+                      text-base-content
                       ${selectionMode ? 'group-hover:text-primary' : ''}
                     `}
                     >
                       {contact.name}
                     </p>
-                    <p className="text-sm text-[#00000099] dark:text-[#FFFFFF99] xs:block hidden">
+                    <p className="text-sm text-content-muted xs:block hidden">
                       <TruncatedAddressWithCopy showName={false} address={contact.address} />
                     </p>
-                    <p className="text-sm text-[#00000099] dark:text-[#FFFFFF99] xs:hidden block">
+                    <p className="text-sm text-content-muted xs:hidden block">
                       <TruncatedAddressWithCopy showName={false} address={contact.address} />
                     </p>
                   </div>
@@ -328,13 +322,13 @@ export const Contacts = ({
                     <div className="flex items-center">
                       <button
                         onClick={() => setEditingIndex(index)}
-                        className="ml-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033] transition-colors duration-200 text-blue-500"
+                        className="ml-2 p-2 rounded-full hover:bg-surface-hover transition-colors duration-200 text-info"
                       >
                         <PencilIcon className="w-5 h-5" aria-hidden="true" />
                       </button>
                       <button
                         onClick={() => handleRemoveContact(index)}
-                        className="ml-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033] transition-colors duration-200 text-red-500"
+                        className="ml-2 p-2 rounded-full hover:bg-surface-hover transition-colors duration-200 text-error"
                       >
                         <XMarkIcon className="w-5 h-5" aria-hidden="true" />
                       </button>
@@ -346,9 +340,7 @@ export const Contacts = ({
           })}
         </div>
       ) : (
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">
-          No contacts found.
-        </p>
+        <p className="text-sm text-center text-content-muted mb-4">No contacts found.</p>
       )}
 
       {!selectionMode && (

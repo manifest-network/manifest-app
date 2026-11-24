@@ -125,10 +125,7 @@ export default function SendForm({
   };
 
   return (
-    <div
-      style={{ borderRadius: '24px' }}
-      className="text-sm bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] px-6 pb-6 pt-4 w-full h-full animate-fadeIn duration-400"
-    >
+    <div className="text-sm bg-surface-card rounded-3xl px-6 pb-6 pt-4 w-full h-full animate-fadeIn duration-400">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -146,7 +143,7 @@ export default function SendForm({
               <div className="w-full space-y-8">
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text text-md font-medium text-[#00000099] dark:text-[#FFFFFF99]">
+                    <span className="label-text text-md font-medium text-content-muted">
                       Amount
                     </span>
                   </label>
@@ -165,7 +162,7 @@ export default function SendForm({
                         <label
                           aria-label="token-selector"
                           tabIndex={0}
-                          className="btn btn-sm h-full px-3 bg-[#FFFFFF] dark:bg-[#FFFFFF0F] border-none hover:bg-transparent"
+                          className="btn btn-sm h-full px-3 bg-surface-card border-none hover:bg-transparent"
                         >
                           <DenomDisplay
                             withBackground={false}
@@ -181,18 +178,17 @@ export default function SendForm({
                           tabIndex={0}
                           role="listbox"
                           aria-label="Token selection"
-                          className="dropdown-content z-20 p-2 shadow-sm bg-base-300 rounded-lg w-full mt-1 max-h-72 min-w-44 overflow-y-auto dark:text-[#FFFFFF] text-[#161616]"
+                          className="dropdown-content z-20 p-2 shadow-sm bg-base-300 rounded-lg w-full mt-1 max-h-72 min-w-44 overflow-y-auto text-base-content"
                         >
                           <li className=" bg-base-300 z-30 hover:bg-transparent h-full mb-2">
                             <div className="px-2 py-1 relative">
                               <input
                                 type="text"
                                 placeholder="Search tokens..."
-                                className="input input-sm w-full pr-8 focus:outline-hidden focus:ring-0 border  border-[#00000033] dark:border-[#FFFFFF33] bg-[#E0E0FF0A] dark:bg-[#E0E0FF0A]"
+                                className="input input-sm w-full pr-8 shadow-none focus:outline-hidden focus:ring-0 border  border-line bg-surface-field"
                                 onChange={e => setSearchTerm(e.target.value)}
-                                style={{ boxShadow: 'none', borderRadius: '8px' }}
                               />
-                              <SearchIcon className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                              <SearchIcon className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-content-muted" />
                             </div>
                           </li>
                           {isBalancesLoading ? (
@@ -209,7 +205,7 @@ export default function SendForm({
                                     document.activeElement.blur();
                                   }
                                 }}
-                                className="hover:bg-[#E0E0FF33] dark:hover:bg-[#FFFFFF0F] cursor-pointer rounded-lg"
+                                className="hover:bg-surface-hover cursor-pointer rounded-lg"
                                 aria-label={token.metadata?.display}
                               >
                                 <a className="flex flex-row items-center gap-2 px-2 py-2">
@@ -222,7 +218,7 @@ export default function SendForm({
                       </div>
                     </div>
                   </div>
-                  <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
+                  <div className="text-xs mt-1 flex justify-between text-content-muted">
                     <div className="flex flex-row gap-1 ml-1">
                       Balance: <TokenBalance token={selectedTokenBalance ?? values.selectedToken} />
                       <MaxButton
@@ -258,7 +254,7 @@ export default function SendForm({
                       />
                     </div>
                     {errors.amount && (
-                      <div className="text-red-500 text-xs text-right">{errors.amount}</div>
+                      <div className="text-error text-xs text-right">{errors.amount}</div>
                     )}
                   </div>
                 </div>
@@ -270,13 +266,11 @@ export default function SendForm({
                   value={values.recipient}
                   onChange={handleChange}
                   className="input-md w-full"
-                  style={{ borderRadius: '12px' }}
                 />
                 <TextInput
                   label="Memo (optional)"
                   name="memo"
                   placeholder="Memo"
-                  style={{ borderRadius: '12px' }}
                   value={values.memo}
                   onChange={handleChange}
                   className="input-md w-full"

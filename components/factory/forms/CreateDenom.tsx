@@ -66,9 +66,9 @@ export default function CreateDenom({
         >
           {({ setFieldValue, isValid, isSubmitting, isValidating, handleSubmit, setErrors }) => (
             <>
-              <div className="flex items-center mx-auto w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-6 sm:p-8 rounded-2xl shadow-lg">
+              <div className="flex items-center mx-auto w-full bg-surface-card p-6 sm:p-8 rounded-2xl shadow-lg">
                 <div className="w-full">
-                  <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] dark:text-[#FFFFFF99] dark:border-[#FFFFFF99] border-b-[black] pb-4">
+                  <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] border-line pb-4">
                     Create Denom
                   </h1>
 
@@ -91,7 +91,9 @@ export default function CreateDenom({
                         isSimulating && (
                           <div className="flex items-center gap-2">
                             <span className="loading loading-spinner loading-sm" />
-                            <span className="text-sm text-gray-500">checking availability...</span>
+                            <span className="text-sm text-content-muted">
+                              checking availability...
+                            </span>
                           </div>
                         )
                       }
@@ -100,7 +102,7 @@ export default function CreateDenom({
                     {/* Token Exponents Section */}
                     {/* <div className="mt-4">
                       <h3 className="text-lg font-semibold mb-2">Token Exponents</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      <p className="text-sm text-content-muted mb-4">
                         Use these exponents, subdenoms, and letter representations when creating new
                         tokens
                       </p>
@@ -108,7 +110,7 @@ export default function CreateDenom({
                         {tokenExponents.map(item => (
                           <div
                             key={item.exponent}
-                            className="dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] hover:bg-[#F5F5F5] dark:hover:bg-[#FFFFFF1A] transition-colors rounded-lg shadow-sm p-4"
+                            className="bg-surface-card hover:bg-surface-card-hover transition-colors rounded-lg shadow-sm p-4"
                           >
                             <div className="flex justify-between items-center mb-2">
                               <h3 className="text-lg font-semibold">
@@ -121,10 +123,10 @@ export default function CreateDenom({
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <p className="text-sm font-medium text-content-muted mb-1">
                               Subdenom: {item.subdenom}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-content-muted">
                               {item.description}
                             </p>
                           </div>
@@ -137,7 +139,7 @@ export default function CreateDenom({
               </div>
               <div className="flex gap-6  mt-6 mx-auto w-full">
                 <Link href="/factory" legacyBehavior>
-                  <button className="btn btn-neutral dark:text-white text-black py-2.5 sm:py-3.5 w-[calc(50%-12px)]">
+                  <button className="btn btn-neutral text-base-content py-2.5 sm:py-3.5 w-[calc(50%-12px)]">
                     <span className="hidden sm:inline">Back: Factory Page</span>
                     <span className="sm:hidden">Back</span>
                   </button>
