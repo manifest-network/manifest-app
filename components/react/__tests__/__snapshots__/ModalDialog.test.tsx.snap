@@ -19,7 +19,7 @@ exports[`ModalDialog renders correctly: portal 1`] = `
   />
   <div
     aria-label="modal"
-    class="undefined modal-box mx-auto rounded-[24px] bg-[#F4F4FF] dark:bg-[#1D192D] shadow-lg relative"
+    class="undefined modal-box mx-auto rounded-3xl bg-surface-panel shadow-lg relative"
     data-headlessui-state="open"
     data-open=""
     id="headlessui-dialog-panel-«normalized»"
@@ -29,7 +29,7 @@ exports[`ModalDialog renders correctly: portal 1`] = `
     >
       <button
         aria-label="Close"
-        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-[#00000099] dark:text-[#FFFFFF99] hover:bg-[#0000000A] dark:hover:bg-[#FFFFFF1A] disabled:cursor-not-allowed"
+        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-content-muted hover:bg-surface-hover disabled:cursor-not-allowed"
         role="button"
       >
         ✕

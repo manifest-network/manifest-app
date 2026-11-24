@@ -131,14 +131,14 @@ export const ModalDialog = ({
       <div className="fixed inset-0 bg-black/30 " aria-hidden="true" />
 
       <Dialog.Panel
-        className={`${panelClassName} modal-box mx-auto rounded-[24px] bg-[#F4F4FF] dark:bg-[#1D192D] shadow-lg relative`}
+        className={`${panelClassName} modal-box mx-auto rounded-3xl bg-surface-panel shadow-lg relative`}
         aria-label="modal"
       >
         <form method="dialog" onSubmit={handleClose}>
           <button
             role="button"
             aria-label="Close"
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-[#00000099] dark:text-[#FFFFFF99] hover:bg-[#0000000A] dark:hover:bg-[#FFFFFF1A] disabled:cursor-not-allowed"
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-content-muted hover:bg-surface-hover disabled:cursor-not-allowed"
             disabled={disabled}
           >
             ✕
@@ -149,7 +149,7 @@ export const ModalDialog = ({
           <h3
             role="heading"
             aria-label="Title"
-            className="flex flex-row gap-2 items-center text-xl font-semibold text-[#161616] dark:text-white mb-6"
+            className="flex flex-row gap-2 items-center text-xl font-semibold text-base-content mb-6"
           >
             {Icon instanceof Function ? <Icon className="w-8 h-8 text-primary" /> : Icon}
             {title}

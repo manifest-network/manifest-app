@@ -76,7 +76,7 @@ export function WarningModal({
       <form method="dialog">
         <div className="p-4">
           <div className="flex flex-col gap-2 items-center mb-6">
-            <PiWarning className="text-yellow-200 text-6xl" />
+            <PiWarning className="text-warning text-6xl" />
           </div>
           <p className="text-md text-center font-thin">
             Are you sure you want to remove the validator{' '}
@@ -90,7 +90,7 @@ export function WarningModal({
         <div className="modal-action">
           <button
             type="button"
-            className="btn btn-error text-white w-1/2 mx-auto -mt-2"
+            className="btn btn-error w-1/2 mx-auto -mt-2"
             onClick={handleAccept}
             disabled={isSigning}
           >

@@ -29,13 +29,11 @@ export const BaseInput: React.FC<BaseInputProps> = ({
       <div className="flex justify-between items-center">
         {label && (
           <label className="label" htmlFor={id}>
-            <span className="label-text text-[#00000099] dark:text-[#FFFFFF99] select-text">
-              {label}
-            </span>
+            <span className="label-text text-content-muted select-text">{label}</span>
           </label>
         )}
         {helperText && (
-          <span className="text-sm flex-row flex items-center justify-between gap-2 text-[#00000099] dark:text-[#FFFFFF99]">
+          <span className="text-sm flex-row flex items-center justify-between gap-2 text-content-muted">
             <QuestionIcon className="w-4 h-4" /> {helperText}
           </span>
         )}
@@ -45,9 +43,9 @@ export const BaseInput: React.FC<BaseInputProps> = ({
           id={id}
           {...field}
           {...props}
-          className={`dark:text-[#FFFFFF99] text-[#161616] input border-[#00000033] dark:border-[#FFFFFF33] bg-[#E0E0FF0A] dark:bg-[#E0E0FF0A] w-full 
-            autofill:bg-[#E0E0FF0A] dark:autofill:bg-[#E0E0FF0A]
-            focus:bg-[#E0E0FF0A] dark:focus:bg-[#E0E0FF0A]
+          className={`text-base-content input border-line bg-surface-field w-full 
+            autofill:bg-surface-field
+            focus:bg-surface-field
             ${className}`}
         />
         {rightElement && (

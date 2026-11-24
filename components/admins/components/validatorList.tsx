@@ -93,18 +93,18 @@ export default function ValidatorList({
       <PageHeader className="mb-4" title="Validators" search="Search for a validator..." />
 
       <Tab.Group as="div" defaultIndex={0} onChange={setActiveTab}>
-        <Tab.List className="relative grid grid-cols-3 p-3 h-[3.5rem] w-full mb-4 md:mb-6 rounded-2xl bg-[#0000000A] dark:bg-[#FFFFFF0F]">
+        <Tab.List className="relative grid grid-cols-3 p-3 h-[3.5rem] w-full mb-4 md:mb-6 rounded-2xl bg-surface-inset">
           <div
-            className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc((100%-8px)/3)] rounded-xl bg-white dark:bg-[#FFFFFF1F] transition-transform duration-200 ease-in-out"
+            className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc((100%-8px)/3)] rounded-xl bg-surface-raised transition-transform duration-200 ease-in-out"
             style={{ transform: `translateX(${activeTab * 100}%)` }}
           />
 
           <Tab
             aria-label="Active"
             className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
-                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                       ui-not-selected:text-[#808080]
-                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       transition-colors ui-selected:text-base-content
+                       ui-not-selected:text-content-muted
+                       disabled:text-content-subtle disabled:cursor-not-allowed
                        focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             Active
@@ -113,9 +113,9 @@ export default function ValidatorList({
           <Tab
             aria-label="Pending"
             className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
-                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                       ui-not-selected:text-[#808080]
-                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       transition-colors ui-selected:text-base-content
+                       ui-not-selected:text-content-muted
+                       disabled:text-content-subtle disabled:cursor-not-allowed
                        focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             Pending
@@ -124,9 +124,9 @@ export default function ValidatorList({
           <Tab
             aria-label="Unbonding"
             className="relative z-10 flex items-center justify-center text-sm font-medium rounded-xl
-                       transition-colors ui-selected:text-[#161616] ui-selected:dark:text-white
-                       ui-not-selected:text-[#808080]
-                       disabled:text-[#404040] disabled:cursor-not-allowed
+                       transition-colors ui-selected:text-base-content
+                       ui-not-selected:text-content-muted
+                       disabled:text-content-subtle disabled:cursor-not-allowed
                        focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             Unbonding
@@ -147,7 +147,7 @@ export default function ValidatorList({
             {isLoading ? (
               <Loading />
             ) : validators.length === 0 ? (
-              <div className="text-center py-8 text-[#808080]">
+              <div className="text-center py-8 text-content-muted">
                 {isActiveTab ? 'No active validators found' : 'No pending validators'}
               </div>
             ) : (
@@ -158,7 +158,7 @@ export default function ValidatorList({
                   aria-label="Validators list"
                 >
                   <thead>
-                    <tr className="text-sm font-medium text-[#808080]" role="row">
+                    <tr className="text-sm font-medium text-content-muted" role="row">
                       <th className="bg-transparent text-left sticky top-0">Moniker</th>
                       <th className="hidden lg:table-cell bg-transparent text-left sticky top-0">
                         Address
@@ -175,13 +175,13 @@ export default function ValidatorList({
                         rows.map(validator => (
                           <tr
                             key={validator.operator_address}
-                            className="group text-black dark:text-white rounded-lg cursor-pointer focus:outline-hidden transition-colors"
+                            className="group text-base-content rounded-lg cursor-pointer focus:outline-hidden transition-colors"
                             onClick={() => handleRowClick(validator)}
                             tabIndex={0}
                             role="row"
                             aria-label={`Validator ${validator.description.moniker}`}
                           >
-                            <td className="bg-secondary group-hover:bg-base-300 rounded-l-[12px] py-4">
+                            <td className="bg-secondary group-hover:bg-base-300 rounded-l-xl py-4">
                               <div className="flex items-center space-x-3">
                                 {validator.logo_url ? (
                                   <Image
@@ -208,12 +208,12 @@ export default function ValidatorList({
                               {validator.consensus_power?.toString() ?? 'N/A'}
                             </td>
                             <td
-                              className="bg-secondary group-hover:bg-base-300 rounded-r-[12px] py-4 text-right"
+                              className="bg-secondary group-hover:bg-base-300 rounded-r-xl py-4 text-right"
                               onClick={e => e.stopPropagation()}
                             >
                               <button
                                 onClick={() => handleRemove(validator)}
-                                className="btn btn-error btn-sm text-white"
+                                className="btn btn-error btn-sm"
                                 data-testid="remove-validator"
                                 aria-label={`Remove validator ${validator.description.moniker}`}
                                 disabled={isUnbondingTab}
@@ -260,7 +260,7 @@ function Loading() {
   return (
     <table className="table w-full border-separate border-spacing-y-3">
       <thead>
-        <tr className="text-sm font-medium text-[#808080]" role="row">
+        <tr className="text-sm font-medium text-content-muted" role="row">
           <th className="bg-transparent text-left sticky top-0 z-10">Moniker</th>
           <th className="hidden lg:table-cell bg-transparent text-left sticky top-0 z-10">
             Address
@@ -276,7 +276,7 @@ function Loading() {
           .fill(0)
           .map((_, index) => (
             <tr key={index}>
-              <td className="bg-secondary rounded-l-[12px]">
+              <td className="bg-secondary rounded-l-xl">
                 <div className="flex items-center space-x-3">
                   <div className="skeleton w-8 h-8 rounded-full shrink-0"></div>
                   <div className="skeleton h-4 w-24"></div>
@@ -288,7 +288,7 @@ function Loading() {
               <td className="bg-secondary hidden md:table-cell">
                 <div className="skeleton h-4 w-16"></div>
               </td>
-              <td className="bg-secondary rounded-r-[12px] text-right">
+              <td className="bg-secondary rounded-r-xl text-right">
                 <div className="skeleton h-8 w-8 rounded-md ml-auto"></div>
               </td>
             </tr>

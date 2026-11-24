@@ -83,7 +83,7 @@ export default function MobileNav() {
 
         <div className="drawer-side min-h-screen h-full ">
           <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-80 min-h-full bg-[#F4F4FF] dark:bg-[#1D192D] space-y-3 text-base-content flex flex-col">
+          <ul className="menu p-4 w-80 min-h-full bg-surface-panel space-y-3 text-base-content flex flex-col">
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-row gap-4 justify-between items-center">
                 <Image

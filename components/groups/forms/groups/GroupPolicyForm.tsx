@@ -77,9 +77,9 @@ export default function GroupPolicyForm({
           return (
             <>
               <div className="lg:flex mx-auto">
-                <div className="flex items-center mx-auto w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
+                <div className="flex items-center mx-auto w-full bg-surface-card p-[24px] rounded-3xl">
                   <div className="w-full">
-                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] text-gray-500 dark:text-gray-400 dark:border-gray-400 border-gray-500 pb-4">
+                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] text-content-muted border-line pb-4">
                       Group Policy
                     </h1>
 
@@ -92,7 +92,7 @@ export default function GroupPolicyForm({
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="btn btn-neutral text-black dark:text-white py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
+                  className="btn btn-neutral text-base-content py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
                 >
                   Back: Group Members
                 </button>
@@ -159,9 +159,7 @@ function GroupPolicyFormFields({ dispatch, prevStep }: Readonly<GroupPolicyFormF
   return (
     <Form className="min-h-[330px] flex flex-col gap-4">
       <div>
-        <label className="block text-sm mb-1 font-medium dark:text-[#FFFFFF99]">
-          Voting Period
-        </label>
+        <label className="block text-sm mb-1 font-medium text-content-muted">Voting Period</label>
 
         <div className="grid grid-cols-4 gap-2">
           <NumberInput
@@ -214,12 +212,12 @@ function GroupPolicyFormFields({ dispatch, prevStep }: Readonly<GroupPolicyFormF
         </div>
 
         {typeof errors.votingPeriod === 'string' && (
-          <div className="text-red-500 text-sm mt-1">{errors.votingPeriod}</div>
+          <div className="text-error text-sm mt-1">{errors.votingPeriod}</div>
         )}
       </div>
 
       <div>
-        <label className="block mb-1 text-sm font-medium dark:text-[#FFFFFF99]">
+        <label className="block mb-1 text-sm font-medium text-content-muted">
           Qualified Majority (Number of total required votes)
         </label>
         <NumberInput

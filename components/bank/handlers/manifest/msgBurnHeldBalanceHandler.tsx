@@ -13,7 +13,7 @@ export const MsgBurnHeldBalanceHandler = createSenderReceiverHandler({
       'You burned {0} from {1}',
       tx.metadata?.burnCoins,
       tx.sender,
-      'red',
+      'negative',
       metadata
     ),
   failSender: 'You failed to burn tokens',
@@ -22,7 +22,7 @@ export const MsgBurnHeldBalanceHandler = createSenderReceiverHandler({
       'You were burned {0} by {1}',
       tx.metadata?.burnCoins,
       tx.sender,
-      'red',
+      'negative',
       metadata
     ),
 });

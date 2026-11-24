@@ -13,7 +13,6 @@ export interface ToastMessage {
   description?: string;
   link?: string;
   explorerLink?: string;
-  bgColor?: string;
   isIbcTransfer?: boolean;
   ibcStatus?: 'signing' | 'broadcasting' | 'tracking' | 'completed' | 'failed';
   sourceChain?: string;
@@ -74,14 +73,14 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
   const getBorderColor = (type: string) => {
     switch (type) {
       case 'alert-success':
-        return 'border-[#87FFA9]';
+        return 'border-success';
       case 'alert-error':
-        return 'border-[#FF17A2]';
+        return 'border-error';
       case 'alert-warning':
-        return 'border-[#FFFF87]';
+        return 'border-warning';
       case 'alert-info':
       default:
-        return 'border-[#A087FF]';
+        return 'border-primary';
     }
   };
 
@@ -96,16 +95,12 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
       <div className="toast toast-end toast-bottom flex flex-col justify-start items-center text-left pointer-events-auto">
         <div
           ref={toastRef}
-          style={{
-            borderRadius: '30px',
-            position: 'relative',
-          }}
-          className={`alert ${toastMessage.type} relative max-w-[384px] w-96 min-w-[384px]
+          className={`alert ${toastMessage.type} relative rounded-4xl max-w-[384px] w-96 min-w-[384px]
             transition-all duration-300 ease-in-out
             ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
             ${prevMessage && prevMessage.type !== toastMessage.type ? 'animate-pulse' : ''}
-            bg-white dark:bg-[#0E0A1F] border-2 ${getBorderColor(toastMessage.type)}
-            text-black dark:text-white shadow-lg overflow-hidden`}
+            bg-base-100 border-2 ${getBorderColor(toastMessage.type)}
+            text-base-content shadow-lg overflow-hidden`}
         >
           {toastMessage.type === 'alert-success' && (
             <Confetti
@@ -119,7 +114,7 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
           )}
           <button
             type="button"
-            className="p-2 text-[#161616] dark:text-white rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033] absolute top-2 right-2 transition-colors duration-200 z-10"
+            className="p-2 text-base-content rounded-full hover:bg-surface-hover absolute top-2 right-2 transition-colors duration-200 z-10"
             onClick={handleClose}
           >
             <CloseIcon className="w-3 h-3" aria-hidden="true" />
@@ -132,14 +127,14 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
                 toastMessage.status !== 'STATE_COMPLETED_ERROR' &&
                 toastMessage.status !== 'STATE_PENDING_ERROR') ||
                 toastMessage.type === 'alert-info') && (
-                <BroadcastingIcon className="w-6 h-6 text-[#A087FF]" aria-hidden="true" />
+                <BroadcastingIcon className="w-6 h-6 text-primary" aria-hidden="true" />
               )}
               <h3 className="text-lg font-semibold">{toastMessage.title}</h3>
             </div>
 
             {!toastMessage.isIbcTransfer && (
               <div className="flex flex-row items-center gap-2 justify-between">
-                <p className="text-sm text-gray-500 break-words whitespace-pre-wrap max-w-full">
+                <p className="text-sm text-content-muted break-words whitespace-pre-wrap max-w-full">
                   {toastMessage.description}
                 </p>
               </div>
@@ -170,7 +165,7 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
                           ? 'View proposal details'
                           : 'View in block explorer'
                       }
-                      className="text-primary hover:text-primary/60 dark:text-primary underline mt-[0.1rem] inline-block transition-colors duration-200"
+                      className="text-primary hover:text-primary/60 underline mt-[0.1rem] inline-block transition-colors duration-200"
                       {...(!toastMessage.link.includes('policyAddress') && {
                         target: '_blank',
                         rel: 'noopener noreferrer',
@@ -198,7 +193,7 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
                     <Link
                       href={toastMessage.explorerLink}
                       aria-label={'View in block explorer'}
-                      className="text-primary hover:text-primary/60 dark:text-primary underline mt-[0.1rem] inline-block transition-colors duration-200"
+                      className="text-primary hover:text-primary/60 underline mt-[0.1rem] inline-block transition-colors duration-200"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -212,7 +207,7 @@ export const Toast: React.FC<ToastProps> = ({ toastMessage, setToastMessage }) =
               <button
                 type="button"
                 id="copyButton3"
-                className="p-1 text-[#161616] dark:text-white absolute bottom-2 right-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033] transition-colors duration-200"
+                className="p-1 text-base-content absolute bottom-2 right-2 rounded-full hover:bg-surface-hover transition-colors duration-200"
                 onClick={() => {
                   navigator.clipboard.writeText(toastMessage.description || '');
                   const button = document.getElementById('copyButton3');

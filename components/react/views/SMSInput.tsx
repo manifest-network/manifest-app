@@ -70,7 +70,7 @@ export const SMSInput = ({
       <div className="flex justify-between items-center -mt-4 mb-6">
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onReturn}
         >
           <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -89,7 +89,7 @@ export const SMSInput = ({
         </div>
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onClose}
         >
           <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -113,14 +113,14 @@ export const SMSInput = ({
                     name="phoneNumber"
                     type="tel"
                     placeholder="0123456789"
-                    className="input input-md border border-[#00000033] dark:border-[#FFFFFF33] bg-[#E0E0FF0A] dark:bg-[#E0E0FF0A] w-full pl-24 dark:text-[#FFFFFF] text-[#161616]"
+                    className="input input-md border border-line bg-surface-field w-full pl-24 text-base-content"
                     leftElement={
                       <div className="absolute left-0 inset-y-0 flex items-center pl-3">
                         <div className="dropdown dropdown-bottom">
                           <button
                             type="button"
                             onClick={() => setIsDropdownOpen(true)}
-                            className="flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300"
+                            className="flex items-center gap-1 text-sm text-content-muted"
                           >
                             {selectedCountry && (
                               <selectedCountry.FlagComponent className="w-4 h-3" />
@@ -129,7 +129,7 @@ export const SMSInput = ({
                             <ChevronDownIcon className="h-4 w-4" />
                           </button>
                           {isDropdownOpen && (
-                            <ul className="dropdown-content z-50 menu p-2 max-h-32 shadow-sm bg-base-300 rounded-lg mt-1 w-80 overflow-y-auto dark:text-[#FFFFFF] text-[#161616]">
+                            <ul className="dropdown-content z-50 menu p-2 max-h-32 shadow-sm bg-base-300 rounded-lg mt-1 w-80 overflow-y-auto text-base-content">
                               {countryCodes.map(({ code, FlagComponent, country }) => (
                                 <li key={code}>
                                   <button
@@ -143,7 +143,7 @@ export const SMSInput = ({
                                     <FlagComponent className="w-4 h-3" />
                                     <div className="flex flex-col">
                                       <span className="text-sm">{country}</span>
-                                      <span className="text-xs text-slate-500">{code}</span>
+                                      <span className="text-xs text-content-muted">{code}</span>
                                     </div>
                                   </button>
                                 </li>
@@ -151,14 +151,14 @@ export const SMSInput = ({
                             </ul>
                           )}
                         </div>
-                        <div className="h-6 border-l border-slate-200 dark:border-slate-700 mx-2" />
+                        <div className="h-6 border-l border-line mx-2" />
                       </div>
                     }
                   />
                 </div>
               </div>
 
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-content-muted">
                 Enter your phone number without country code
               </div>
 

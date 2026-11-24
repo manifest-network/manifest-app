@@ -187,7 +187,7 @@ export const Navigator: React.FC<NavigatorProps> = ({
         onClick={() => onChange(Math.max(0, page - 1))}
         disabled={page == 0}
         aria-label="Previous page"
-        className="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         ‹
       </button>
@@ -195,7 +195,7 @@ export const Navigator: React.FC<NavigatorProps> = ({
       {pages.map((p, i) => {
         if (p === '...') {
           return (
-            <span key={`ellipsis-${i}`} className="text-black dark:text-white">
+            <span key={`ellipsis-${i}`} className="text-base-content">
               ...
             </span>
           );
@@ -205,7 +205,7 @@ export const Navigator: React.FC<NavigatorProps> = ({
               key={`page-${p}`}
               aria-label={`Page ${p + 1}`}
               aria-current="page"
-              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
             >
               {p + 1}
             </button>
@@ -216,7 +216,7 @@ export const Navigator: React.FC<NavigatorProps> = ({
               key={`page-${p}`}
               onClick={() => onChange(p)}
               aria-label={`Page ${p + 1}`}
-              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
             >
               {p + 1}
             </button>
@@ -228,7 +228,7 @@ export const Navigator: React.FC<NavigatorProps> = ({
         onClick={() => onChange(Math.min(nbPages - 1, page + 1))}
         disabled={page === nbPages - 1}
         aria-label="Next page"
-        className="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         ›
       </button>

@@ -10,7 +10,7 @@ exports[`Pagination works for small dataset: start 1`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       disabled=""
     >
       ‹
@@ -18,25 +18,25 @@ exports[`Pagination works for small dataset: start 1`] = `
     <button
       aria-current="page"
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-label="Page 2"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       2
     </button>
     <button
       aria-label="Page 3"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       3
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ›
     </button>
@@ -54,32 +54,32 @@ exports[`Pagination works for small dataset: middle 1`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ‹
     </button>
     <button
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-current="page"
       aria-label="Page 2"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       2
     </button>
     <button
       aria-label="Page 3"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       3
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ›
     </button>
@@ -97,32 +97,32 @@ exports[`Pagination works for small dataset: end 1`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ‹
     </button>
     <button
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-label="Page 2"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       2
     </button>
     <button
       aria-current="page"
       aria-label="Page 3"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       3
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       disabled=""
     >
       ›
@@ -141,32 +141,32 @@ exports[`Pagination works for small dataset: middle 2`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ‹
     </button>
     <button
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-current="page"
       aria-label="Page 2"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       2
     </button>
     <button
       aria-label="Page 3"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       3
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ›
     </button>
@@ -184,7 +184,7 @@ exports[`Pagination works for small dataset: start 2`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       disabled=""
     >
       ‹
@@ -192,25 +192,25 @@ exports[`Pagination works for small dataset: start 2`] = `
     <button
       aria-current="page"
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-label="Page 2"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       2
     </button>
     <button
       aria-label="Page 3"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       3
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ›
     </button>
@@ -227,7 +227,7 @@ exports[`Navigator works for single page 1`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       disabled=""
     >
       ‹
@@ -235,13 +235,13 @@ exports[`Navigator works for single page 1`] = `
     <button
       aria-current="page"
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       1
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       disabled=""
     >
       ›
@@ -259,66 +259,66 @@ exports[`Navigator works for lots of pages 1`] = `
   >
     <button
       aria-label="Previous page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ‹
     </button>
     <button
       aria-label="Page 1"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       1
     </button>
     <span
-      class="text-black dark:text-white"
+      class="text-base-content"
     >
       ...
     </span>
     <button
       aria-label="Page 6"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       6
     </button>
     <button
       aria-label="Page 7"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       7
     </button>
     <button
       aria-current="page"
       aria-label="Page 8"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-[#0000001A] dark:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-surface-hover text-base-content"
     >
       8
     </button>
     <button
       aria-label="Page 9"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       9
     </button>
     <button
       aria-label="Page 10"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       10
     </button>
     <span
-      class="text-black dark:text-white"
+      class="text-base-content"
     >
       ...
     </span>
     <button
       aria-label="Page 13"
-      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white"
+      class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-surface-hover text-base-content"
     >
       13
     </button>
     <button
       aria-label="Next page"
-      class="p-2 hover:bg-[#0000001A] dark:hover:bg-[#FFFFFF1A] text-black dark:text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-2 hover:bg-surface-hover text-base-content rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       ›
     </button>

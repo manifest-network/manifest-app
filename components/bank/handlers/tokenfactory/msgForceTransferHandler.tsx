@@ -3,6 +3,7 @@ import { MsgForceTransfer } from '@manifest-network/manifestjs/dist/codegen/osmo
 import React from 'react';
 import { format } from 'react-string-format';
 
+import { AMOUNT_TONE_CLASS, AmountTone } from '@/components/bank/handlers/amountTone';
 import { registerHandler } from '@/components/bank/handlers/handlerRegistry';
 import { FactoryIcon } from '@/components/icons/FactoryIcon';
 import { TruncatedAddressWithCopy } from '@/components/react/addressCopy';
@@ -16,7 +17,7 @@ const createMessage = (
   denom: string,
   from: string,
   to: string,
-  color: string,
+  tone: AmountTone,
   metadata?: MetadataSDKType[],
   sender?: string
 ) => {
@@ -24,7 +25,7 @@ const createMessage = (
   const formattedDenom = formatDenom(denom);
   // coloredAmount is {0}
   const coloredAmount = (
-    <span className={`text-${color}-500`}>
+    <span className={AMOUNT_TONE_CLASS[tone]}>
       {formattedAmount} {formattedDenom}
     </span>
   );
@@ -47,7 +48,7 @@ export const MsgForceTransferHandler = createSenderReceiverHandler({
       tx.metadata?.amount?.denom,
       tx.metadata?.transferFromAddress,
       tx.metadata?.transferToAddress,
-      'gray',
+      'neutral',
       metadata
     ),
   failSender: (tx, _, metadata) =>
@@ -57,7 +58,7 @@ export const MsgForceTransferHandler = createSenderReceiverHandler({
       tx.metadata?.amount?.denom,
       tx.metadata?.transferFromAddress,
       tx.metadata?.transferToAddress,
-      'gray',
+      'neutral',
       metadata
     ),
   successReceiver: (tx, _, metadata) =>
@@ -67,7 +68,7 @@ export const MsgForceTransferHandler = createSenderReceiverHandler({
       tx.metadata?.amount?.denom,
       tx.metadata?.transferFromAddress,
       tx.metadata?.transferToAddress,
-      'gray',
+      'neutral',
       metadata,
       tx.sender
     ),

@@ -32,7 +32,7 @@ export function TallyResults({
         </button>
         <h3 className="font-bold text-lg mb-4">Tally Results</h3>
         <div className="mt-6">
-          <div className="grid grid-cols-[70%_30%] gap-4 font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <div className="grid grid-cols-[70%_30%] gap-4 font-semibold text-content-muted mb-2">
             <div>Voter Address</div>
             <div>Vote Option</div>
           </div>

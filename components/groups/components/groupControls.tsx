@@ -133,7 +133,7 @@ export function GroupControls({
             <div className="flex items-center space-x-4">
               <button
                 onClick={onBack}
-                className="btn btn-circle rounded-[12px] bg-secondary btn-md focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+                className="btn btn-circle bg-secondary btn-md focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
                 aria-label="Go back to groups list"
               >
                 <ArrowRightIcon className="text-primary" />

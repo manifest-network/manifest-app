@@ -6,7 +6,7 @@ exports[`SearchFilter works for simple dataset: before 1`] = `
     class="relative"
   >
     <input
-      class="input input-bordered w-full h-[40px] rounded-[12px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+      class="input input-bordered w-full h-[40px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
       data-testid="search-input"
       type="text"
       value="3"
@@ -42,7 +42,7 @@ exports[`SearchFilter works for simple dataset: after 1`] = `
     class="relative"
   >
     <input
-      class="input input-bordered w-full h-[40px] rounded-[12px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+      class="input input-bordered w-full h-[40px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
       data-testid="search-input"
       type="text"
       value="2"
