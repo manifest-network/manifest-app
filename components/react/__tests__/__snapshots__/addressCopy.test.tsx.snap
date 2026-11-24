@@ -3,7 +3,7 @@
 exports[`TruncatedAddressWithCopy should render 1`] = `
 "<DocumentFragment>
   <span
-    class="flex items-center hover:text-primary dark:hover:text-primary space-x-2 text-[#00000099] dark:text-[#FFFFFF99]"
+    class="flex items-center hover:text-primary space-x-2 text-content-muted"
     style="cursor: pointer;"
   >
     <span
@@ -42,7 +42,7 @@ exports[`TruncatedAddressWithCopy should render 1`] = `
 exports[`TruncatedAddressWithCopy should show name and address 1`] = `
 "<DocumentFragment>
   <span
-    class="flex items-center hover:text-primary dark:hover:text-primary space-x-2 text-[#00000099] dark:text-[#FFFFFF99]"
+    class="flex items-center hover:text-primary space-x-2 text-content-muted"
     style="cursor: pointer;"
   >
     <span
@@ -81,7 +81,7 @@ exports[`TruncatedAddressWithCopy should show name and address 1`] = `
 exports[`TruncatedAddressWithCopy should not show name when showName is false 1`] = `
 "<DocumentFragment>
   <span
-    class="flex items-center hover:text-primary dark:hover:text-primary space-x-2 text-[#00000099] dark:text-[#FFFFFF99]"
+    class="flex items-center hover:text-primary space-x-2 text-content-muted"
     style="cursor: pointer;"
   >
     <span

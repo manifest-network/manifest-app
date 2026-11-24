@@ -74,7 +74,6 @@ export const useTx = (chainName: string, promptId?: string) => {
         type: 'alert-error',
         title: 'Wallet not connected',
         description: 'Please connect your wallet.',
-        bgColor: '#e74c3c',
       });
       return options.returnError ? { error: 'Wallet not connected' } : undefined;
     }
@@ -109,7 +108,6 @@ export const useTx = (chainName: string, promptId?: string) => {
               type: 'alert-error',
               title: 'Simulation Failed',
               description: cleanErrorMessage,
-              bgColor: '#e74c3c',
             });
           }
           return {
@@ -141,7 +139,6 @@ export const useTx = (chainName: string, promptId?: string) => {
         type: 'alert-info',
         title: 'Broadcasting',
         description: 'Transaction is signed and is being broadcasted...',
-        bgColor: '#3498db',
       });
       const res: DeliverTxResponse = await client.broadcastTx(
         Uint8Array.from(TxRaw.encode(signed).finish())
@@ -164,7 +161,6 @@ export const useTx = (chainName: string, promptId?: string) => {
             description: `Proposal submitted successfully`,
             link: `/groups?policyAddress=${msgs[0].value.groupPolicyAddress}&tab=proposals&proposalId=${proposalId}`,
             explorerLink: `${explorerUrl}/transaction/${res?.transactionHash}`,
-            bgColor: '#2ecc71',
           });
         } else {
           setToastMessage({
@@ -172,7 +168,6 @@ export const useTx = (chainName: string, promptId?: string) => {
             title: 'Transaction Successful',
             description: `Transaction completed successfully`,
             link: `${explorerUrl}/transaction/${res?.transactionHash}`,
-            bgColor: '#2ecc71',
           });
         }
         return options.returnError ? { error: null } : undefined;
@@ -182,7 +177,6 @@ export const useTx = (chainName: string, promptId?: string) => {
             type: 'alert-error',
             title: 'Transaction Failed',
             description: res?.rawLog || 'Unknown error',
-            bgColor: '#e74c3c',
           });
         }
         return options.returnError ? { error: res?.rawLog || 'Unknown error' } : undefined;
@@ -195,7 +189,6 @@ export const useTx = (chainName: string, promptId?: string) => {
           type: 'alert-error',
           title: options.simulate ? 'Simulation Failed' : 'Transaction Failed',
           description: errorMessage,
-          bgColor: '#e74c3c',
         });
       }
       return options.returnError ? { error: errorMessage } : undefined;

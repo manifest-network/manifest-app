@@ -24,7 +24,7 @@ export const MsgRecvPacketHandler = createSenderReceiverHandler({
       'You received {0} from {1} via IBC',
       amounts,
       tx.sender,
-      'green',
+      'positive',
       metadata
     );
   },

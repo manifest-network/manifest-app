@@ -230,7 +230,6 @@ describe('ConvertForm Component', () => {
       type: 'alert-error',
       title: 'Error loading conversion config',
       description: 'Config error',
-      bgColor: '#e74c3c',
     });
   });
 
@@ -283,7 +282,6 @@ describe('ConvertForm Component', () => {
       type: 'alert-error',
       title: 'Error loading token metadata',
       description: 'Metadata error',
-      bgColor: '#e74c3c',
     });
   });
 

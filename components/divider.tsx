@@ -22,7 +22,11 @@ const Divider = ({ direction }: { direction: 'up' | 'down' }) => {
     <div
       className={`w-full overflow-hidden leading-none ${direction === 'up' ? 'rotate-180' : ''}`}
     >
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-24 text-gray-400">
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="w-full h-24 text-content-muted"
+      >
         {lines}
       </svg>
     </div>

@@ -1,8 +1,76 @@
 @import 'tailwindcss';
-@config '../tailwind.config.js';
+
+/* Class names in tests and snapshots are fixtures, not styles the app needs. */
+@source not '../tests';
+@source not '../**/__tests__';
+@source not '../**/__snapshots__';
+
+@plugin "@tailwindcss/forms";
+@plugin "@headlessui/tailwindcss";
 @plugin "daisyui" {
   themes: false;
   exclude: rootcolor;
+}
+
+/*
+ * Theming
+ * -------
+ * Every color, radius and gradient the app uses is defined in this file. Components refer to them
+ * by name (`bg-surface-card`, `text-content-muted`, `rounded-field`, …) and never spell out a
+ * value or a `dark:` counterpart; ESLint rejects hardcoded colors and radii in class names.
+ *
+ * To change a value, edit the two `@plugin "daisyui/theme"` blocks below. They must define the same
+ * set of variables (styles/__tests__/themeTokens.test.ts checks this).
+ *
+ * To add a color token:
+ *   1. register it in `@theme` so Tailwind generates its utilities;
+ *   2. give it a value in both theme blocks.
+ */
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --font-sans: 'Manrope', sans-serif;
+
+  --breakpoint-xxs: 20rem;
+  --breakpoint-xs: 23.4375rem;
+  --breakpoint-3xl: 160rem;
+
+  --animate-fadeIn: fadeIn 400ms ease-in;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /*
+   * Tailwind's default palette (gray-500, red-600, …) is removed on purpose: those colors ignore
+   * the theme. Only the theme tokens, white and black remain.
+   */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /*
+   * App color tokens, on top of daisyUI's own (primary, base-100, error, …). The values here are
+   * the light theme's and only serve as a fallback; the theme blocks below are authoritative.
+   */
+  --color-background-color: #f0f0ff; /* page background */
+  --color-content-muted: #00000099; /* secondary text: labels, captions, placeholders */
+  --color-content-subtle: #00000066; /* tertiary text: hints, disabled */
+  --color-surface-panel: #f4f4ff; /* sidebar and dialogs: one step above the page background */
+  --color-surface-card: #ffffffcc; /* cards on the page background */
+  --color-surface-card-hover: #ffffff66; /* a clickable card while hovered */
+  --color-surface-inset: #0000000a; /* tinted areas inside a card or modal: tiles, rows, tracks */
+  --color-surface-field: #e0e0ff0a; /* form field background */
+  --color-surface-raised: #ffffff; /* the selected item of a segmented control or stepper */
+  --color-surface-hover: #0000001a; /* hover and pressed overlay */
+  --color-surface-handle: #c1c1cb; /* opaque fill for a control that floats over other content */
+  --color-line: #00000033; /* borders and dividers */
 }
 
 @plugin "daisyui/theme" {
@@ -21,7 +89,7 @@
   --color-neutral-content: #ffffff;
   --color-base-100: #ffffff;
   --color-base-200: #f0f0ff;
-  --color-base-300: oklch(97.02% 0 0);
+  --color-base-300: #f5f5f5;
   --color-base-content: #161616;
   --color-info: #3f51b5;
   --color-info-content: #ffffff;
@@ -31,21 +99,19 @@
   --color-warning-content: #161616;
   --color-error: #e53935;
   --color-error-content: #ffffff;
+
   --color-background-color: #f0f0ff;
-
-  --tooltip-color: #ffffff;
-  --shadow-color-light: rgba(0, 0, 0, 0.1);
-
-  --btn-disconnect-gradient: linear-gradient(98.22deg, #ff8787 -51.92%, #c50c87 103.12%);
-  --btn-disconnect-gradient-hover: linear-gradient(98.22deg, #ff9a9a -51.92%, #d61f98 103.12%);
-  --btn-gradient: linear-gradient(98.22deg, #a087ff -51.92%, #380cc5 103.12%);
-  --btn-gradient-hover: linear-gradient(98.22deg, #b19aff -51.92%, #4a1fd6 103.12%);
-  --btn-error-bg: #e53935;
-  --btn-error-bg-hover: #d32f2f;
-  --btn-error-bg-disabled: #4f1312;
-  --btn-dropdown-bg: #e0e0ff0a;
-  --btn-dropdown-border: #00000033;
-  --btn-dropdown-shadow: 0 0 0px #e0e0ff0a;
+  --color-content-muted: #00000099;
+  --color-content-subtle: #00000066;
+  --color-surface-panel: #f4f4ff;
+  --color-surface-card: #ffffffcc;
+  --color-surface-card-hover: #ffffff66;
+  --color-surface-inset: #0000000a;
+  --color-surface-field: #e0e0ff0a;
+  --color-surface-raised: #ffffff;
+  --color-surface-hover: #0000001a;
+  --color-surface-handle: #c1c1cb;
+  --color-line: #00000033;
 
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
@@ -66,7 +132,6 @@
   prefersdark: true;
   color-scheme: dark;
 
-  /* Colors */
   --color-primary: #a087ff;
   --color-primary-content: #ffffff;
   --color-secondary: #1d192d;
@@ -77,7 +142,7 @@
   --color-neutral-content: #ffffff;
   --color-base-100: #161616;
   --color-base-200: #1d192d;
-  --color-base-300: oklch(26.95% 0.0352 293.56);
+  --color-base-300: #272336;
   --color-base-content: #ffffff;
   --color-info: #3f51b5;
   --color-info-content: #ffffff;
@@ -87,57 +152,102 @@
   --color-warning-content: #161616;
   --color-error: #e53935;
   --color-error-content: #ffffff;
+
   --color-background-color: #0e0a1f;
+  --color-content-muted: #ffffff99;
+  --color-content-subtle: #ffffff66;
+  --color-surface-panel: #1d192d;
+  --color-surface-card: #ffffff0f;
+  --color-surface-card-hover: #ffffff1a;
+  --color-surface-inset: #ffffff0f;
+  --color-surface-field: #e0e0ff0a;
+  --color-surface-raised: #ffffff1f;
+  --color-surface-hover: #ffffff1a;
+  --color-surface-handle: #444151;
+  --color-line: #ffffff33;
 
-  /* Custom properties from original theme */
-  --tooltip-color: #ffffff;
-  --shadow-color-dark: rgba(255, 255, 255, 0.1);
-
-  /* Additional custom gradients and colors */
-  --btn-disconnect-gradient: linear-gradient(98.22deg, #ff8787 -51.92%, #c50c87 103.12%);
-  --btn-disconnect-gradient-hover: linear-gradient(98.22deg, #ff9a9a -51.92%, #d61f98 103.12%);
-  --btn-gradient: linear-gradient(98.22deg, #a087ff -51.92%, #380cc5 103.12%);
-  --btn-gradient-hover: linear-gradient(98.22deg, #b19aff -51.92%, #4a1fd6 103.12%);
-  --btn-error-bg: #e53935;
-  --btn-error-bg-hover: #d32f2f;
-  --btn-error-bg-disabled: #4f1312;
-  --btn-dropdown-bg: #e0e0ff0a;
-  --btn-dropdown-border: #ffffff33;
-  --btn-dropdown-shadow: 0 0 0px #e0e0ff0a;
-
-  /* Border radius */
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
   --radius-box: 0.5rem;
-  /* Base sizes */
+
   --size-selector: 0.3125rem;
   --size-field: 0.3125rem;
 
-  /* Border size */
   --border: 1px;
 
-  /* Effects */
   --depth: 1;
   --noise: 0;
 }
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-@custom-variant light (&:where([data-theme=light], [data-theme=light] *));
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* Brand gradients. They are the same in both themes. */
+:root {
+  --gradient-primary: linear-gradient(98.22deg, #a087ff -51.92%, #380cc5 103.12%);
+  --gradient-primary-hover: linear-gradient(98.22deg, #b19aff -51.92%, #4a1fd6 103.12%);
+  --gradient-danger: linear-gradient(98.22deg, #ff8787 -51.92%, #c50c87 103.12%);
+  --gradient-danger-hover: linear-gradient(98.22deg, #ff9a9a -51.92%, #d61f98 103.12%);
+}
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+@utility btn-gradient {
+  border: none;
+  color: var(--color-white);
+  background-image: var(--gradient-primary);
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background-image: var(--gradient-primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+@utility btn-disconnect-gradient {
+  background-image: var(--gradient-danger);
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background-image: var(--gradient-danger-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+@utility btn-dropdown {
+  background-color: var(--color-surface-field);
+  border: 1px solid var(--color-line);
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 0 4px var(--color-surface-field);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border: none;
+    box-shadow: none;
+  }
+}
+
 @layer base {
+  /*
+    The default border color is `currentColor` in Tailwind CSS v4. Elements that set a border
+    without a color get the theme's line color instead.
+  */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-line);
   }
 
   html,
@@ -151,12 +261,10 @@
     overflow-x: hidden;
   }
 
-  /* Apply primary color to links */
   a {
     @apply text-primary hover:opacity-80;
   }
 
-  /* Apply base colors to headings */
   h1,
   h2,
   h3,
@@ -164,6 +272,24 @@
   h5,
   h6 {
     @apply text-base-content;
+  }
+
+  ::selection {
+    background-color: --alpha(var(--color-primary) / 46%);
+    color: var(--color-white);
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--color-surface-field) inset !important;
+  }
+
+  input:-webkit-autofill {
+    @variant dark {
+      -webkit-background-clip: text !important;
+    }
   }
 }
 
@@ -174,208 +300,12 @@
     cursor: wait !important;
   }
 
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #e0e0ff0a inset !important;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    input:-webkit-autofill {
-      -webkit-background-clip: text !important;
-    }
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 30px #e0e0ff0a inset !important;
-    }
-  }
-
-  ::selection {
-    background-color: #a187ff75;
-    color: #ffffff;
-  }
-
-  ::-moz-selection {
-    background-color: #a187ff75;
-    color: #ffffff;
-  }
-
   [data-toast-container='true'] {
     z-index: 100000;
   }
-}
 
-:root {
-  /* DaisyUI Light Theme Colors */
-  --background-color: #f0f0ff;
-  --secondary-content: #161616;
-
-  /* Primary Colors */
-  --color-primary: #a087ff;
-  --color-primary-content: #161616;
-
-  /* Secondary Colors */
-  --color-secondary: #fbfbff;
-  --color-secondary-content: #161616;
-
-  /* Accent Colors */
-  --color-accent: #30db5b;
-  --color-accent-content: #161616;
-
-  /* Neutral Colors */
-  --color-neutral: #ffffff;
-  --color-neutral-content: #ffffff;
-
-  /* Base Colors */
-  --color-base-100: #ffffff;
-  --color-base-200: #f0f0ff;
-  --color-base-300: #f5f5f5;
-  --color-base-content: #161616;
-
-  /* State Colors */
-  --color-info: #3f51b5;
-  --color-info-content: #ffffff;
-  --color-success: #4caf50;
-  --color-success-content: #ffffff;
-  --color-warning: #ffb300;
-  --color-warning-content: #161616;
-  --color-error: #e53935;
-  --color-error-content: #ffffff;
-
-  /* Custom Properties */
-  --tooltip-color: #ffffff;
-  --shadow-color-light: rgba(0, 0, 0, 0.1);
-
-  /* Button Gradients */
-  --btn-disconnect-gradient: linear-gradient(98.22deg, #ff8787 -51.92%, #c50c87 103.12%);
-  --btn-disconnect-gradient-hover: linear-gradient(98.22deg, #ff9a9a -51.92%, #d61f98 103.12%);
-  --btn-gradient: linear-gradient(98.22deg, #a087ff -51.92%, #380cc5 103.12%);
-  --btn-gradient-hover: linear-gradient(98.22deg, #b19aff -51.92%, #4a1fd6 103.12%);
-  --btn-error-bg: #e53935;
-  --btn-error-bg-hover: #d32f2f;
-  --btn-error-bg-disabled: #4f1312;
-  --btn-dropdown-bg: #e0e0ff0a;
-  --btn-dropdown-border: #00000033;
-  --btn-dropdown-shadow: 0 0 0px #e0e0ff0a;
-}
-/*
-  ---break---
-*/
-.dark {
-  /* DaisyUI Dark Theme Colors */
-  --background-color: #0e0a1f;
-  --secondary-content: #ffffff;
-
-  /* Primary Colors */
-  --color-primary: #a087ff;
-  --color-primary-content: #ffffff;
-
-  /* Secondary Colors */
-  --color-secondary: #1d192d;
-  --color-secondary-content: #ffffff;
-
-  /* Accent Colors */
-  --color-accent: #30db5b;
-  --color-accent-content: #ffffff;
-
-  /* Neutral Colors */
-  --color-neutral: #1d192d;
-  --color-neutral-content: #ffffff;
-
-  /* Base Colors */
-  --color-base-100: #161616;
-  --color-base-200: #1d192d;
-  --color-base-300: #272336;
-  --color-base-content: #ffffff;
-
-  /* State Colors */
-  --color-info: #3f51b5;
-  --color-info-content: #ffffff;
-  --color-success: #4caf50;
-  --color-success-content: #ffffff;
-  --color-warning: #ffb300;
-  --color-warning-content: #161616;
-  --color-error: #e53935;
-  --color-error-content: #ffffff;
-
-  /* Custom Properties */
-  --tooltip-color: #ffffff;
-  --shadow-color-dark: rgba(255, 255, 255, 0.1);
-
-  /* Button Gradients */
-  --btn-disconnect-gradient: linear-gradient(98.22deg, #ff8787 -51.92%, #c50c87 103.12%);
-  --btn-disconnect-gradient-hover: linear-gradient(98.22deg, #ff9a9a -51.92%, #d61f98 103.12%);
-  --btn-gradient: linear-gradient(98.22deg, #a087ff -51.92%, #380cc5 103.12%);
-  --btn-gradient-hover: linear-gradient(98.22deg, #b19aff -51.92%, #4a1fd6 103.12%);
-  --btn-error-bg: #e53935;
-  --btn-error-bg-hover: #d32f2f;
-  --btn-error-bg-disabled: #4f1312;
-  --btn-dropdown-bg: #e0e0ff0a;
-  --btn-dropdown-border: #ffffff33;
-  --btn-dropdown-shadow: 0 0 0px #e0e0ff0a;
-}
-/*
-  ---break---
-*/
-@theme inline {
-  --color-background-color: var(--background-color);
-  --color-secondary-content: var(--secondary-content);
-
-  /* Primary Colors */
-  --color-primary: var(--color-primary);
-  --color-primary-content: var(--color-primary-content);
-
-  /* Secondary Colors */
-  --color-secondary: var(--color-secondary);
-  --color-secondary-content: var(--color-secondary-content);
-
-  /* Accent Colors */
-  --color-accent: var(--color-accent);
-  --color-accent-content: var(--color-accent-content);
-
-  /* Neutral Colors */
-  --color-neutral: var(--color-neutral);
-  --color-neutral-content: var(--color-neutral-content);
-
-  /* Base Colors */
-  --color-base-100: var(--color-base-100);
-  --color-base-200: var(--color-base-200);
-  --color-base-300: var(--color-base-300);
-  --color-base-content: var(--color-base-content);
-
-  /* State Colors */
-  --color-info: var(--color-info);
-  --color-info-content: var(--color-info-content);
-  --color-success: var(--color-success);
-  --color-success-content: var(--color-success-content);
-  --color-warning: var(--color-warning);
-  --color-warning-content: var(--color-warning-content);
-  --color-error: var(--color-error);
-  --color-error-content: var(--color-error-content);
-}
-/*
-  ---break---
-*/
-@layer base {
-  body {
-    @apply bg-background-color text-base-content;
-  }
-
-  /* Apply primary color to links */
-  a {
-    @apply text-primary hover:opacity-80;
-  }
-
-  /* Apply base colors to headings */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply text-base-content;
+  .token-amount.tooltip:before {
+    max-width: none;
   }
 }
 

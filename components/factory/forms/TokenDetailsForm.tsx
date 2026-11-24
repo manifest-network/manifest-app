@@ -115,7 +115,6 @@ export default function TokenDetails({
                   title: 'Image Removed',
                   description:
                     'The image URL was removed due to inappropriate content. The token will be created without an image.',
-                  bgColor: '#f39c12',
                 });
               }
 
@@ -153,12 +152,12 @@ export default function TokenDetails({
             values,
           }) => (
             <>
-              <div className="flex items-center mx-auto w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-6 sm:p-8 rounded-2xl shadow-lg">
+              <div className="flex items-center mx-auto w-full bg-surface-card p-6 sm:p-8 rounded-2xl shadow-lg">
                 <div className="w-full">
-                  <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] dark:text-[#FFFFFF99] dark:border-[#FFFFFF99] border-b-[black] pb-4">
+                  <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] border-line pb-4">
                     Token Metadata
                     {formData.subdenom && (
-                      <span className={'text-gray-500'}>
+                      <span className={'text-content-muted'}>
                         {' '}
                         for ${formData.subdenom.toUpperCase()}
                       </span>
@@ -205,7 +204,7 @@ export default function TokenDetails({
                           isSimulating && (
                             <div className="flex items-center gap-2">
                               <span className="loading loading-spinner loading-sm" />
-                              <span className="text-sm text-gray-500">
+                              <span className="text-sm text-content-muted">
                                 checking availability...
                               </span>
                             </div>
@@ -254,7 +253,7 @@ export default function TokenDetails({
               <div className="flex gap-6  mt-6 mx-auto w-full">
                 <button
                   onClick={prevStep}
-                  className="btn btn-neutral dark:text-white text-black py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
+                  className="btn btn-neutral text-base-content py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
                 >
                   Back
                 </button>
