@@ -27,7 +27,7 @@ export const Connecting = ({
       <div className="flex justify-between items-center mb-2">
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onReturn}
         >
           <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -37,7 +37,7 @@ export const Connecting = ({
         </Dialog.Title>
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onClose}
         >
           <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -47,10 +47,10 @@ export const Connecting = ({
         <img
           src={getRealLogo(logo, isDarkMode)}
           alt={name}
-          className="shrink-0 w-20 h-20 mx-auto aspect-1"
+          className="shrink-0 w-20 h-20 mx-auto aspect-square"
         />
         <p className="mt-3 font-medium ">{title}</p>
-        <p className="mt-1 text-sm text-gray-500 dark:text-white/75">{subtitle}</p>
+        <p className="mt-1 text-sm text-content-muted">{subtitle}</p>
       </div>
     </div>
   );

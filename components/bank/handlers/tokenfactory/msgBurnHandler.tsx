@@ -13,7 +13,7 @@ export const MsgBurnHandler = createSenderReceiverHandler({
       'You burned {0} from {1}',
       [tx.metadata?.amount],
       tx.metadata?.burnFromAddress,
-      'red',
+      'negative',
       metadata
     ),
   failSender: (tx, _, metadata) =>
@@ -21,7 +21,7 @@ export const MsgBurnHandler = createSenderReceiverHandler({
       'You failed to burn {0} from {1}',
       [tx.metadata?.amount],
       tx.metadata?.burnFromAddress,
-      'red',
+      'negative',
       metadata
     ),
   successReceiver: (tx, _, metadata) =>
@@ -29,7 +29,7 @@ export const MsgBurnHandler = createSenderReceiverHandler({
       'You were burned {0} by {1}',
       [tx.metadata?.amount],
       tx.sender,
-      'red',
+      'negative',
       metadata
     ),
 });

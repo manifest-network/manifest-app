@@ -51,6 +51,8 @@ describe('MsgSendHandler', () => {
     render(tx);
     expect(screen.getByText(/You sent to/i)).toBeInTheDocument();
     expect(screen.getByText('2 TOKEN')).toBeInTheDocument();
+    // Sent amounts are red and received amounts green, so the two read differently at a glance.
+    expect(screen.getByText('2 TOKEN').closest('.text-error')).not.toBeNull();
     expect(screen.getByText(/address2/i)).toBeInTheDocument();
   });
 
@@ -67,6 +69,8 @@ describe('MsgSendHandler', () => {
     render(tx);
     expect(screen.getByText(/You received from/i)).toBeInTheDocument();
     expect(screen.getByText('2 TOKEN')).toBeInTheDocument();
+    expect(screen.getByText('2 TOKEN').closest('.text-success')).not.toBeNull();
+    expect(screen.getByText('2 TOKEN').closest('.text-error')).toBeNull();
     expect(screen.getByText(/address2/i)).toBeInTheDocument();
   });
 

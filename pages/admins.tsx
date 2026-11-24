@@ -47,17 +47,17 @@ export default function Admins() {
               <section className="transition-opacity duration-300 h-[78vh] ease-in-out animate-fadeIn w-full flex items-center justify-center">
                 <div className="grid max-w-4xl bg-base-300 p-12 rounded-md w-full mx-auto gap-8 lg:grid-cols-12">
                   <div className="mr-auto place-self-center lg:col-span-7">
-                    <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl dark:text-white text-black">
+                    <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl text-base-content">
                       Access Denied
                     </h1>
-                    <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl">
+                    <p className="max-w-2xl mb-6 font-light text-content-muted lg:mb-8 md:text-lg lg:text-xl">
                       You do not have permission to view this page. Only proof of authority
                       administrators or members of a group that is a proof of authority admin may
                       access this page.
                     </p>
                   </div>
                   <div className="hidden lg:mt-0 lg:ml-24 lg:col-span-5 lg:flex">
-                    <PiWarning className="h-60 w-60 text-red-500" />
+                    <PiWarning className="h-60 w-60 text-error" />
                   </div>
                 </div>
               </section>

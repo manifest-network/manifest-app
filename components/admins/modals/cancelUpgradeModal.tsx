@@ -19,11 +19,9 @@ interface BaseModalProps {
 
 function InfoItem({ label, value }: { label: string; value?: string | number | bigint }) {
   return (
-    <div className="dark:bg-[#FFFFFF0F] bg-[#0000000A] p-3 rounded-lg h-full">
-      <span className="text-sm dark:text-[#FFFFFF66] text-[#00000066] block mb-2">{label}</span>
-      <div className="text-sm dark:text-[#FFFFFF99] text-[#00000099]">
-        {value?.toString() || 'N/A'}
-      </div>
+    <div className="bg-surface-inset p-3 rounded-lg h-full">
+      <span className="text-sm text-content-subtle block mb-2">{label}</span>
+      <div className="text-sm text-content-muted">{value?.toString() || 'N/A'}</div>
     </div>
   );
 }
@@ -76,9 +74,7 @@ export function CancelUpgradeModal({ isOpen, onClose, admin, address, plan }: Ba
     >
       {plan && (
         <div className="space-y-4">
-          <h4 className="font-semibold dark:text-[#FFFFFF99] text-[#00000099] mb-4">
-            Current Upgrade Plan
-          </h4>
+          <h4 className="font-semibold text-content-muted mb-4">Current Upgrade Plan</h4>
           <div className="grid grid-cols-2 gap-4">
             <InfoItem label="Name" value={plan.name} />
             <InfoItem label="Height" value={plan.height} />
@@ -94,7 +90,7 @@ export function CancelUpgradeModal({ isOpen, onClose, admin, address, plan }: Ba
       <div className="mt-4 flex flex-row justify-center gap-2 w-full">
         <button
           type="button"
-          className="btn w-1/2 focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A] dark:text-white text-black"
+          className="btn w-1/2 focus:outline-hidden bg-surface-inset text-base-content"
           onClick={() => {
             onClose();
           }}

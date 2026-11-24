@@ -180,7 +180,7 @@ export function MemberManagementModal({
         <h3 className="text-2xl font-semibold">Members</h3>
         <button
           type="button"
-          className="btn btn-gradient xs:max-3xl:w-[140px] xxs:w-auto h-[52px] text-white rounded-[12px] btn-sm"
+          className="btn btn-gradient xs:max-3xl:w-[140px] xxs:w-auto h-[52px] text-white btn-sm"
           disabled={isSigning}
           onClick={handleAddMember}
         >
@@ -201,7 +201,7 @@ export function MemberManagementModal({
           return (
             <>
               <Form>
-                <div className="flex items-center mb-4 px-4 text-sm text-gray-400">
+                <div className="flex items-center mb-4 px-4 text-sm text-content-muted">
                   <div className="w-[10%] ml-3">#</div>
                   <div className="w-[35%] ml-11">Name</div>
                   <div className="w-[45%]">Address</div>
@@ -211,7 +211,7 @@ export function MemberManagementModal({
                   {values.members.map((member, index) => (
                     <div
                       key={index}
-                      className={`flex items-center dark:bg-[#2D2A3E] bg-[#0000000A] rounded-[12px] p-3 ${
+                      className={`flex items-center bg-surface-inset rounded-xl p-3 ${
                         member.markedForDeletion ? 'opacity-50' : ''
                       }`}
                     >
@@ -232,7 +232,7 @@ export function MemberManagementModal({
                               />
                               {meta.touched && meta.error && (
                                 <div
-                                  className="tooltip tooltip-bottom tooltip-open tooltip-primary dark:text-white text-white text-xs mt-1 absolute left-1/2 transform translate-y-7 -translate-x-4 z-50"
+                                  className="tooltip tooltip-bottom tooltip-open tooltip-primary text-white text-xs mt-1 absolute left-1/2 transform translate-y-7 -translate-x-4 z-50"
                                   data-tip={meta.error}
                                 >
                                   {/* Invisible element to anchor the tooltip */}
@@ -261,7 +261,7 @@ export function MemberManagementModal({
                               />
                               {meta.touched && meta.error && (
                                 <div
-                                  className="tooltip tooltip-bottom tooltip-open tooltip-primary dark:text-white text-white text-xs mt-1 absolute left-1/2 transform translate-y-7 -translate-x-4 z-50"
+                                  className="tooltip tooltip-bottom tooltip-open tooltip-primary text-white text-xs mt-1 absolute left-1/2 transform translate-y-7 -translate-x-4 z-50"
                                   data-tip={meta.error}
                                 >
                                   <div className="w-0 h-0"></div>
@@ -280,7 +280,7 @@ export function MemberManagementModal({
                         <button
                           type="button"
                           onClick={() => handleMemberToggleDeletion(index)}
-                          className={`btn btn-primary btn-square rounded-[12px] btn-sm`}
+                          className={`btn btn-primary btn-square btn-sm`}
                         >
                           <TrashIcon className="text-white w-5 h-5" />
                         </button>
@@ -291,7 +291,7 @@ export function MemberManagementModal({
                 <div className="mt-4 gap-6 flex justify-center w-full">
                   <button
                     type="button"
-                    className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A]"
+                    className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden bg-surface-inset"
                     disabled={isSigning}
                     onClick={() => setShowMemberManagementModal(false)}
                   >

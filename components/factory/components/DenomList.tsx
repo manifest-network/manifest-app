@@ -206,7 +206,7 @@ export default function DenomList({
         onChange={(_data: ExtendedMetadataSDKType[], page: number) => setCurrentPage(page + 1)}
       >
         <table className="table w-full border-separate border-spacing-y-3">
-          <thead className="sticky top-0 bg-[#F0F0FF] dark:bg-[#0E0A1F]">
+          <thead className="sticky top-0 bg-background-color">
             <tr className="text-sm font-medium">
               <th className="bg-transparent w-1/4">Token</th>
               <th className="bg-transparent w-2/5 xl:table-cell hidden">Name</th>
@@ -247,7 +247,7 @@ export default function DenomList({
             }
             passHref
           >
-            <button className="btn btn-gradient w-full h-[52px] text-white rounded-[12px]">
+            <button className="btn btn-gradient w-full h-[52px] text-white ">
               Create New Token
             </button>
           </Link>
@@ -263,7 +263,7 @@ export default function DenomList({
           }
           passHref
         >
-          <button className="btn btn-gradient w-[224px] h-[52px] hidden md:block text-white rounded-[12px] focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary">
+          <button className="btn btn-gradient w-[224px] h-[52px] hidden md:block text-white focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary">
             Create New Token
           </button>
         </Link>
@@ -323,7 +323,7 @@ export default function DenomList({
 function SkeletonRow({ index }: { index: number }) {
   return (
     <tr>
-      <td className="bg-secondary rounded-l-[12px] w-1/4">
+      <td className="bg-secondary rounded-l-xl w-1/4">
         <div className="flex items-center space-x-3">
           <div
             className="skeleton w-10 h-10 rounded-full shrink-0"
@@ -344,7 +344,7 @@ function SkeletonRow({ index }: { index: number }) {
       <td className="bg-secondary w-2/5 md:table-cell hidden">
         <div className="skeleton h-4 w-28" aria-label={`skeleton-${index}-supply`} />
       </td>
-      <td className="bg-secondary rounded-r-[12px] w-1/4">
+      <td className="bg-secondary rounded-r-xl w-1/4">
         <div className="flex space-x-2">
           <button className="btn btn-md btn-outline btn-square btn-primary" disabled>
             <MintIcon className="w-7 h-7 text-current opacity-50" />
@@ -385,10 +385,10 @@ function TokenRow({
 
   return (
     <tr
-      className="group text-black dark:text-white rounded-lg cursor-pointer transition-colors"
+      className="group text-base-content rounded-lg cursor-pointer transition-colors"
       onClick={onSelectDenom}
     >
-      <td className="bg-secondary group-hover:bg-base-300 rounded-l-[12px] w-1/4">
+      <td className="bg-secondary group-hover:bg-base-300 rounded-l-xl w-1/4">
         <div className="flex items-center space-x-3">
           <DenomDisplay metadata={denom} />
         </div>
@@ -400,7 +400,7 @@ function TokenRow({
         <TokenBalance token={{ amount: totalSupply, metadata: denom }} />
       </td>
       <td
-        className="bg-secondary group-hover:bg-base-300 rounded-r-[12px] w-1/4"
+        className="bg-secondary group-hover:bg-base-300 rounded-r-xl w-1/4"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex space-x-2">
