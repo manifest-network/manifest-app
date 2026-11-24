@@ -31,7 +31,7 @@ function VotingPopup({
     >
       <div className="fixed inset-0 bg-black/30 " aria-hidden="true" />
 
-      <Dialog.Panel className="modal-box m-auto relative dark:bg-[#1D192D] bg-[#FFFFFF]">
+      <Dialog.Panel className="modal-box m-auto relative bg-neutral">
         <h3 className="font-bold text-lg mb-4">
           Cast Your Vote for Proposal #{proposal.id.toString()}
         </h3>

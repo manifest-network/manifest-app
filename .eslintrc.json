@@ -4,6 +4,44 @@
   "rules": {
     "prettier/prettier": "error",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "off"
-  }
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": ":matches(Literal[value=/-\\[#[0-9a-fA-F]{3,8}\\]/], TemplateElement[value.raw=/-\\[#[0-9a-fA-F]{3,8}\\]/])",
+        "message": "Hardcoded color in a class name. Use a theme token from styles/globals.css (bg-surface-card, text-content-muted, border-line, …)."
+      },
+      {
+        "selector": ":matches(Literal[value=/(^|[\\s:])(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|[1-9]00|950)\\b/], TemplateElement[value.raw=/(^|[\\s:])(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|[1-9]00|950)\\b/])",
+        "message": "Tailwind palette colors ignore the theme and are not generated in this project. Use a theme token from styles/globals.css (text-content-muted, bg-error, …)."
+      },
+      {
+        "selector": ":matches(Literal[value=/(^|\\s)dark:([a-z0-9=\\[\\]-]+:)*(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent)-/], TemplateElement[value.raw=/(^|\\s)dark:([a-z0-9=\\[\\]-]+:)*(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent)-/])",
+        "message": "Theme tokens already change with the theme. Use one token instead of a light value plus a dark: override; add a token to styles/globals.css if none fits."
+      },
+      {
+        "selector": ":matches(Literal[value=/(^|[\\s:])rounded(-[a-z]{1,2})?-\\[/], TemplateElement[value.raw=/(^|[\\s:])rounded(-[a-z]{1,2})?-\\[/])",
+        "message": "Hardcoded border radius. Use the radius scale (rounded-lg, rounded-xl, …) or the theme radii (rounded-field, rounded-box)."
+      },
+      {
+        "selector": "TemplateElement[value.raw=/(^|[\\s:])(bg|text|border|ring|fill|stroke|placeholder|divide|outline|from|to|via|decoration|caret|shadow|accent|rounded)-$/]",
+        "message": "Class name assembled at runtime. Tailwind only generates classes that are written out in full, so map the value to complete class names instead (see components/bank/handlers/amountTone.ts)."
+      },
+      {
+        "selector": "Literal[value=/^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/]",
+        "message": "Hardcoded color. Use a theme class, or read the color from useTheme().colors when a string is required."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      // Scene lighting and materials are artwork, not UI theme.
+      "files": ["components/3js/**"],
+      "rules": { "no-restricted-syntax": "off" }
+    },
+    {
+      "files": ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx", "tests/**"],
+      "rules": { "no-restricted-syntax": "off" }
+    }
+  ]
 }

@@ -58,7 +58,7 @@ export function SearchInput({ placeholder }: SearchInputProps) {
         data-testid="search-input"
         type="text"
         placeholder={placeholder}
-        className="input input-bordered w-full h-[40px] rounded-[12px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+        className="input input-bordered w-full h-[40px] border-none bg-secondary text-secondary-content pl-10 focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
         value={term}
         onChange={e => setTerm(e.target.value)}
       />

@@ -120,7 +120,7 @@ export const WalletSection: React.FC<WalletSectionProps> = ({ chainName }) => {
     <div className="w-full  duration-300 ease-in-out relative">
       {status === WalletStatus.Connected ? (
         <div
-          className="bg-[#0000000A] dark:bg-[#FFFFFF0F] rounded-lg p-4  duration-300 ease-in-out relative h-48"
+          className="bg-surface-inset rounded-lg p-4  duration-300 ease-in-out relative h-48"
           style={{
             backgroundImage: 'url("/flower.svg")',
             backgroundSize: 'cover',
@@ -135,7 +135,7 @@ export const WalletSection: React.FC<WalletSectionProps> = ({ chainName }) => {
               walletName={wallet?.prettyName}
               truncated
             />
-            <div className="bg-base-100 dark:bg-base-200 rounded-full py-2 px-4 text-center mb-4 flex items-center flex-row justify-between w-full ">
+            <div className="bg-neutral rounded-full py-2 px-4 text-center mb-4 flex items-center flex-row justify-between w-full ">
               <p className="text-xs  truncate grow">
                 {address ? truncateAddress(address) : 'Address not available'}
               </p>
@@ -236,7 +236,7 @@ export const IconWallet: React.FC<WalletSectionProps> = ({ chainName }) => {
         <buttonData.icon className="w-8 h-8" />
       </button>
       {status === WalletStatus.Connected && (
-        <div className="absolute -top-4 -right-8 mt-[-0.5rem] mr-[-0.5rem] bg-[#F4F4FF] dark:bg-[#191526] rounded-md shadow-lg opacity-0 group-hover:opacity-100  duration-200 ease-in-out">
+        <div className="absolute -top-4 -right-8 mt-[-0.5rem] mr-[-0.5rem] bg-surface-panel rounded-md shadow-lg opacity-0 group-hover:opacity-100  duration-200 ease-in-out">
           <button
             className="p-2 hover:text-primary rounded-t-md w-full flex justify-center items-center"
             id="copyButton"
@@ -281,10 +281,10 @@ export function WalletNotConnected({
     <section className="transition-opacity duration-300 h-[80vh] ease-in-out animate-fadeIn w-full flex items-center justify-center">
       <div className="grid max-w-4xl bg-base-300 p-12 rounded-md w-full mx-auto gap-8 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-7">
-          <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl dark:text-white text-black">
+          <h1 className="max-w-2xl mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-3xl xl:text-4xl text-base-content">
             Connect your wallet!
           </h1>
-          <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl">
+          <p className="max-w-2xl mb-6 font-light text-content-muted lg:mb-8 md:text-lg lg:text-xl">
             {description}
           </p>
           <div className="w-[50%]">

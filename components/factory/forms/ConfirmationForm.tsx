@@ -167,8 +167,8 @@ export default function ConfirmationForm({
 
   return (
     <section>
-      <div className="w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
-        <div className="flex justify-center p-4 rounded-[8px] mb-6 w-full dark:bg-[#FAFAFA1F] bg-[#A087FF1F] items-center gap-4">
+      <div className="w-full bg-surface-card p-[24px] rounded-3xl">
+        <div className="flex justify-center p-4 rounded-lg mb-6 w-full bg-primary/10 items-center gap-4">
           {formData.uri && !imageError && (
             <Image
               src={formData.uri}
@@ -188,12 +188,12 @@ export default function ConfirmationForm({
           <div>
             <h2 className="text-xl font-semibold mb-4 ">Token Information</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-base-300 p-4 rounded-[12px]">
-                <label className="text-sm text-gray-500 dark:text-gray-400">Ticker</label>
+              <div className="bg-base-300 p-4 rounded-xl">
+                <label className="text-sm text-content-muted">Ticker</label>
                 <div className="">{formData.symbol || formData.display}</div>
               </div>
-              <div className="bg-base-300 p-4 rounded-[12px]">
-                <label className="text-sm text-gray-500 dark:text-gray-400">Logo</label>
+              <div className="bg-base-300 p-4 rounded-xl">
+                <label className="text-sm text-content-muted">Logo</label>
                 <div className="flex items-center gap-2">
                   {formData.uri && !imageError ? (
                     <div className="flex items-center gap-2">
@@ -206,24 +206,18 @@ export default function ConfirmationForm({
                         onError={() => setImageError(true)}
                         onLoad={() => setImageError(false)}
                       />
-                      <span className="text-sm text-green-600 dark:text-green-400">
-                        ✓ Valid image
-                      </span>
+                      <span className="text-sm text-success">✓ Valid image</span>
                     </div>
                   ) : formData.uri && imageError ? (
-                    <span className="text-sm text-red-600 dark:text-red-400">
-                      ✗ Invalid image URL
-                    </span>
+                    <span className="text-sm text-error">✗ Invalid image URL</span>
                   ) : (
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      No logo provided
-                    </span>
+                    <span className="text-sm text-content-muted">No logo provided</span>
                   )}
                 </div>
               </div>
             </div>
-            <div className="mt-4 bg-base-300 p-4 rounded-[12px]">
-              <label className="text-sm text-gray-500 dark:text-gray-400">Description</label>
+            <div className="mt-4 bg-base-300 p-4 rounded-xl">
+              <label className="text-sm text-content-muted">Description</label>
               <div className="break-words" title={formData.description}>
                 {formData.description}
               </div>
@@ -236,7 +230,7 @@ export default function ConfirmationForm({
       <div className="flex gap-6  mt-6 mx-auto w-full">
         <button
           onClick={prevStep}
-          className="btn btn-neutral dark:text-white text-black w-[calc(50%-12px)]"
+          className="btn btn-neutral text-base-content w-[calc(50%-12px)]"
           disabled={isSigning}
         >
           Back: Token Metadata

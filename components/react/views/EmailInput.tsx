@@ -31,7 +31,7 @@ export const EmailInput = ({
       <div className="flex justify-between items-center -mt-4 mb-6">
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onReturn}
         >
           <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
@@ -50,7 +50,7 @@ export const EmailInput = ({
         </div>
         <button
           type="button"
-          className="p-2 text-primary bg-neutral rounded-full hover:bg-gray-200 dark:hover:bg-[#00000033]"
+          className="p-2 text-primary bg-neutral rounded-full hover:bg-surface-hover"
           onClick={onClose}
         >
           <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -68,7 +68,7 @@ export const EmailInput = ({
                 name="email"
                 type="email"
                 placeholder="your@email.com"
-                className="w-full p-3 rounded-lg dark:bg-[#ffffff0c] bg-[#f0f0ff5c]"
+                className="w-full p-3 rounded-lg bg-surface-field"
               />
 
               <button

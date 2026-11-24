@@ -105,7 +105,6 @@ export default function TransferModal({
         type: 'alert-error',
         title: 'Error transferring ownership',
         description: errorMessage,
-        bgColor: '#e74c3c',
       });
       throw error;
     }
@@ -123,7 +122,7 @@ export default function TransferModal({
       >
         {({ isValid, dirty, values, handleChange, handleSubmit, resetForm }) => (
           <div className="">
-            <h3 className="text-xl font-semibold text-[#161616] dark:text-white mb-6">
+            <h3 className="text-xl font-semibold text-base-content mb-6">
               Update administrator for{' '}
               <span className="font-light text-primary">
                 {denom?.display?.startsWith('factory')
@@ -163,7 +162,7 @@ export default function TransferModal({
                 <div className="mt-4 flex flex-row justify-center gap-2 w-full">
                   <button
                     type="button"
-                    className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden dark:bg-[#FFFFFF0F] bg-[#0000000A]"
+                    className="btn w-[calc(50%-8px)] btn-md focus:outline-hidden bg-surface-inset"
                     onClick={() => handleCloseModal(() => resetForm())}
                     disabled={isSigning}
                   >

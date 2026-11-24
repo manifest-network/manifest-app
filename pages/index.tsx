@@ -94,7 +94,7 @@ export default function Home() {
                       <span className="block text-primary xl:inline">Enterprise-Ready</span>{' '}
                       <span className="block xl:inline">Wallet.</span>{' '}
                     </h1>
-                    <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                    <p className="mt-3 text-base text-content-muted sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                       Securely manage your assets, create, and shape a future owned by its users
                       with the first chain to use audited POA.
                     </p>
@@ -110,7 +110,7 @@ export default function Home() {
                           to="how-it-works"
                           smooth={true}
                           duration={500}
-                          className="btn btn-gradient rounded-md flex items-center justify-center text-white w-full sm:w-48"
+                          className="btn btn-gradient flex items-center justify-center text-white w-full sm:w-48"
                         >
                           Why POA?
                         </ScrollLink>
@@ -119,7 +119,7 @@ export default function Home() {
                           to="resources"
                           smooth={true}
                           duration={500}
-                          className="btn btn-gradient rounded-md flex items-center justify-center text-white w-full sm:w-48"
+                          className="btn btn-gradient flex items-center justify-center text-white w-full sm:w-48"
                         >
                           Modules
                         </ScrollLink>
@@ -129,7 +129,7 @@ export default function Home() {
                     <div className="mt-10 w-full">
                       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-8 text-left border border-primary/20">
                         <h3 className="text-2xl font-bold mb-4">Got any questions?</h3>
-                        <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+                        <p className="text-content-muted mb-6 max-w-2xl mx-auto">
                           Need help getting started or want to learn more about Alberto Wallet?
                           Check out our comprehensive documentation for guides, tutorials, and FAQ.
                         </p>
@@ -139,7 +139,7 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="w-full"
                         >
-                          <button className="btn btn-gradient w-full rounded-md text-white px-8 py-3 inline-flex items-center gap-2 hover:scale-105 transition-transform duration-200">
+                          <button className="btn btn-gradient w-full text-white px-8 py-3 inline-flex items-center gap-2 hover:scale-105 transition-transform duration-200">
                             <svg
                               className="w-5 h-5"
                               fill="none"
@@ -206,13 +206,13 @@ export default function Home() {
                       <span className="block">Securing the Network</span>
                       <span className="block">with Trusted Validators</span>
                     </h1>
-                    <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                    <p className="mt-3 text-base text-content-muted sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                       The Manifest Network is the first chain to utilize the Audited
                       Proof-of-Authority Module. Proof of Authority (PoA) is a consensus mechanism
                       that relies on trusted validators to secure the network.
                     </p>
 
-                    <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                    <p className="mt-3 text-base text-content-muted sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                       These validators are carefully selected based on their reputation and
                       commitment to the network&#39;s success. With PoA, you can trust that the
                       network is in good hands, allowing you to focus on building and innovating on
@@ -230,7 +230,7 @@ export default function Home() {
                         to="resources"
                         smooth={true}
                         duration={500}
-                        className="btn btn-gradient rounded-md flex items-center justify-center text-white w-32 sm:w-48"
+                        className="btn btn-gradient flex items-center justify-center text-white w-32 sm:w-48"
                       >
                         Modules
                       </ScrollLink>
@@ -270,7 +270,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <p className="text-base text-gray-500 mt-8">
+                <p className="text-base text-content-muted mt-8">
                   Built on the Manifest Blockchain, The Manifest Wallet is the gateway to the robust
                   infrastructure that is powering The Manifest Network. These initial modules is the
                   first step in beginning your journey to access enterprise-grade compute for Ai,
@@ -279,7 +279,7 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
                   {/* First Box */}
-                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-white/80 hover:to-transparent dark:hover:from-base-300/80 dark:hover:to-transparent backdrop-blur-xs bg-white/60 dark:bg-base-300/60 hover:scale-105">
+                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-neutral/80 hover:to-transparent backdrop-blur-xs bg-neutral/60 hover:scale-105">
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0">
                       {!isMobile && <AnimatedAsterisk />}
                     </div>
@@ -291,14 +291,11 @@ export default function Home() {
                           <span className="block">WALLET</span>
                         </h4>
                         <div className="mt-4 pointer-events-auto">
-                          <Link
-                            href="/bank"
-                            className="btn btn-gradient rounded-md text-white w-full mx-auto"
-                          >
+                          <Link href="/bank" className="btn btn-gradient text-white w-full mx-auto">
                             <BankIcon className="w-5 h-5" /> Bank
                           </Link>
                         </div>
-                        <p className="text-gray-400 group-hover:text-black dark:group-hover:text-white mt-4">
+                        <p className="text-content-muted group-hover:text-base-content mt-4">
                           Securely manage your assets, seamlessly transfer value across the Manifest
                           Network and unlock the power of interoperability with different
                           blockchains.
@@ -307,7 +304,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-white/80 hover:to-transparent dark:hover:from-base-300/80 dark:hover:to-transparent backdrop-blur-xs bg-white/60 dark:bg-base-300/60 hover:scale-105">
+                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-neutral/80 hover:to-transparent backdrop-blur-xs bg-neutral/60 hover:scale-105">
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0">
                       {!isMobile && <AnimatedAsterisk />}
                     </div>
@@ -321,12 +318,12 @@ export default function Home() {
                         <div className="mt-4 pointer-events-auto">
                           <Link
                             href="/groups"
-                            className="btn btn-gradient rounded-md text-white w-full mx-auto"
+                            className="btn btn-gradient text-white w-full mx-auto"
                           >
                             <GroupsIcon className="w-5 h-5" /> Groups
                           </Link>
                         </div>
-                        <p className="text-gray-400 group-hover:text-black dark:group-hover:text-white mt-4">
+                        <p className="text-content-muted group-hover:text-base-content mt-4">
                           Join or create organizations to collaborate with others. Pool resources,
                           make collective decisions, and unlock new possibilities together.
                         </p>
@@ -334,7 +331,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-white/80 hover:to-transparent dark:hover:from-base-300/80 dark:hover:to-transparent backdrop-blur-xs bg-white/60 dark:bg-base-300/60 hover:scale-105">
+                  <div className="group relative text-center rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-linear-to-br hover:from-neutral/80 hover:to-transparent backdrop-blur-xs bg-neutral/60 hover:scale-105">
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0">
                       {!isMobile && <AnimatedAsterisk />}
                     </div>
@@ -348,12 +345,12 @@ export default function Home() {
                         <div className="mt-4 pointer-events-auto">
                           <Link
                             href="/factory"
-                            className="btn btn-gradient rounded-md text-white w-full mx-auto"
+                            className="btn btn-gradient text-white w-full mx-auto"
                           >
                             <FactoryIcon className="w-5 h-5" /> Token Factory
                           </Link>
                         </div>
-                        <p className="text-gray-400 group-hover:text-black dark:group-hover:text-white mt-4">
+                        <p className="text-content-muted group-hover:text-base-content mt-4">
                           Easily create your own tokens on the Manifest Network. Mint, burn, and
                           manage your tokens with ease.
                         </p>

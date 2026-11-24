@@ -10,7 +10,7 @@ const createMessage = (template: string, addr: string, msg: string) => {
   const message = format(
     template,
     addr ? <TruncatedAddressWithCopy address={addr} /> : 'unknown',
-    <span className="text-yellow-500">{msg}</span>
+    <span className="text-warning">{msg}</span>
   );
   return <span className="flex flex-wrap gap-1">{message}</span>;
 };

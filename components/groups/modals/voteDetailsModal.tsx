@@ -193,11 +193,11 @@ function VoteDetailsModal({
         </div>
       </div>
 
-      <hr className="w-full border-gray-700" />
+      <hr className="w-full border-line" />
 
       <div className="mt-4">
         <h2 className="text-lg font-semibold">Title</h2>
-        <p className="text-sm text-gray-300 bg-gray-700 p-3 rounded-lg mt-1 max-h-40 overflow-auto">
+        <p className="text-sm text-content-muted bg-surface-inset p-3 rounded-lg mt-1 max-h-40 overflow-auto">
           {proposal.title}
         </p>
       </div>
@@ -214,7 +214,7 @@ function VoteDetailsModal({
             <ArrowUpIcon className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-sm text-gray-300 bg-gray-700 p-3 rounded-lg mt-1 max-h-40 overflow-auto">
+        <p className="text-sm text-content-muted bg-surface-inset p-3 rounded-lg mt-1 max-h-40 overflow-auto">
           {proposal.summary}
         </p>
       </div>
@@ -250,15 +250,15 @@ function VoteDetailsModal({
       <div className="mt-6 flex justify-end">
         <button
           onClick={copyProposalLink}
-          className="flex items-center gap-2 hover:bg-[#FFFFFFCC] dark:hover:bg-[#FFFFFF0F] p-2 rounded-full transition-colors duration-200"
+          className="flex items-center gap-2 hover:bg-surface-card p-2 rounded-full transition-colors duration-200"
           aria-label="copy-button"
         >
           {copied ? (
-            <CheckIcon className="w-4 h-4 text-green-500" />
+            <CheckIcon className="w-4 h-4 text-success" />
           ) : (
             <CopyIcon className="w-4 h-4" />
           )}
-          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-light text-content-muted">
             {copied ? 'Copied!' : 'Share this proposal'}
           </p>
         </button>

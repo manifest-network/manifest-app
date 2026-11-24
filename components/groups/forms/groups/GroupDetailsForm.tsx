@@ -125,7 +125,7 @@ function GroupDetailsFormFields({
                             <button
                               type="button"
                               onClick={() => arrayHelpers.remove(index)}
-                              className="btn btn-error btn-sm text-white"
+                              className="btn btn-error btn-sm"
                             >
                               <TrashIcon className="w-5 h-5" />
                             </button>
@@ -185,9 +185,9 @@ export default function GroupDetails({
           return (
             <>
               <div className="lg:flex mx-auto">
-                <div className="flex items-center mx-auto w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
+                <div className="flex items-center mx-auto w-full bg-surface-card p-[24px] rounded-3xl">
                   <div className="w-full">
-                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] dark:text-[#FFFFFF99] dark:border-[#FFFFFF99] border-b-[black] pb-4">
+                    <h1 className="mb-4 text-xl font-extrabold tracking-tight sm:mb-6 leading-tight border-b-[0.5px] border-line pb-4">
                       Group details
                     </h1>
 
@@ -205,7 +205,7 @@ export default function GroupDetails({
                 <Link href="/groups" legacyBehavior>
                   <button
                     type="button"
-                    className="btn btn-neutral dark:text-white text-black py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
+                    className="btn btn-neutral text-base-content py-2.5 sm:py-3.5 w-[calc(50%-12px)]"
                   >
                     <span className="hidden sm:inline">Back: Groups Page</span>
                     <span className="sm:hidden">Back: Groups</span>
