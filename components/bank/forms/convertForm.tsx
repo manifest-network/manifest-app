@@ -96,7 +96,6 @@ export default function ConvertForm({
         type: 'alert-error',
         title: 'Error loading conversion config',
         description: configError.message,
-        bgColor: '#e74c3c',
       });
     }
   }, [isConfigError, configError, setToastMessage]);
@@ -107,7 +106,6 @@ export default function ConvertForm({
         type: 'alert-error',
         title: 'Error loading token metadata',
         description: metadataError.message,
-        bgColor: '#e74c3c',
       });
     }
   }, [isMetadataError, metadataError, setToastMessage]);
@@ -189,10 +187,7 @@ export default function ConvertForm({
   };
 
   return (
-    <div
-      style={{ borderRadius: '24px' }}
-      className="text-sm bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] px-6 pb-6 pt-4 w-full h-full animate-fadeIn duration-400"
-    >
+    <div className="text-sm bg-surface-card rounded-3xl px-6 pb-6 pt-4 w-full h-full animate-fadeIn duration-400">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -205,7 +200,7 @@ export default function ConvertForm({
               <div className="w-full space-y-8">
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text text-md font-medium text-[#00000099] dark:text-[#FFFFFF99]">
+                    <span className="label-text text-md font-medium text-content-muted">
                       Amount
                     </span>
                   </label>
@@ -230,7 +225,7 @@ export default function ConvertForm({
                       />
                     </div>
                   </div>
-                  <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
+                  <div className="text-xs mt-1 flex justify-between text-content-muted">
                     {isBalancesLoading ? (
                       <div className="skeleton h-4 w-24" aria-label="balance-skeleton" />
                     ) : (
@@ -261,14 +256,14 @@ export default function ConvertForm({
                       </div>
                     )}
                     {errors.amount && (
-                      <div className="text-red-500 text-xs text-right">{errors.amount}</div>
+                      <div className="text-error text-xs text-right">{errors.amount}</div>
                     )}
                   </div>
                 </div>
 
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text text-md font-medium text-[#00000099] dark:text-[#FFFFFF99]">
+                    <span className="label-text text-md font-medium text-content-muted">
                       Receiving Amount
                     </span>
                   </label>
@@ -298,7 +293,7 @@ export default function ConvertForm({
                   {isConfigLoading ? (
                     <div className="skeleton h-4 w-32 mt-1" aria-label="config-skeleton" />
                   ) : (
-                    <div className="text-xs mt-1 flex justify-between text-[#00000099] dark:text-[#FFFFFF99]">
+                    <div className="text-xs mt-1 flex justify-between text-content-muted">
                       <div className="flex flex-row gap-1 ml-1">
                         Conversion Rate: {config?.rate}
                       </div>
@@ -310,7 +305,6 @@ export default function ConvertForm({
                   label="Memo (optional)"
                   name="memo"
                   placeholder="Memo"
-                  style={{ borderRadius: '12px' }}
                   value={values.memo}
                   onChange={handleChange}
                   className="input-md w-full"

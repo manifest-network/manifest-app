@@ -34,7 +34,7 @@ function buildContractMessage(success: boolean, tx: TxMessage, metadata?: Metada
       const funds = tx.metadata?.funds?.[0];
       const { formattedAmount, formattedDenom } = formatFunds(funds, metadata);
       const formattedTargetDenom = formatDenomWithBadge(env.pwrTokenDenom);
-      const color = success ? 'text-green-500' : 'text-red-500';
+      const color = success ? 'text-success' : 'text-error';
       const template = success ? 'You converted {0} to {1}' : 'You failed to convert {0} to {1}';
 
       return format(

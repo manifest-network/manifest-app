@@ -44,7 +44,7 @@ export function getProposalButton(
                 <>
                   {isProposer && (
                     <button
-                      className={`btn btn-error text-white rounded-[12px] w-1/2`}
+                      className={`btn btn-error w-1/2`}
                       disabled={isSigning}
                       onClick={executeWithdrawal}
                     >
@@ -53,7 +53,7 @@ export function getProposalButton(
                   )}
                   {!userVoteOption ? (
                     <button
-                      className={`btn btn-gradient text-white rounded-[12px] ${isProposer ? 'w-1/2' : 'w-full'}`}
+                      className={`btn btn-gradient text-white ${isProposer ? 'w-1/2' : 'w-full'}`}
                       disabled={isSigning}
                       onClick={() => setShowVotingPopup(true)}
                     >
@@ -61,7 +61,7 @@ export function getProposalButton(
                     </button>
                   ) : (
                     <div
-                      className={`flex min-h-12 items-center justify-center text-white rounded-[12px] px-3 py-1 font-semibold ${isProposer ? 'w-1/2' : 'w-full'} ${getVoteOptionBadgeColor(userVoteOption)}`}
+                      className={`flex min-h-12 items-center justify-center text-white rounded-xl px-3 py-1 font-semibold ${isProposer ? 'w-1/2' : 'w-full'} ${getVoteOptionBadgeColor(userVoteOption)}`}
                     >
                       You voted {userVoteOption ? getVoteOptionLabel(userVoteOption) : null}
                     </div>
@@ -73,7 +73,7 @@ export function getProposalButton(
         case ProposalStatus.PROPOSAL_STATUS_ACCEPTED:
           return (
             <button
-              className="btn btn-gradient text-white rounded-[12px] w-full"
+              className="btn btn-gradient text-white w-full"
               disabled={isSigning}
               onClick={executeProposal}
             >
@@ -84,7 +84,7 @@ export function getProposalButton(
     case ProposalExecutorResult.PROPOSAL_EXECUTOR_RESULT_FAILURE:
       return (
         <button
-          className="btn w-full btn-gradient text-white rounded-[12px]"
+          className="btn w-full btn-gradient text-white "
           disabled={isSigning}
           onClick={executeProposal}
         >
@@ -156,6 +156,6 @@ export function getVoteOptionBadgeColor(option?: VoteOption): string {
     case VoteOption.UNRECOGNIZED:
     case VoteOption.VOTE_OPTION_UNSPECIFIED:
     default:
-      return 'bg-gray-400';
+      return 'bg-content-subtle';
   }
 }

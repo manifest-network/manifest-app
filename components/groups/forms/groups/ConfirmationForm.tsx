@@ -96,35 +96,33 @@ export default function ConfirmationForm({
 
   return (
     <section>
-      <div className="w-full dark:bg-[#FFFFFF0F] bg-[#FFFFFFCC] p-[24px] rounded-[24px]">
-        <div className="flex justify-center p-4 rounded-[8px] mb-6 w-full dark:bg-[#FAFAFA1F] bg-[#A087FF1F] items-center">
+      <div className="w-full bg-surface-card p-[24px] rounded-3xl">
+        <div className="flex justify-center p-4 rounded-lg mb-6 w-full bg-primary/10 items-center">
           <h1 className="text-xl text-primary font-bold">{formData.title}</h1>
         </div>
 
         <div className="space-y-6">
           {/* Group Information */}
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-gray-500 dark:text-gray-400">
-              Group Information
-            </h2>
+            <h2 className="text-xl font-semibold mb-4 text-content-muted">Group Information</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-base-300 p-4 rounded-[12px]">
-                <label className="text-sm dark:text-[#FFFFFF66]">Voting period</label>
-                <div className="text-gray-500 dark:text-gray-400">
+              <div className="bg-base-300 p-4 rounded-xl">
+                <label className="text-sm text-content-muted">Voting period</label>
+                <div className="text-content-muted">
                   {secondsToHumanReadable(Number(formData.votingPeriod.seconds))}
                 </div>
               </div>
-              <div className="bg-base-300  p-4 rounded-[12px] ">
-                <label className="text-sm dark:text-[#FFFFFF66]">Qualified Majority</label>
-                <div className="text-gray-500 dark:text-gray-400">
+              <div className="bg-base-300  p-4 rounded-xl ">
+                <label className="text-sm text-content-muted">Qualified Majority</label>
+                <div className="text-content-muted">
                   {formData.votingThreshold} / {formData.members.length}
                 </div>
               </div>
             </div>
-            <div className="mt-4 bg-base-300 p-4 rounded-[12px]">
-              <label className="text-sm dark:text-[#FFFFFF66]">Description</label>
+            <div className="mt-4 bg-base-300 p-4 rounded-xl">
+              <label className="text-sm text-content-muted">Description</label>
               <div
-                className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-500 dark:text-gray-400"
+                className="overflow-hidden text-ellipsis whitespace-nowrap text-content-muted"
                 title={formData.description}
               >
                 {formData.description.length > 200
@@ -136,13 +134,13 @@ export default function ConfirmationForm({
 
           {/* Authors */}
           <div className="max-h-28 overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4 text-gray-500 dark:text-gray-400">Authors</h2>
+            <h2 className="text-xl font-semibold mb-4 text-content-muted">Authors</h2>
             <div className=" grid grid-cols-3 gap-4">
               {Array.isArray(formData.authors) ? (
                 formData.authors.map((author, index) => (
                   <div
                     key={index}
-                    className="bg-base-300 text-gray-500 dark:text-gray-400 p-4 rounded-lg flex items-center"
+                    className="bg-base-300 text-content-muted p-4 rounded-lg flex items-center"
                   >
                     {author.trim().startsWith('manifest1') ? (
                       <TruncatedAddressWithCopy address={author.trim()} />
@@ -152,7 +150,7 @@ export default function ConfirmationForm({
                   </div>
                 ))
               ) : (
-                <div className="bg-[#2A2A38] p-4 text-gray-500 dark:text-gray-400 rounded-lg flex items-center">
+                <div className="bg-surface-inset p-4 text-content-muted rounded-lg flex items-center">
                   {formData.authors.trim().startsWith('manifest1') ? (
                     <TruncatedAddressWithCopy address={formData.authors.trim()} />
                   ) : (
@@ -165,14 +163,14 @@ export default function ConfirmationForm({
 
           {/* Members */}
           <div className="max-h-44 overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4 text-gray-500 dark:text-gray-400">Members</h2>
+            <h2 className="text-xl font-semibold mb-4 text-content-muted">Members</h2>
             <div className="grid grid-cols-3 gap-4">
               {formData.members.map((member, index) => (
                 <div key={index} className="bg-base-300 p-4 rounded-lg">
-                  <div className="text-sm dark:text-[#FFFFFF66]">Address</div>
+                  <div className="text-sm text-content-muted">Address</div>
                   <TruncatedAddressWithCopy address={member.address} />
-                  <div className="text-sm dark:text-[#FFFFFF66] mt-2">Name</div>
-                  <div className="text-gray-500 dark:text-gray-400">{member.name}</div>
+                  <div className="text-sm text-content-muted mt-2">Name</div>
+                  <div className="text-content-muted">{member.name}</div>
                 </div>
               ))}
             </div>
@@ -184,7 +182,7 @@ export default function ConfirmationForm({
       <div className="flex gap-6 mt-6 mx-auto w-full">
         <button
           onClick={prevStep}
-          className="btn btn-neutral text-black dark:text-white  w-[calc(50%-12px)]"
+          className="btn btn-neutral text-base-content  w-[calc(50%-12px)]"
         >
           Back: Group Policy
         </button>

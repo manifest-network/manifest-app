@@ -76,7 +76,7 @@ export function HistoryBox({
                 {[...Array(skeletonTxCount)].map((_, txIndex) => (
                   <div
                     key={txIndex}
-                    className="flex items-center justify-between p-4 bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] rounded-[16px]"
+                    className="flex items-center justify-between p-4 bg-surface-card rounded-2xl"
                   >
                     <div className="flex items-center space-x-3">
                       <div className="skeleton w-9 h-9 rounded-full"></div>
@@ -104,9 +104,9 @@ export function HistoryBox({
     return (
       <div
         data-testid="historyBox"
-        className="flex items-center justify-center h-[200px] w-full bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] rounded-[16px]"
+        className="flex items-center justify-center h-[200px] w-full bg-surface-card rounded-2xl"
       >
-        <p className="text-center text-red-500">Error loading transactions</p>
+        <p className="text-center text-error">Error loading transactions</p>
       </div>
     );
   }
@@ -115,9 +115,9 @@ export function HistoryBox({
     return (
       <div
         data-testid="historyBox"
-        className="flex items-center justify-center h-[200px] w-full bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] mt-5 rounded-[16px]"
+        className="flex items-center justify-center h-[200px] w-full bg-surface-card mt-5 rounded-2xl"
       >
-        <p className="text-center text-[#00000099] dark:text-[#FFFFFF99]">No transactions found!</p>
+        <p className="text-center text-content-muted">No transactions found!</p>
       </div>
     );
   }
@@ -131,32 +131,29 @@ export function HistoryBox({
             className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 
                     ${
                       tx.error
-                        ? 'bg-[#E5393522] dark:bg-[#E5393533] hover:bg-[#E5393544] dark:hover:bg-[#E5393555]'
-                        : 'bg-[#FFFFFFCC] dark:bg-[#FFFFFF0F] hover:bg-[#FFFFFF66] dark:hover:bg-[#FFFFFF1A]'
+                        ? 'bg-error/15 hover:bg-error/30'
+                        : 'bg-surface-card hover:bg-surface-card-hover'
                     }
-                    rounded-[16px] cursor-pointer transition-colors`}
+                    rounded-2xl cursor-pointer transition-colors`}
             onClick={() => {
               setSelectedTx(tx);
               (document?.getElementById('tx_modal_info') as HTMLDialogElement)?.showModal();
             }}
           >
             <div className="flex flex-row items-center space-x-3 mb-2 sm:mb-0">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-[#161616] dark:text-white">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-base-content">
                 {getTransactionIcon(tx, address)}
               </div>
               <div>
-                <TimeAgo
-                  datetime={tx.timestamp}
-                  className="text-sm text-[#00000099] dark:text-[#FFFFFF99]"
-                />
+                <TimeAgo datetime={tx.timestamp} className="text-sm text-content-muted" />
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-1">
-                  <span className="font-semibold text-[#161616] dark:text-white">
+                  <span className="font-semibold text-base-content">
                     {getTransactionMessage(tx, address, metadatas?.metadatas)}
                   </span>
                 </div>
                 {tx.message_index < 10000 ? (
                   tx.sender === address ? (
-                    <div className="text-gray-500 text-xs mt-1">
+                    <div className="text-content-muted text-xs mt-1">
                       Incl.:{' '}
                       {tx.fee && (
                         <>
@@ -167,7 +164,7 @@ export function HistoryBox({
                     </div>
                   ) : null
                 ) : (
-                  <div className="text-gray-500 text-xs mt-1">
+                  <div className="text-content-muted text-xs mt-1">
                     Fee incl. in proposal #{tx.proposal_ids} execution
                   </div>
                 )}

@@ -48,10 +48,10 @@ const NavItem: React.FC<{
       <Link href={href} passHref legacyBehavior>
         <a
           className={`group active:scale-95 hover:ring-2  hover:ring-primary flex justify-center p-3 items-center rounded-lg transition-all duration-300 ease-in-out w-18
-          ${isActive ? 'text-white bg-primary' : 'text-gray-500 hover:text-primary'}`}
+          ${isActive ? 'text-white bg-primary' : 'text-content-muted hover:text-primary'}`}
         >
           <div
-            className={`w-8 h-8 duration-300  ${isActive ? 'text-white bg-primary' : 'text-[#00000066] dark:text-[#FFFFFF66] group-hover:text-primary'}`}
+            className={`w-8 h-8 duration-300  ${isActive ? 'text-white bg-primary' : 'text-content-subtle group-hover:text-primary'}`}
           >
             <Icon className="w-full h-full " />
           </div>
@@ -80,7 +80,7 @@ const NavDrawer: React.FC<{
           className={`flex items-center p-2 text-base font-normal rounded-lg transition duration-300 ease-in-out ${
             isActive
               ? 'bg-primary text-white'
-              : 'text-[#00000066] dark:text-[#FFFFFF66]  hover:bg-[#0000000A] hover:text-primary dark:hover:text-primary dark:hover:bg-base-300'
+              : 'text-content-subtle  hover:bg-surface-hover hover:text-primary'
           }`}
         >
           <Icon className="w-8 h-8 mr-6" />
@@ -109,7 +109,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
   const toggleDrawer = () => setDrawerVisible(!isDrawerVisible);
   const version = packageInfo.version;
   const sideNav = (
-    <div className="overflow-y-auto z-30 py-5 px-3 w-32 bg-[#FFFFFF3D] dark:bg-[#FFFFFF0F] flex flex-col items-center h-full transition-transform duration-300 ease-in-out">
+    <div className="overflow-y-auto z-30 py-5 px-3 w-32 bg-surface-panel flex flex-col items-center h-full transition-transform duration-300 ease-in-out">
       <Link href={'/#'} passHref legacyBehavior>
         <a href="#" className="mb-12">
           <Image src={getRealLogo('/logo', theme === 'dark')} alt="logo" width={264} height={264} />
@@ -122,14 +122,14 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
         {isMember && <NavItem Icon={AdminsIcon} href="/admins" tooltip="Admin" />}
         <NavItem Icon={FactoryIcon} href="/factory" tooltip="Token Factory" />
       </ul>
-      <div className="mt-auto flex flex-col items-center space-y-6 dark:bg-[#FFFFFF0F] bg-[#0000000A] rounded-lg p-4 w-[75%]">
+      <div className="mt-auto flex flex-col items-center space-y-6 bg-surface-inset rounded-lg p-4 w-[75%]">
         <div
           className="tooltip tooltip-primary tooltip-top hover:after:delay-700 hover:before:delay-700"
           data-tip="Contacts"
         >
           <button
             onClick={() => setContactsOpen(true)}
-            className="relative group flex justify-center w-full text-[#00000066] dark:text-[#FFFFFF66] hover:text-primary dark:hover:text-primary transition-all duration-300 ease-in-out cursor-pointer"
+            className="relative group flex justify-center w-full text-content-subtle hover:text-primary transition-all duration-300 ease-in-out cursor-pointer"
           >
             <MdContacts className="w-8 h-8" />
           </button>
@@ -138,7 +138,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
           className="tooltip tooltip-top tooltip-primary hover:after:delay-1000 hover:before:delay-1000"
           data-tip="Wallet"
         >
-          <div className="flex justify-center w-full text-[#00000066] dark:text-[#FFFFFF66]">
+          <div className="flex justify-center w-full text-content-subtle">
             <IconWallet chainName={env.chain} />
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
             className="tooltip tooltip-primary text-xs tooltip-top hover:after:delay-1000 hover:before:delay-1000"
             data-tip={theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
           >
-            <label className="swap swap-rotate text-[#00000066] dark:text-[#FFFFFF66] hover:text-primary dark:hover:text-primary transition-all duration-300 ease-in-out">
+            <label className="swap swap-rotate text-content-subtle hover:text-primary transition-all duration-300 ease-in-out">
               <input
                 type="checkbox"
                 className="theme-controller hidden"
@@ -167,10 +167,10 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
           className="tooltip tooltip-top tooltip-primary hover:after:delay-1000 hover:before:delay-1000"
           data-tip="Help Guide"
         >
-          <div className="flex justify-center w-full text-[#00000066] dark:text-[#FFFFFF66]">
+          <div className="flex justify-center w-full text-content-subtle">
             <Link href="https://docs.manifestai.org/" target="_blank">
               <QuestionIcon
-                className={`w-8 h-8 rounded-xl text-[#00000066] dark:text-[#FFFFFF66] hover:text-primary dark:hover:text-primary transition-all duration-300 ease-in-out`}
+                className={`w-8 h-8 rounded-xl text-content-subtle hover:text-primary transition-all duration-300 ease-in-out`}
               />
             </Link>
           </div>
@@ -180,7 +180,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
   );
 
   const sideDrawer = (
-    <div className="overflow-y-auto flex flex-col h-full bg-[#F4F4FF] dark:bg-[#1D192D]  w-64 p-4">
+    <div className="overflow-y-auto flex flex-col h-full bg-surface-panel  w-64 p-4">
       <div className="gap-2 justify-start ml-2 mt-2 items-center mb-12 space-x-2">
         <Link href={'/#'} passHref legacyBehavior>
           <Image
@@ -223,7 +223,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
         >
           <div className="w-full flex flex-col space-y-2 mb-4">
             <Link href="https://docs.manifestai.org/" target="_blank">
-              <button className="flex w-full items-center p-2 text-base font-normal rounded-lg text-[#00000066] dark:text-[#FFFFFF66] hover:bg-[#0000000A] hover:text-primary dark:hover:text-primary dark:hover:bg-base-300 transition duration-300 ease-in-out cursor-pointer">
+              <button className="flex w-full items-center p-2 text-base font-normal rounded-lg text-content-subtle hover:bg-surface-hover hover:text-primary transition duration-300 ease-in-out cursor-pointer">
                 <QuestionIcon className="w-8 h-8 mr-6" />
                 <span className="text-xl">Help Guide</span>
               </button>
@@ -237,7 +237,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
           <div className="w-full flex flex-col space-y-2 mb-4">
             <button
               onClick={() => setContactsOpen(true)}
-              className="flex w-full items-center p-2 text-base font-normal rounded-lg text-[#00000066] dark:text-[#FFFFFF66] hover:bg-[#0000000A] hover:text-primary dark:hover:text-primary dark:hover:bg-base-300 transition duration-300 ease-in-out cursor-pointer"
+              className="flex w-full items-center p-2 text-base font-normal rounded-lg text-content-subtle hover:bg-surface-hover hover:text-primary transition duration-300 ease-in-out cursor-pointer"
             >
               <MdContacts className="w-8 h-8 mr-6" />
               <span className="text-xl">Contacts</span>
@@ -247,7 +247,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
 
         <div className="flex items-center justify-between mb-2">
           {/* Theme toggle */}
-          <div className="relative w-full h-[3.6rem] bg-[#0000000A] dark:bg-[#FFFFFF0F] rounded-xl">
+          <div className="relative w-full h-[3.6rem] bg-surface-inset rounded-xl">
             <label className="flex items-center justify-between w-full h-full cursor-pointer">
               <input
                 type="checkbox"
@@ -261,7 +261,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
                 data-tip="Light Mode"
               >
                 <LightIcon
-                  className={`w-8 h-8 ${theme === 'light' ? 'text-white' : 'text-gray-500'} transition-colors duration-300`}
+                  className={`w-8 h-8 ${theme === 'light' ? 'text-white' : 'text-content-muted'} transition-colors duration-300`}
                 />
               </div>
               <div
@@ -269,7 +269,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
                 data-tip="Dark Mode"
               >
                 <DarkIcon
-                  className={`w-8 h-8 ${theme === 'dark' ? 'text-white' : 'text-gray-500'} transition-colors duration-300`}
+                  className={`w-8 h-8 ${theme === 'dark' ? 'text-white' : 'text-content-muted'} transition-colors duration-300`}
                 />
               </div>
               <span
@@ -289,7 +289,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row justify-between items-center gap-3">
             <Link href="https://github.com/manifest-network/manifest-app" target="_blank">
-              <p className="text-sm text-gray-500">v{version}</p>
+              <p className="text-sm text-content-muted">v{version}</p>
             </Link>
           </div>
           <div className="flex flex-row justify-between items-center gap-3">
@@ -347,7 +347,7 @@ export default function SideNav({ isDrawerVisible, setDrawerVisible }: SideNavPr
       </aside>
       <button
         onClick={toggleDrawer}
-        className={`fixed top-1/2 transform -translate-y-1/2 hidden lg:block opacity-100 p-2 text-white rounded-full bg-[#C1C1CB] dark:bg-[#444151] hover:bg-primary dark:hover:bg-primary transition-all duration-500 ease-in-out ${
+        className={`fixed top-1/2 transform -translate-y-1/2 hidden lg:block opacity-100 p-2 text-white rounded-full bg-surface-handle hover:bg-primary transition-all duration-500 ease-in-out ${
           isDrawerVisible ? 'left-60' : 'left-[6.8rem]'
         }`}
       >

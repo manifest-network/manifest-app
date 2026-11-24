@@ -69,7 +69,7 @@ export default function FourOhFour() {
                       {link.name}
                     </a>
                   </h3>
-                  <p className="mt-2 text-sm leading-6 font-light dark:text-gray-400 text-gray-600 ">
+                  <p className="mt-2 text-sm leading-6 font-light text-content-muted ">
                     {link.description}
                   </p>
                 </div>

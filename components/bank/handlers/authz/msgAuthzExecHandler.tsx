@@ -29,13 +29,13 @@ const createMessage = (
     const typeUrl = uniqueTypeUrls[0];
     const message = format(
       singleTypeTemplate,
-      <span className="text-yellow-500">{len}</span>,
-      <span className="text-yellow-500">{typeUrl}</span>
+      <span className="text-warning">{len}</span>,
+      <span className="text-warning">{typeUrl}</span>
     );
     return <span className="flex flex-wrap gap-1">{message}</span>;
   }
 
-  const message = format(multiTypeTemplate, <span className="text-yellow-500">{len}</span>);
+  const message = format(multiTypeTemplate, <span className="text-warning">{len}</span>);
   return <span className="flex flex-wrap gap-1">{message}</span>;
 };
 

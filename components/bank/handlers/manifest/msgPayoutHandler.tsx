@@ -4,6 +4,7 @@ import { MsgPayout } from '@manifest-network/manifestjs/dist/codegen/liftedinit/
 import BigNumber from 'bignumber.js';
 import { format } from 'react-string-format';
 
+import { AMOUNT_TONE_CLASS, AmountTone } from '@/components/bank/handlers/amountTone';
 import { registerHandler } from '@/components/bank/handlers/handlerRegistry';
 import { MintIcon } from '@/components/icons/MintIcon';
 import { TruncatedAddressWithCopy } from '@/components/react/addressCopy';
@@ -20,14 +21,14 @@ interface Pair {
 const createSendMessage = (
   template: string,
   pairs: Pair[],
-  color: string,
+  tone: AmountTone,
   metadata?: MetadataSDKType[]
 ) => {
   const sum = pairs.reduce((acc, pair) => acc.plus(pair.coin.amount), new BigNumber(0));
   const denom = formatDenom(pairs?.[0]?.coin?.denom); // We can only mint umfx anyway
   const formattedDenom = formatDenomWithBadge(pairs?.[0]?.coin?.denom); // We can only mint umfx anyway
   const coloredAmount = (
-    <span className={`text-${color}-500`}>
+    <span className={AMOUNT_TONE_CLASS[tone]}>
       {formatLargeNumber(formatAmount(sum.toFixed(), denom, metadata))} {formattedDenom}
     </span>
   );
@@ -48,7 +49,7 @@ const createSendMessage = (
 const createReceiveMessage = (
   template: string,
   pairs: Pair[],
-  color: string,
+  tone: AmountTone,
   address: string,
   metadata?: MetadataSDKType[],
   sender?: string
@@ -59,7 +60,7 @@ const createReceiveMessage = (
   const denom = formatDenom(pairs?.[0]?.coin?.denom); // We can only mint umfx anyway
   const formattedDenom = formatDenomWithBadge(pairs?.[0]?.coin?.denom); // We can only mint umfx anyway
   const coloredAmount = (
-    <span className={`text-${color}-500`}>
+    <span className={AMOUNT_TONE_CLASS[tone]}>
       {formatLargeNumber(formatAmount(sum.toFixed(), denom, metadata))} {formattedDenom}
     </span>
   );
@@ -74,13 +75,13 @@ const createReceiveMessage = (
 export const MsgPayoutHandler = createSenderReceiverHandler({
   iconSender: MintIcon,
   successSender: (tx, _, metadata) => {
-    return createSendMessage('You minted {0} {1}', tx.metadata?.payoutPairs, 'green', metadata);
+    return createSendMessage('You minted {0} {1}', tx.metadata?.payoutPairs, 'positive', metadata);
   },
   failSender: (tx, _, metadata) => {
     return createSendMessage(
       'You failed to mint {0} {1}',
       tx.metadata?.payoutPairs,
-      'red',
+      'negative',
       metadata
     );
   },
@@ -88,7 +89,7 @@ export const MsgPayoutHandler = createSenderReceiverHandler({
     return createReceiveMessage(
       'You were minted {0} from {1}',
       tx.metadata?.payoutPairs,
-      'green',
+      'positive',
       address,
       metadata,
       tx.sender
